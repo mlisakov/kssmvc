@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 
-namespace KSS_MVC
+namespace KSS
 {
     public static class WebApiConfig
     {

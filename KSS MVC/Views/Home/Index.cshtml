@@ -1,0 +1,29 @@
+﻿@{
+    Layout = null;
+}
+  
+<!DOCTYPE html>
+  
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Список</title>
+</head>
+<body>
+    <div>
+
+        <table>
+            <tr>
+                <td><p>Название</p></td>
+                <td></td>
+            </tr>
+            @foreach (var b in ViewBag.Divisions)
+            {
+            <tr>
+                <td><p>@b.Name</p></td>
+            </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>
