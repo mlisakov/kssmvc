@@ -1,0 +1,2072 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="KSS.Server.Entities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Department' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ManualInput" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="ManualInput" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Department1S' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Department1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ParentCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DivisionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ChiefPersonId" Type="uniqueidentifier" />
+          <Property Name="Department" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.DepartmentState' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DepartmentState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="DivisionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ChiefId" Type="uniqueidentifier" />
+          <Property Name="Department" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.DepartmentTemp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DepartmentTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="ParentCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DivisionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ChiefId" Type="uniqueidentifier" />
+          <Property Name="ChiefPersonId" Type="uniqueidentifier" />
+          <Property Name="Department" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Number" Type="nvarchar" MaxLength="20" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Division' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Division">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="Essential" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Essential" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Division1S' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Division1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionBrief" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ParentCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DivisionBrief" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.DivisionPhoneCode' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DivisionPhoneCode">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionFromId" />
+            <PropertyRef Name="DivisionToId" />
+            <PropertyRef Name="IntPhoneCode" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionFromId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionToId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="IntPhoneCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.DivisionState' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DivisionState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Division" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="Division" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="DivisionBrief" Type="nvarchar" MaxLength="200" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.DivisionTemp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="DivisionTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionBrief" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="ParentCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="DivisionBrief" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Employee' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="ManualInput" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="PhotoUpdated" />
+            <PropertyRef Name="PhotoManualInput" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PersonId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Sex" Type="nvarchar" MaxLength="20" />
+          <Property Name="BirthDay" Type="smalldatetime" />
+          <Property Name="EMail" Type="nvarchar" MaxLength="200" />
+          <Property Name="AccountName" Type="nvarchar" MaxLength="200" />
+          <Property Name="AccountControl" Type="int" />
+          <Property Name="Updated" Type="bit" />
+          <Property Name="ManualInput" Type="bit" Nullable="false" />
+          <Property Name="Photo" Type="image" />
+          <Property Name="PhotoDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="PhotoFile" Type="nvarchar" MaxLength="200" />
+          <Property Name="PhotoAllowed" Type="bit" Nullable="false" />
+          <Property Name="PhotoUpdated" Type="bit" Nullable="false" />
+          <Property Name="PhotoManualInput" Type="bit" Nullable="false" />
+          <Property Name="AdState" Type="int" />
+          <Property Name="isAdministrator" Type="bit" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.EmployeePlace' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="EmployeePlace">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="EmployeeId" />
+            <PropertyRef Name="PhoneTypeId" />
+            <PropertyRef Name="PhoneNumber" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployeeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LocationId" Type="uniqueidentifier" />
+          <Property Name="PhoneTypeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Office" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.ExecutionLog' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ExecutionLog">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Type" />
+            <PropertyRef Name="CreationDate" />
+            <PropertyRef Name="Description" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Type" Type="int" Nullable="false" />
+          <Property Name="CreationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="Description" Type="xml" Nullable="false" />
+          <Property Name="Code" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.ExecutionMsg' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ExecutionMsg">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Message" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Message" Type="nvarchar" MaxLength="800" Nullable="false" />
+          <Property Name="Code" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Favorites' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Favorites">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="EmployeeId" />
+            <PropertyRef Name="LinkedEmployeeId" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployeeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LinkedEmployeeId" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.HistoryUsers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="HistoryUsers">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" />
+          <Property Name="EmployeeId" Type="uniqueidentifier" />
+          <Property Name="dateIn" Type="datetime" />
+          <Property Name="info" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Locality' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Locality">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Locality" />
+            <PropertyRef Name="Region" />
+            <PropertyRef Name="Country" />
+            <PropertyRef Name="CityPhoneCode" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Locality" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Region" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Country" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="CityPhoneCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Location' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="LocalityId" />
+            <PropertyRef Name="Street" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LocalityId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TerritoryId" Type="uniqueidentifier" />
+          <Property Name="Street" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Edifice" Type="nvarchar" MaxLength="100" />
+          <Property Name="Building" Type="nvarchar" MaxLength="100" />
+          <Property Name="PhoneZoneId" Type="uniqueidentifier" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.ModuleInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ModuleInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Version" Type="nvarchar" MaxLength="100" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="AssemblyFileName" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsMain" Type="bit" />
+          <Property Name="OptimisticLockField" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Operator' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Operator">
+          <Key>
+            <PropertyRef Name="Oid" />
+          </Key>
+          <Property Name="Oid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SecondName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ThirdName" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Options' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Options">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DefaultPicture" Type="image" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PhoneMatrixInt' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PhoneMatrixInt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="FromId" />
+            <PropertyRef Name="ToId" />
+            <PropertyRef Name="PhoneCode" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FromId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ToId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PhoneCode" Type="nvarchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PhoneMatrixIntFull' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PhoneMatrixIntFull">
+          <Key>
+            <PropertyRef Name="FromId" />
+            <PropertyRef Name="ToId" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" />
+          <Property Name="FromId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ToId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="IdPath" Type="nvarchar" MaxLength="837" />
+          <Property Name="PhoneCode" Type="nvarchar" MaxLength="100" />
+          <Property Name="Level" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PhoneType' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PhoneType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Type" />
+            <PropertyRef Name="Category" />
+            <PropertyRef Name="Sequence" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Category" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Sequence" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PhoneZoneInt' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PhoneZoneInt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Zone" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="200" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Position' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="TitleId" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ManualInput" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" />
+          <Property Name="TitleId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TitleCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DepartmentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ManualInput" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Position1S' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Position1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TitleCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DivisionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DepartmentCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PositionState' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PositionState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.PositionTemp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="PositionTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="TitleId" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="TitleId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TitleCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DepartmentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.SpecificStaff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SpecificStaff">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="Position" />
+            <PropertyRef Name="Ranking" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="EmployeeId" Type="uniqueidentifier" />
+          <Property Name="Position" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.SpecificStaffPlace' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="SpecificStaffPlace">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="SpecificStaffId" />
+            <PropertyRef Name="PhoneTypeId" />
+            <PropertyRef Name="PhoneNumber" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SpecificStaffId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LocationId" Type="uniqueidentifier" />
+          <Property Name="PhoneTypeId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Office" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Staff' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Staff">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PositionId" Type="uniqueidentifier" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Staff1S' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Staff1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="PositionCode" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PersonId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DepartmentCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PositionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Sex" Type="nvarchar" MaxLength="20" />
+          <Property Name="BirthDay" Type="smalldatetime" />
+          <Property Name="ITN" Type="nvarchar" MaxLength="20" />
+          <Property Name="SeriesPas" Type="nvarchar" MaxLength="10" />
+          <Property Name="NumberPas" Type="nvarchar" MaxLength="10" />
+          <Property Name="PasDepart" Type="nvarchar" MaxLength="200" />
+          <Property Name="PasIssue" Type="smalldatetime" />
+          <Property Name="Photo" Type="image" />
+          <Property Name="PhotoDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="PhotoFile" Type="nvarchar" MaxLength="200" />
+          <Property Name="PhotoAllowed" Type="bit" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.StaffTemp' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="StaffTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="PositionId" />
+            <PropertyRef Name="PositionCode" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Code" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PersonId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DepartmentCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="PositionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PositionCode" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Sex" Type="nvarchar" MaxLength="20" />
+          <Property Name="BirthDay" Type="smalldatetime" />
+          <Property Name="ITN" Type="nvarchar" MaxLength="20" />
+          <Property Name="SeriesPas" Type="nvarchar" MaxLength="10" />
+          <Property Name="NumberPas" Type="nvarchar" MaxLength="10" />
+          <Property Name="PasDepart" Type="nvarchar" MaxLength="200" />
+          <Property Name="PasIssue" Type="smalldatetime" />
+          <Property Name="Photo" Type="image" />
+          <Property Name="PhotoDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="PhotoFile" Type="nvarchar" MaxLength="200" />
+          <Property Name="PhotoAllowed" Type="bit" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.sysdiagrams' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="name" />
+            <PropertyRef Name="principal_id" />
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.Territory' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Territory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'Company_v2.0.dbo.TerritoryState' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TerritoryState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DivisionId" Type="uniqueidentifier" />
+          <Property Name="Territory" Type="nvarchar" MaxLength="200" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
+        </EntityType>
+        <EntityContainer Name="KSSServerEntitiesStoreContainer">
+          <EntitySet Name="Department" EntityType="Self.Department" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Department].[Id] AS [Id], 
+    [Department].[Code] AS [Code], 
+    [Department].[Ranking] AS [Ranking], 
+    [Department].[Number] AS [Number], 
+    [Department].[ManualInput] AS [ManualInput]
+    FROM [dbo].[Department] AS [Department]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Department1S" EntityType="Self.Department1S" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Department1S].[Code] AS [Code], 
+    [Department1S].[ParentCode] AS [ParentCode], 
+    [Department1S].[DivisionCode] AS [DivisionCode], 
+    [Department1S].[ChiefPersonId] AS [ChiefPersonId], 
+    [Department1S].[Department] AS [Department], 
+    [Department1S].[Ranking] AS [Ranking], 
+    [Department1S].[Number] AS [Number], 
+    [Department1S].[ValidationDate] AS [ValidationDate], 
+    [Department1S].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[Department1S] AS [Department1S]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DepartmentState" EntityType="Self.DepartmentState" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DepartmentState].[Id] AS [Id], 
+    [DepartmentState].[ParentId] AS [ParentId], 
+    [DepartmentState].[DivisionId] AS [DivisionId], 
+    [DepartmentState].[ChiefId] AS [ChiefId], 
+    [DepartmentState].[Department] AS [Department], 
+    [DepartmentState].[ValidationDate] AS [ValidationDate], 
+    [DepartmentState].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[DepartmentState] AS [DepartmentState]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DepartmentTemp" EntityType="Self.DepartmentTemp" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DepartmentTemp].[Id] AS [Id], 
+    [DepartmentTemp].[Code] AS [Code], 
+    [DepartmentTemp].[ParentId] AS [ParentId], 
+    [DepartmentTemp].[ParentCode] AS [ParentCode], 
+    [DepartmentTemp].[DivisionId] AS [DivisionId], 
+    [DepartmentTemp].[DivisionCode] AS [DivisionCode], 
+    [DepartmentTemp].[ChiefId] AS [ChiefId], 
+    [DepartmentTemp].[ChiefPersonId] AS [ChiefPersonId], 
+    [DepartmentTemp].[Department] AS [Department], 
+    [DepartmentTemp].[Ranking] AS [Ranking], 
+    [DepartmentTemp].[Number] AS [Number], 
+    [DepartmentTemp].[ValidationDate] AS [ValidationDate], 
+    [DepartmentTemp].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[DepartmentTemp] AS [DepartmentTemp]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Division" EntityType="Self.Division" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Division].[Id] AS [Id], 
+    [Division].[Code] AS [Code], 
+    [Division].[Ranking] AS [Ranking], 
+    [Division].[Essential] AS [Essential]
+    FROM [dbo].[Division] AS [Division]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Division1S" EntityType="Self.Division1S" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Division1S].[Code] AS [Code], 
+    [Division1S].[ParentCode] AS [ParentCode], 
+    [Division1S].[DivisionBrief] AS [DivisionBrief], 
+    [Division1S].[Ranking] AS [Ranking], 
+    [Division1S].[ValidationDate] AS [ValidationDate], 
+    [Division1S].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[Division1S] AS [Division1S]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DivisionPhoneCode" EntityType="Self.DivisionPhoneCode" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DivisionPhoneCode].[Id] AS [Id], 
+    [DivisionPhoneCode].[DivisionFromId] AS [DivisionFromId], 
+    [DivisionPhoneCode].[DivisionToId] AS [DivisionToId], 
+    [DivisionPhoneCode].[IntPhoneCode] AS [IntPhoneCode]
+    FROM [dbo].[DivisionPhoneCode] AS [DivisionPhoneCode]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DivisionState" EntityType="Self.DivisionState" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DivisionState].[Id] AS [Id], 
+    [DivisionState].[ParentId] AS [ParentId], 
+    [DivisionState].[Division] AS [Division], 
+    [DivisionState].[DivisionBrief] AS [DivisionBrief], 
+    [DivisionState].[ValidationDate] AS [ValidationDate], 
+    [DivisionState].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[DivisionState] AS [DivisionState]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="DivisionTemp" EntityType="Self.DivisionTemp" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [DivisionTemp].[Id] AS [Id], 
+    [DivisionTemp].[Code] AS [Code], 
+    [DivisionTemp].[ParentId] AS [ParentId], 
+    [DivisionTemp].[ParentCode] AS [ParentCode], 
+    [DivisionTemp].[DivisionBrief] AS [DivisionBrief], 
+    [DivisionTemp].[Ranking] AS [Ranking], 
+    [DivisionTemp].[ValidationDate] AS [ValidationDate], 
+    [DivisionTemp].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[DivisionTemp] AS [DivisionTemp]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Employee" EntityType="Self.Employee" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Employee].[Id] AS [Id], 
+    [Employee].[Code] AS [Code], 
+    [Employee].[PersonId] AS [PersonId], 
+    [Employee].[Name] AS [Name], 
+    [Employee].[Sex] AS [Sex], 
+    [Employee].[BirthDay] AS [BirthDay], 
+    [Employee].[EMail] AS [EMail], 
+    [Employee].[AccountName] AS [AccountName], 
+    [Employee].[AccountControl] AS [AccountControl], 
+    [Employee].[Updated] AS [Updated], 
+    [Employee].[ManualInput] AS [ManualInput], 
+    [Employee].[Photo] AS [Photo], 
+    [Employee].[PhotoDate] AS [PhotoDate], 
+    [Employee].[PhotoFile] AS [PhotoFile], 
+    [Employee].[PhotoAllowed] AS [PhotoAllowed], 
+    [Employee].[PhotoUpdated] AS [PhotoUpdated], 
+    [Employee].[PhotoManualInput] AS [PhotoManualInput], 
+    [Employee].[AdState] AS [AdState], 
+    [Employee].[isAdministrator] AS [isAdministrator]
+    FROM [dbo].[Employee] AS [Employee]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="EmployeePlace" EntityType="Self.EmployeePlace" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [EmployeePlace].[Id] AS [Id], 
+    [EmployeePlace].[EmployeeId] AS [EmployeeId], 
+    [EmployeePlace].[LocationId] AS [LocationId], 
+    [EmployeePlace].[PhoneTypeId] AS [PhoneTypeId], 
+    [EmployeePlace].[PhoneNumber] AS [PhoneNumber], 
+    [EmployeePlace].[Office] AS [Office]
+    FROM [dbo].[EmployeePlace] AS [EmployeePlace]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ExecutionLog" EntityType="Self.ExecutionLog" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ExecutionLog].[Id] AS [Id], 
+    [ExecutionLog].[DivisionCode] AS [DivisionCode], 
+    [ExecutionLog].[Type] AS [Type], 
+    [ExecutionLog].[CreationDate] AS [CreationDate], 
+    [ExecutionLog].[Description] AS [Description], 
+    [ExecutionLog].[Code] AS [Code]
+    FROM [dbo].[ExecutionLog] AS [ExecutionLog]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ExecutionMsg" EntityType="Self.ExecutionMsg" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ExecutionMsg].[Id] AS [Id], 
+    [ExecutionMsg].[Message] AS [Message], 
+    [ExecutionMsg].[Code] AS [Code]
+    FROM [dbo].[ExecutionMsg] AS [ExecutionMsg]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Favorites" EntityType="Self.Favorites" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Favorites].[Id] AS [Id], 
+    [Favorites].[EmployeeId] AS [EmployeeId], 
+    [Favorites].[LinkedEmployeeId] AS [LinkedEmployeeId]
+    FROM [dbo].[Favorites] AS [Favorites]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="HistoryUsers" EntityType="Self.HistoryUsers" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [HistoryUsers].[id] AS [id], 
+    [HistoryUsers].[EmployeeId] AS [EmployeeId], 
+    [HistoryUsers].[dateIn] AS [dateIn], 
+    [HistoryUsers].[info] AS [info]
+    FROM [dbo].[HistoryUsers] AS [HistoryUsers]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Locality" EntityType="Self.Locality" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Locality].[Id] AS [Id], 
+    [Locality].[Locality] AS [Locality], 
+    [Locality].[Region] AS [Region], 
+    [Locality].[Country] AS [Country], 
+    [Locality].[CityPhoneCode] AS [CityPhoneCode]
+    FROM [dbo].[Locality] AS [Locality]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Location" EntityType="Self.Location" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Location].[Id] AS [Id], 
+    [Location].[DivisionId] AS [DivisionId], 
+    [Location].[LocalityId] AS [LocalityId], 
+    [Location].[TerritoryId] AS [TerritoryId], 
+    [Location].[Street] AS [Street], 
+    [Location].[Edifice] AS [Edifice], 
+    [Location].[Building] AS [Building], 
+    [Location].[PhoneZoneId] AS [PhoneZoneId]
+    FROM [dbo].[Location] AS [Location]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ModuleInfo" EntityType="Self.ModuleInfo" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ModuleInfo].[ID] AS [ID], 
+    [ModuleInfo].[Version] AS [Version], 
+    [ModuleInfo].[Name] AS [Name], 
+    [ModuleInfo].[AssemblyFileName] AS [AssemblyFileName], 
+    [ModuleInfo].[IsMain] AS [IsMain], 
+    [ModuleInfo].[OptimisticLockField] AS [OptimisticLockField]
+    FROM [dbo].[ModuleInfo] AS [ModuleInfo]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Operator" EntityType="Self.Operator" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Operator].[Oid] AS [Oid], 
+    [Operator].[SecondName] AS [SecondName], 
+    [Operator].[FirstName] AS [FirstName], 
+    [Operator].[ThirdName] AS [ThirdName]
+    FROM [dbo].[Operator] AS [Operator]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Options" EntityType="Self.Options" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Options].[Id] AS [Id], 
+    [Options].[DefaultPicture] AS [DefaultPicture]
+    FROM [dbo].[Options] AS [Options]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PhoneMatrixInt" EntityType="Self.PhoneMatrixInt" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PhoneMatrixInt].[Id] AS [Id], 
+    [PhoneMatrixInt].[FromId] AS [FromId], 
+    [PhoneMatrixInt].[ToId] AS [ToId], 
+    [PhoneMatrixInt].[PhoneCode] AS [PhoneCode]
+    FROM [dbo].[PhoneMatrixInt] AS [PhoneMatrixInt]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PhoneMatrixIntFull" EntityType="Self.PhoneMatrixIntFull" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PhoneMatrixIntFull].[Id] AS [Id], 
+    [PhoneMatrixIntFull].[FromId] AS [FromId], 
+    [PhoneMatrixIntFull].[ToId] AS [ToId], 
+    [PhoneMatrixIntFull].[IdPath] AS [IdPath], 
+    [PhoneMatrixIntFull].[PhoneCode] AS [PhoneCode], 
+    [PhoneMatrixIntFull].[Level] AS [Level]
+    FROM [dbo].[PhoneMatrixIntFull] AS [PhoneMatrixIntFull]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PhoneType" EntityType="Self.PhoneType" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PhoneType].[Id] AS [Id], 
+    [PhoneType].[Type] AS [Type], 
+    [PhoneType].[Category] AS [Category], 
+    [PhoneType].[Sequence] AS [Sequence]
+    FROM [dbo].[PhoneType] AS [PhoneType]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PhoneZoneInt" EntityType="Self.PhoneZoneInt" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PhoneZoneInt].[Id] AS [Id], 
+    [PhoneZoneInt].[Zone] AS [Zone]
+    FROM [dbo].[PhoneZoneInt] AS [PhoneZoneInt]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Position" EntityType="Self.Position" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Position].[Id] AS [Id], 
+    [Position].[Code] AS [Code], 
+    [Position].[TitleId] AS [TitleId], 
+    [Position].[TitleCode] AS [TitleCode], 
+    [Position].[DepartmentId] AS [DepartmentId], 
+    [Position].[DepartmentCode] AS [DepartmentCode], 
+    [Position].[Ranking] AS [Ranking], 
+    [Position].[ManualInput] AS [ManualInput]
+    FROM [dbo].[Position] AS [Position]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Position1S" EntityType="Self.Position1S" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Position1S].[Code] AS [Code], 
+    [Position1S].[TitleCode] AS [TitleCode], 
+    [Position1S].[DivisionCode] AS [DivisionCode], 
+    [Position1S].[DepartmentCode] AS [DepartmentCode], 
+    [Position1S].[Title] AS [Title], 
+    [Position1S].[Ranking] AS [Ranking], 
+    [Position1S].[ValidationDate] AS [ValidationDate], 
+    [Position1S].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[Position1S] AS [Position1S]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PositionState" EntityType="Self.PositionState" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PositionState].[Id] AS [Id], 
+    [PositionState].[Title] AS [Title], 
+    [PositionState].[ValidationDate] AS [ValidationDate], 
+    [PositionState].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[PositionState] AS [PositionState]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="PositionTemp" EntityType="Self.PositionTemp" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [PositionTemp].[Id] AS [Id], 
+    [PositionTemp].[Code] AS [Code], 
+    [PositionTemp].[TitleId] AS [TitleId], 
+    [PositionTemp].[TitleCode] AS [TitleCode], 
+    [PositionTemp].[DepartmentId] AS [DepartmentId], 
+    [PositionTemp].[DepartmentCode] AS [DepartmentCode], 
+    [PositionTemp].[Title] AS [Title], 
+    [PositionTemp].[Ranking] AS [Ranking], 
+    [PositionTemp].[ValidationDate] AS [ValidationDate], 
+    [PositionTemp].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[PositionTemp] AS [PositionTemp]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SpecificStaff" EntityType="Self.SpecificStaff" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SpecificStaff].[Id] AS [Id], 
+    [SpecificStaff].[DepartmentId] AS [DepartmentId], 
+    [SpecificStaff].[EmployeeId] AS [EmployeeId], 
+    [SpecificStaff].[Position] AS [Position], 
+    [SpecificStaff].[Ranking] AS [Ranking]
+    FROM [dbo].[SpecificStaff] AS [SpecificStaff]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="SpecificStaffPlace" EntityType="Self.SpecificStaffPlace" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [SpecificStaffPlace].[Id] AS [Id], 
+    [SpecificStaffPlace].[SpecificStaffId] AS [SpecificStaffId], 
+    [SpecificStaffPlace].[LocationId] AS [LocationId], 
+    [SpecificStaffPlace].[PhoneTypeId] AS [PhoneTypeId], 
+    [SpecificStaffPlace].[PhoneNumber] AS [PhoneNumber], 
+    [SpecificStaffPlace].[Office] AS [Office]
+    FROM [dbo].[SpecificStaffPlace] AS [SpecificStaffPlace]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Staff" EntityType="Self.Staff" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Staff].[Id] AS [Id], 
+    [Staff].[DepartmentId] AS [DepartmentId], 
+    [Staff].[PositionId] AS [PositionId], 
+    [Staff].[ValidationDate] AS [ValidationDate], 
+    [Staff].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[Staff] AS [Staff]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Staff1S" EntityType="Self.Staff1S" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Staff1S].[Code] AS [Code], 
+    [Staff1S].[PersonId] AS [PersonId], 
+    [Staff1S].[DivisionCode] AS [DivisionCode], 
+    [Staff1S].[DepartmentCode] AS [DepartmentCode], 
+    [Staff1S].[PositionCode] AS [PositionCode], 
+    [Staff1S].[Name] AS [Name], 
+    [Staff1S].[Sex] AS [Sex], 
+    [Staff1S].[BirthDay] AS [BirthDay], 
+    [Staff1S].[ITN] AS [ITN], 
+    [Staff1S].[SeriesPas] AS [SeriesPas], 
+    [Staff1S].[NumberPas] AS [NumberPas], 
+    [Staff1S].[PasDepart] AS [PasDepart], 
+    [Staff1S].[PasIssue] AS [PasIssue], 
+    [Staff1S].[Photo] AS [Photo], 
+    [Staff1S].[PhotoDate] AS [PhotoDate], 
+    [Staff1S].[PhotoFile] AS [PhotoFile], 
+    [Staff1S].[PhotoAllowed] AS [PhotoAllowed], 
+    [Staff1S].[ValidationDate] AS [ValidationDate], 
+    [Staff1S].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[Staff1S] AS [Staff1S]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="StaffTemp" EntityType="Self.StaffTemp" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [StaffTemp].[Id] AS [Id], 
+    [StaffTemp].[Code] AS [Code], 
+    [StaffTemp].[PersonId] AS [PersonId], 
+    [StaffTemp].[DepartmentId] AS [DepartmentId], 
+    [StaffTemp].[DepartmentCode] AS [DepartmentCode], 
+    [StaffTemp].[PositionId] AS [PositionId], 
+    [StaffTemp].[PositionCode] AS [PositionCode], 
+    [StaffTemp].[Name] AS [Name], 
+    [StaffTemp].[Sex] AS [Sex], 
+    [StaffTemp].[BirthDay] AS [BirthDay], 
+    [StaffTemp].[ITN] AS [ITN], 
+    [StaffTemp].[SeriesPas] AS [SeriesPas], 
+    [StaffTemp].[NumberPas] AS [NumberPas], 
+    [StaffTemp].[PasDepart] AS [PasDepart], 
+    [StaffTemp].[PasIssue] AS [PasIssue], 
+    [StaffTemp].[Photo] AS [Photo], 
+    [StaffTemp].[PhotoDate] AS [PhotoDate], 
+    [StaffTemp].[PhotoFile] AS [PhotoFile], 
+    [StaffTemp].[PhotoAllowed] AS [PhotoAllowed], 
+    [StaffTemp].[ValidationDate] AS [ValidationDate], 
+    [StaffTemp].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[StaffTemp] AS [StaffTemp]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [sysdiagrams].[name] AS [name], 
+    [sysdiagrams].[principal_id] AS [principal_id], 
+    [sysdiagrams].[diagram_id] AS [diagram_id], 
+    [sysdiagrams].[version] AS [version], 
+    [sysdiagrams].[definition] AS [definition]
+    FROM [dbo].[sysdiagrams] AS [sysdiagrams]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Territory" EntityType="Self.Territory" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Territory].[Id] AS [Id]
+    FROM [dbo].[Territory] AS [Territory]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TerritoryState" EntityType="Self.TerritoryState" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TerritoryState].[Id] AS [Id], 
+    [TerritoryState].[DivisionId] AS [DivisionId], 
+    [TerritoryState].[Territory] AS [Territory], 
+    [TerritoryState].[ValidationDate] AS [ValidationDate], 
+    [TerritoryState].[ExpirationDate] AS [ExpirationDate]
+    FROM [dbo].[TerritoryState] AS [TerritoryState]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="KSS.Server.Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Department">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ManualInput" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ManualInput" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Department1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ParentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DivisionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ChiefPersonId" Type="Guid" />
+          <Property Name="Department" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="DepartmentState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="DivisionId" Type="Guid" Nullable="false" />
+          <Property Name="ChiefId" Type="Guid" />
+          <Property Name="Department" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="DepartmentTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Department" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="ParentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DivisionId" Type="Guid" Nullable="false" />
+          <Property Name="DivisionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ChiefId" Type="Guid" />
+          <Property Name="ChiefPersonId" Type="Guid" />
+          <Property Name="Department" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Division">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="Essential" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Essential" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Division1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionBrief" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ParentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DivisionBrief" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="DivisionPhoneCode">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionFromId" />
+            <PropertyRef Name="DivisionToId" />
+            <PropertyRef Name="IntPhoneCode" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DivisionFromId" Type="Guid" Nullable="false" />
+          <Property Name="DivisionToId" Type="Guid" Nullable="false" />
+          <Property Name="IntPhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DivisionState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Division" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="Division" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DivisionBrief" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="DivisionTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="DivisionBrief" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="ParentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DivisionBrief" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Employee">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="ManualInput" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="PhotoUpdated" />
+            <PropertyRef Name="PhotoManualInput" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PersonId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sex" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
+          <Property Name="EMail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="AccountName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="AccountControl" Type="Int32" />
+          <Property Name="Updated" Type="Boolean" />
+          <Property Name="ManualInput" Type="Boolean" Nullable="false" />
+          <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="PhotoDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PhotoFile" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PhotoAllowed" Type="Boolean" Nullable="false" />
+          <Property Name="PhotoUpdated" Type="Boolean" Nullable="false" />
+          <Property Name="PhotoManualInput" Type="Boolean" Nullable="false" />
+          <Property Name="AdState" Type="Int32" />
+          <Property Name="isAdministrator" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="EmployeePlace">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="EmployeeId" />
+            <PropertyRef Name="PhoneTypeId" />
+            <PropertyRef Name="PhoneNumber" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeId" Type="Guid" Nullable="false" />
+          <Property Name="LocationId" Type="Guid" />
+          <Property Name="PhoneTypeId" Type="Guid" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Office" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ExecutionLog">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="Type" />
+            <PropertyRef Name="CreationDate" />
+            <PropertyRef Name="Description" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DivisionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="Int32" Nullable="false" />
+          <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ExecutionMsg">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Message" />
+            <PropertyRef Name="Code" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Message" Type="String" MaxLength="800" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Favorite">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="EmployeeId" />
+            <PropertyRef Name="LinkedEmployeeId" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeId" Type="Guid" Nullable="false" />
+          <Property Name="LinkedEmployeeId" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="HistoryUser">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" />
+          <Property Name="EmployeeId" Type="Guid" />
+          <Property Name="dateIn" Type="DateTime" Precision="3" />
+          <Property Name="info" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Locality">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Locality1" />
+            <PropertyRef Name="Region" />
+            <PropertyRef Name="Country" />
+            <PropertyRef Name="CityPhoneCode" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Locality1" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Region" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Country" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CityPhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DivisionId" />
+            <PropertyRef Name="LocalityId" />
+            <PropertyRef Name="Street" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DivisionId" Type="Guid" Nullable="false" />
+          <Property Name="LocalityId" Type="Guid" Nullable="false" />
+          <Property Name="TerritoryId" Type="Guid" />
+          <Property Name="Street" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Edifice" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Building" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneZoneId" Type="Guid" />
+        </EntityType>
+        <EntityType Name="ModuleInfo">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Version" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AssemblyFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsMain" Type="Boolean" />
+          <Property Name="OptimisticLockField" Type="Int32" />
+        </EntityType>
+        <EntityType Name="Operator">
+          <Key>
+            <PropertyRef Name="Oid" />
+          </Key>
+          <Property Name="Oid" Type="Guid" Nullable="false" />
+          <Property Name="SecondName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ThirdName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Option">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DefaultPicture" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="PhoneMatrixInt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="FromId" />
+            <PropertyRef Name="ToId" />
+            <PropertyRef Name="PhoneCode" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="FromId" Type="Guid" Nullable="false" />
+          <Property Name="ToId" Type="Guid" Nullable="false" />
+          <Property Name="PhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhoneMatrixIntFull">
+          <Key>
+            <PropertyRef Name="FromId" />
+            <PropertyRef Name="ToId" />
+          </Key>
+          <Property Name="Id" Type="Guid" />
+          <Property Name="FromId" Type="Guid" Nullable="false" />
+          <Property Name="ToId" Type="Guid" Nullable="false" />
+          <Property Name="IdPath" Type="String" MaxLength="837" FixedLength="false" Unicode="true" />
+          <Property Name="PhoneCode" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Level" Type="Int32" />
+        </EntityType>
+        <EntityType Name="PhoneType">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Type" />
+            <PropertyRef Name="Category" />
+            <PropertyRef Name="Sequence" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Category" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sequence" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PhoneZoneInt">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Zone" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Zone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Position">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="TitleId" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ManualInput" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="TitleId" Type="Guid" Nullable="false" />
+          <Property Name="TitleCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmentId" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ManualInput" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Position1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TitleCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DivisionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PositionState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="PositionTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="TitleId" />
+            <PropertyRef Name="TitleCode" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="Title" />
+            <PropertyRef Name="Ranking" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TitleId" Type="Guid" Nullable="false" />
+          <Property Name="TitleCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmentId" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="SpecificStaff">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="Position" />
+            <PropertyRef Name="Ranking" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentId" Type="Guid" Nullable="false" />
+          <Property Name="EmployeeId" Type="Guid" />
+          <Property Name="Position" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SpecificStaffPlace">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="SpecificStaffId" />
+            <PropertyRef Name="PhoneTypeId" />
+            <PropertyRef Name="PhoneNumber" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="SpecificStaffId" Type="Guid" Nullable="false" />
+          <Property Name="LocationId" Type="Guid" />
+          <Property Name="PhoneTypeId" Type="Guid" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Office" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Staff">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentId" Type="Guid" Nullable="false" />
+          <Property Name="PositionId" Type="Guid" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Staff1S">
+          <Key>
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="DivisionCode" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="PositionCode" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PersonId" Type="Guid" Nullable="false" />
+          <Property Name="DivisionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PositionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sex" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
+          <Property Name="ITN" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SeriesPas" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="NumberPas" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="PasDepart" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PasIssue" Type="DateTime" Precision="0" />
+          <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="PhotoDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PhotoFile" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PhotoAllowed" Type="Boolean" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="StaffTemp">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="Code" />
+            <PropertyRef Name="PersonId" />
+            <PropertyRef Name="DepartmentId" />
+            <PropertyRef Name="DepartmentCode" />
+            <PropertyRef Name="PositionId" />
+            <PropertyRef Name="PositionCode" />
+            <PropertyRef Name="Name" />
+            <PropertyRef Name="PhotoDate" />
+            <PropertyRef Name="PhotoAllowed" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PersonId" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentId" Type="Guid" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PositionId" Type="Guid" Nullable="false" />
+          <Property Name="PositionCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Sex" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDay" Type="DateTime" Precision="0" />
+          <Property Name="ITN" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SeriesPas" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="NumberPas" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="PasDepart" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PasIssue" Type="DateTime" Precision="0" />
+          <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="PhotoDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="PhotoFile" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PhotoAllowed" Type="Boolean" Nullable="false" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="name" />
+            <PropertyRef Name="principal_id" />
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="Territory">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TerritoryState">
+          <Key>
+            <PropertyRef Name="Id" />
+            <PropertyRef Name="ValidationDate" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="DivisionId" Type="Guid" />
+          <Property Name="Territory" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityContainer Name="CompanyBaseModel" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Departments" EntityType="Self.Department" />
+          <EntitySet Name="Department1S" EntityType="Self.Department1S" />
+          <EntitySet Name="DepartmentStates" EntityType="Self.DepartmentState" />
+          <EntitySet Name="DepartmentTemps" EntityType="Self.DepartmentTemp" />
+          <EntitySet Name="Divisions" EntityType="Self.Division" />
+          <EntitySet Name="Division1S" EntityType="Self.Division1S" />
+          <EntitySet Name="DivisionPhoneCodes" EntityType="Self.DivisionPhoneCode" />
+          <EntitySet Name="DivisionStates" EntityType="Self.DivisionState" />
+          <EntitySet Name="DivisionTemps" EntityType="Self.DivisionTemp" />
+          <EntitySet Name="Employees" EntityType="Self.Employee" />
+          <EntitySet Name="EmployeePlaces" EntityType="Self.EmployeePlace" />
+          <EntitySet Name="ExecutionLogs" EntityType="Self.ExecutionLog" />
+          <EntitySet Name="ExecutionMsgs" EntityType="Self.ExecutionMsg" />
+          <EntitySet Name="Favorites" EntityType="Self.Favorite" />
+          <EntitySet Name="HistoryUsers" EntityType="Self.HistoryUser" />
+          <EntitySet Name="Localities" EntityType="Self.Locality" />
+          <EntitySet Name="Locations" EntityType="Self.Location" />
+          <EntitySet Name="ModuleInfoes" EntityType="Self.ModuleInfo" />
+          <EntitySet Name="Operators" EntityType="Self.Operator" />
+          <EntitySet Name="Options" EntityType="Self.Option" />
+          <EntitySet Name="PhoneMatrixInts" EntityType="Self.PhoneMatrixInt" />
+          <EntitySet Name="PhoneMatrixIntFulls" EntityType="Self.PhoneMatrixIntFull" />
+          <EntitySet Name="PhoneTypes" EntityType="Self.PhoneType" />
+          <EntitySet Name="PhoneZoneInts" EntityType="Self.PhoneZoneInt" />
+          <EntitySet Name="Positions" EntityType="Self.Position" />
+          <EntitySet Name="Position1S" EntityType="Self.Position1S" />
+          <EntitySet Name="PositionStates" EntityType="Self.PositionState" />
+          <EntitySet Name="PositionTemps" EntityType="Self.PositionTemp" />
+          <EntitySet Name="SpecificStaffs" EntityType="Self.SpecificStaff" />
+          <EntitySet Name="SpecificStaffPlaces" EntityType="Self.SpecificStaffPlace" />
+          <EntitySet Name="Staffs" EntityType="Self.Staff" />
+          <EntitySet Name="Staff1S" EntityType="Self.Staff1S" />
+          <EntitySet Name="StaffTemps" EntityType="Self.StaffTemp" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+          <EntitySet Name="Territories" EntityType="Self.Territory" />
+          <EntitySet Name="TerritoryStates" EntityType="Self.TerritoryState" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="KSSServerEntitiesStoreContainer" CdmEntityContainer="CompanyBaseModel">
+          <EntitySetMapping Name="Departments">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Department">
+              <MappingFragment StoreEntitySet="Department">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Department1S">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Department1S">
+              <MappingFragment StoreEntitySet="Department1S">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+                <ScalarProperty Name="DivisionCode" ColumnName="DivisionCode" />
+                <ScalarProperty Name="ChiefPersonId" ColumnName="ChiefPersonId" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DepartmentStates">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DepartmentState">
+              <MappingFragment StoreEntitySet="DepartmentState">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="ChiefId" ColumnName="ChiefId" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DepartmentTemps">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DepartmentTemp">
+              <MappingFragment StoreEntitySet="DepartmentTemp">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="DivisionCode" ColumnName="DivisionCode" />
+                <ScalarProperty Name="ChiefId" ColumnName="ChiefId" />
+                <ScalarProperty Name="ChiefPersonId" ColumnName="ChiefPersonId" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Divisions">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Division">
+              <MappingFragment StoreEntitySet="Division">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Essential" ColumnName="Essential" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Division1S">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Division1S">
+              <MappingFragment StoreEntitySet="Division1S">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+                <ScalarProperty Name="DivisionBrief" ColumnName="DivisionBrief" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DivisionPhoneCodes">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DivisionPhoneCode">
+              <MappingFragment StoreEntitySet="DivisionPhoneCode">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DivisionFromId" ColumnName="DivisionFromId" />
+                <ScalarProperty Name="DivisionToId" ColumnName="DivisionToId" />
+                <ScalarProperty Name="IntPhoneCode" ColumnName="IntPhoneCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DivisionStates">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DivisionState">
+              <MappingFragment StoreEntitySet="DivisionState">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Division" ColumnName="Division" />
+                <ScalarProperty Name="DivisionBrief" ColumnName="DivisionBrief" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DivisionTemps">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DivisionTemp">
+              <MappingFragment StoreEntitySet="DivisionTemp">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="ParentCode" ColumnName="ParentCode" />
+                <ScalarProperty Name="DivisionBrief" ColumnName="DivisionBrief" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Employees">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Employee">
+              <MappingFragment StoreEntitySet="Employee">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="EMail" ColumnName="EMail" />
+                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
+                <ScalarProperty Name="AccountControl" ColumnName="AccountControl" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="PhotoDate" ColumnName="PhotoDate" />
+                <ScalarProperty Name="PhotoFile" ColumnName="PhotoFile" />
+                <ScalarProperty Name="PhotoAllowed" ColumnName="PhotoAllowed" />
+                <ScalarProperty Name="PhotoUpdated" ColumnName="PhotoUpdated" />
+                <ScalarProperty Name="PhotoManualInput" ColumnName="PhotoManualInput" />
+                <ScalarProperty Name="AdState" ColumnName="AdState" />
+                <ScalarProperty Name="isAdministrator" ColumnName="isAdministrator" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="EmployeePlaces">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.EmployeePlace">
+              <MappingFragment StoreEntitySet="EmployeePlace">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Office" ColumnName="Office" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExecutionLogs">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.ExecutionLog">
+              <MappingFragment StoreEntitySet="ExecutionLog">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DivisionCode" ColumnName="DivisionCode" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="CreationDate" ColumnName="CreationDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ExecutionMsgs">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.ExecutionMsg">
+              <MappingFragment StoreEntitySet="ExecutionMsg">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Favorites">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Favorite">
+              <MappingFragment StoreEntitySet="Favorites">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="LinkedEmployeeId" ColumnName="LinkedEmployeeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HistoryUsers">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.HistoryUser">
+              <MappingFragment StoreEntitySet="HistoryUsers">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="dateIn" ColumnName="dateIn" />
+                <ScalarProperty Name="info" ColumnName="info" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Localities">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Locality">
+              <MappingFragment StoreEntitySet="Locality">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Locality1" ColumnName="Locality" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="CityPhoneCode" ColumnName="CityPhoneCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Location">
+              <MappingFragment StoreEntitySet="Location">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="LocalityId" ColumnName="LocalityId" />
+                <ScalarProperty Name="TerritoryId" ColumnName="TerritoryId" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="Edifice" ColumnName="Edifice" />
+                <ScalarProperty Name="Building" ColumnName="Building" />
+                <ScalarProperty Name="PhoneZoneId" ColumnName="PhoneZoneId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ModuleInfoes">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.ModuleInfo">
+              <MappingFragment StoreEntitySet="ModuleInfo">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Version" ColumnName="Version" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="AssemblyFileName" ColumnName="AssemblyFileName" />
+                <ScalarProperty Name="IsMain" ColumnName="IsMain" />
+                <ScalarProperty Name="OptimisticLockField" ColumnName="OptimisticLockField" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Operators">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Operator">
+              <MappingFragment StoreEntitySet="Operator">
+                <ScalarProperty Name="Oid" ColumnName="Oid" />
+                <ScalarProperty Name="SecondName" ColumnName="SecondName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="ThirdName" ColumnName="ThirdName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Options">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Option">
+              <MappingFragment StoreEntitySet="Options">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DefaultPicture" ColumnName="DefaultPicture" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneMatrixInts">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneMatrixInt">
+              <MappingFragment StoreEntitySet="PhoneMatrixInt">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FromId" ColumnName="FromId" />
+                <ScalarProperty Name="ToId" ColumnName="ToId" />
+                <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneMatrixIntFulls">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneMatrixIntFull">
+              <MappingFragment StoreEntitySet="PhoneMatrixIntFull">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FromId" ColumnName="FromId" />
+                <ScalarProperty Name="ToId" ColumnName="ToId" />
+                <ScalarProperty Name="IdPath" ColumnName="IdPath" />
+                <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
+                <ScalarProperty Name="Level" ColumnName="Level" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneTypes">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneType">
+              <MappingFragment StoreEntitySet="PhoneType">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PhoneZoneInts">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneZoneInt">
+              <MappingFragment StoreEntitySet="PhoneZoneInt">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Positions">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Position">
+              <MappingFragment StoreEntitySet="Position">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="TitleId" ColumnName="TitleId" />
+                <ScalarProperty Name="TitleCode" ColumnName="TitleCode" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Position1S">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Position1S">
+              <MappingFragment StoreEntitySet="Position1S">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="TitleCode" ColumnName="TitleCode" />
+                <ScalarProperty Name="DivisionCode" ColumnName="DivisionCode" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PositionStates">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PositionState">
+              <MappingFragment StoreEntitySet="PositionState">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PositionTemps">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.PositionTemp">
+              <MappingFragment StoreEntitySet="PositionTemp">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="TitleId" ColumnName="TitleId" />
+                <ScalarProperty Name="TitleCode" ColumnName="TitleCode" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpecificStaffs">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.SpecificStaff">
+              <MappingFragment StoreEntitySet="SpecificStaff">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SpecificStaffPlaces">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.SpecificStaffPlace">
+              <MappingFragment StoreEntitySet="SpecificStaffPlace">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="SpecificStaffId" ColumnName="SpecificStaffId" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="Office" ColumnName="Office" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Staffs">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Staff">
+              <MappingFragment StoreEntitySet="Staff">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Staff1S">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Staff1S">
+              <MappingFragment StoreEntitySet="Staff1S">
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="DivisionCode" ColumnName="DivisionCode" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="PositionCode" ColumnName="PositionCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="ITN" ColumnName="ITN" />
+                <ScalarProperty Name="SeriesPas" ColumnName="SeriesPas" />
+                <ScalarProperty Name="NumberPas" ColumnName="NumberPas" />
+                <ScalarProperty Name="PasDepart" ColumnName="PasDepart" />
+                <ScalarProperty Name="PasIssue" ColumnName="PasIssue" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="PhotoDate" ColumnName="PhotoDate" />
+                <ScalarProperty Name="PhotoFile" ColumnName="PhotoFile" />
+                <ScalarProperty Name="PhotoAllowed" ColumnName="PhotoAllowed" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StaffTemps">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.StaffTemp">
+              <MappingFragment StoreEntitySet="StaffTemp">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="PositionCode" ColumnName="PositionCode" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="ITN" ColumnName="ITN" />
+                <ScalarProperty Name="SeriesPas" ColumnName="SeriesPas" />
+                <ScalarProperty Name="NumberPas" ColumnName="NumberPas" />
+                <ScalarProperty Name="PasDepart" ColumnName="PasDepart" />
+                <ScalarProperty Name="PasIssue" ColumnName="PasIssue" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="PhotoDate" ColumnName="PhotoDate" />
+                <ScalarProperty Name="PhotoFile" ColumnName="PhotoFile" />
+                <ScalarProperty Name="PhotoAllowed" ColumnName="PhotoAllowed" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Territories">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.Territory">
+              <MappingFragment StoreEntitySet="Territory">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TerritoryStates">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.TerritoryState">
+              <MappingFragment StoreEntitySet="TerritoryState">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="Territory" ColumnName="Territory" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

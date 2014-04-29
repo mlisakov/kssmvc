@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using KSS.DBConnector;
-using KSS.DBConnector.Models;
+using KSS.Server.Entities;
 
 namespace KSS.Controllers
 {
@@ -10,11 +9,12 @@ namespace KSS.Controllers
         //
         // GET: /Home/
 
+        private CompanyBaseModel _baseModel = new CompanyBaseModel();
+
         public ActionResult Index()
         {
-            KssDomain domain=new KssDomain();
-            IList<DivisionState> divisions = domain.GetDivisions();
-            ViewBag.Divisions = divisions;
+            IEnumerable<DivisionState> states = _baseModel.DivisionStates;
+            ViewBag.DivisionState = states;
             return View();
         }
 
