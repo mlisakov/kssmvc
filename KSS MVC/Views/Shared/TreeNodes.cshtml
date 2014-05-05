@@ -1,0 +1,24 @@
+﻿@using KSS.Models
+@model KSS.Models.TreeViewNode
+@helper TreeView(IEnumerable<TreeViewNode> nodes)
+{
+    foreach (TreeViewNode node in nodes)
+    {
+        <li>
+            @if ( node.IsLeaf )
+            {
+                <span class="leaf @node.Type" id="@node.Id">@node.Name</span> 
+            }
+            else
+            {
+                <span class="folder">@node.Name</span>
+                <ul>
+                    @TreeView( node.Children )
+                </ul>
+            }
+        </li>
+    }
+}
+<ul id="continentFolders">
+    @TreeView( Model.Children )
+</ul>
