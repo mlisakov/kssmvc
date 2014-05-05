@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
+using KSS.Models;
 using KSS.Server.Entities;
 
 namespace KSS.Controllers
@@ -8,14 +9,12 @@ namespace KSS.Controllers
     {
         //
         // GET: /Home/
-
-        private CompanyBaseModel _baseModel = new CompanyBaseModel();
+        public TreeViewModel TreeVM;
 
         public ActionResult Index()
         {
-            IEnumerable<DivisionState> states = _baseModel.DivisionStates;
-            ViewBag.DivisionState = states;
-            return View();
+            TreeVM = new TreeViewModel();
+            return View(TreeVM);
         }
 
     }

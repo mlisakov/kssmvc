@@ -1,0 +1,43 @@
+﻿@using KSS.Models
+@model KSS.Models.TreeViewModel
+@*<ul>
+    @if (Model.Root != null)
+    {        
+        <li><a href="#" >@Model.Root.Name</a>
+            @if (Model.Root.Children != null && Model.Root.Children.Count > 0)
+            {         
+                @Html.Partial("TreeNodes", Model.Root)           
+            }
+        </li>
+    }
+</ul>*@
+
+@helper TreeView(IEnumerable<TreeViewNode> nodes)
+{
+    foreach (TreeViewNode node in nodes)
+    {
+    <li>
+        @if (node.IsLeaf)
+        {
+            <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+        }
+        else
+        {
+            <span class="folder">@node.Name</span>
+            <ul>
+                @TreeView(node.Children)
+            </ul>
+        }
+    </li>
+    }
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#rootNode').treeview({ collapsed: true });
+    });
+</script>
+<span class="folder">@Model.Root.Name</span>
+<ul id="rootNode">
+    @TreeView(Model.Root.Children)
+</ul>
+

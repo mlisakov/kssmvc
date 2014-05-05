@@ -1,29 +1,11 @@
-﻿@{
-    Layout = null;
-}
-  
-<!DOCTYPE html>
-  
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Список</title>
-</head>
-<body>
-    <div>
+﻿@model KSS.Models.TreeViewModel
 
-        <table>
-            <tr>
-                <td><p>Название</p></td>
-                <td></td>
-            </tr>
-            @foreach (var b in ViewBag.DivisionState)
-            {
-            <tr>
-                <td><p>@b.Division</p></td>
-            </tr>
-            }
-        </table>
-    </div>
-</body>
-</html>
+    <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
+
+    <div id="divtree">
+<ul id="tree" >
+ <li>
+    @Html.Partial("Tree",Model)
+ </li>
+</ul>
+</div>
