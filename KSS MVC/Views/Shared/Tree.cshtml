@@ -1,43 +1,54 @@
 ﻿@using KSS.Models
-@model KSS.Models.TreeViewModel
-@*<ul>
-    @if (Model.Root != null)
-    {        
-        <li><a href="#" >@Model.Root.Name</a>
-            @if (Model.Root.Children != null && Model.Root.Children.Count > 0)
-            {         
-                @Html.Partial("TreeNodes", Model.Root)           
-            }
-        </li>
-    }
-</ul>*@
+@model TreeViewModel
 
 @helper TreeView(IEnumerable<TreeViewNode> nodes)
 {
     foreach (TreeViewNode node in nodes)
     {
-    <li>
-        @if (node.IsLeaf)
-        {
-            <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
-        }
-        else
-        {
-            <span class="folder">@node.Name</span>
-            <ul>
-                @TreeView(node.Children)
-            </ul>
-        }
-    </li>
+        <li>
+            @if (node.IsLeaf)
+            {
+                <span class="leaf @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodesDivision", "Home", new { id = node.Id })'>@node.Name</span>
+            }
+            else
+            {
+                <span class="folder">@node.Name</span>
+                <ul>
+                    @TreeView(node.Children)
+                </ul>
+            }
+        </li>
     }
 }
-<script type="text/javascript">
-    $(document).ready(function () {
-        $('#rootNode').treeview({ collapsed: true });
-    });
-</script>
+
+
+
 <span class="folder">@Model.Root.Name</span>
+
 <ul id="rootNode">
     @TreeView(Model.Root.Children)
 </ul>
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        //        $('#rootNode').treeview({ collapsed: true });
+        
+        $('.DivisionState').on('click', function (e) {
+            var currentListItem = $(e.target);
+            var url = currentListItem.data('url');
+
+            if (url != null) {
+
+                if (currentListItem.has('.divBody').length == 0)
+                    loadDivisionStates(currentListItem, url);
+            }
+                
+        });
+
+        function loadDivisionStates(listItem, url) {
+            $.get(url, function (data) {
+                listItem.append(data);
+            });
+        }
+    });
+</script>

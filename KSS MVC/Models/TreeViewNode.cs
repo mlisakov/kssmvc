@@ -13,8 +13,11 @@ namespace KSS.Models
         public List<TreeViewNode> Children { get; set; }
 
         public bool IsLeaf {
-            get { return Children == null || !Children.Any(); }
+            get { return HasChilds || Children == null || !Children.Any(); }
         }
+
+        public bool HasChilds { get; set; }
+        public Guid? DivisionId { get; set; }
 
         CompanyBaseModel _baseModel;
 
