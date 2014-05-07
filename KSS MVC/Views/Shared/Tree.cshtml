@@ -7,7 +7,7 @@
 @helper TreeView(TreeViewNode node)
 {
     <span class="folder">@node.Name</span>
-    if (node.HasChilds)
+    if (node.HasChilds && node.Children!=null)
     {
         foreach (TreeViewNode childNode in node.Children)
         {

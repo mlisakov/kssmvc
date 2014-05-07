@@ -42,7 +42,9 @@ namespace KSS.Models
         private void FillRootDivision()
         {
             DivisionState root = _baseModel.DivisionStates.First(i => i.ParentId == null);
-            Root = new TreeViewNode(root);
+            bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == root.Id) ||
+                               _baseModel.DepartmentStates.Any(i => i.ParentId == root.Id);
+            Root = new TreeViewNode(root, hasChildren);
             _dictionaryTree.Add(Root.Id,Root);
         }
 
@@ -51,7 +53,8 @@ namespace KSS.Models
             List<TreeViewNode> children=new List<TreeViewNode>();
             foreach (DepartmentState department in departmentStates)
             {
-                var node = new TreeViewNode(department) {ParentId = parentId};
+                bool hasChildren = _baseModel.DepartmentStates.Any(i => i.ParentId == department.Id);
+                var node = new TreeViewNode(department, hasChildren) { ParentId = parentId };
                 _dictionaryTree.Add(node.Id, node);
                 children.Add(node);
             }
@@ -63,7 +66,8 @@ namespace KSS.Models
             List<TreeViewNode> children = new List<TreeViewNode>();
             foreach (DivisionState division in divisionStates)
             {
-                var node = new TreeViewNode(division) { ParentId = parentId };
+                bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == division.Id);
+                var node = new TreeViewNode(division, hasChildren) { ParentId = parentId };
                 _dictionaryTree.Add(node.Id, node);
                 children.Add(node);
             }
