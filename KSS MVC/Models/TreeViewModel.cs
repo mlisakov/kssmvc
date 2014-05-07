@@ -9,11 +9,13 @@ namespace KSS.Models
     {
         private static CompanyBaseModel _baseModel;
         public TreeViewNode Root;
+        private Dictionary<Guid,TreeViewNode> _dictionaryTree;
 
         public TreeViewModel()
         {
             if (_baseModel == null)
                 _baseModel = new CompanyBaseModel();
+            _dictionaryTree=new Dictionary<Guid, TreeViewNode>();
             FillRootDivision();
         }
 
@@ -25,36 +27,47 @@ namespace KSS.Models
             {
                 var departmentStates =
                     _baseModel.DepartmentStates.Where(t => t.ParentId == id.Value);
-                return SelectDepartmentStateNodes(departmentStates, id);
+
+                List<TreeViewNode> departmentChildren = SelectDepartmentStateNodes(departmentStates, id);
+                _dictionaryTree[id.Value].Children = departmentChildren;
+                return departmentChildren;
             }
             var divisionStates =
                 _baseModel.DivisionStates.Where(t => t.ParentId == id.Value);
-            return SelectDivisionStateNodes(divisionStates, id);
-        }
-
-        public IEnumerable<TreeViewNode> GetDepartmentChildrens(Guid id, Guid? divisionGuid)
-        {
-            if (!divisionGuid.HasValue) return null;
-
-            var departmentStates =
-                _baseModel.DepartmentStates.Where(t => t.DivisionId == divisionGuid.Value && t.ParentId == id);
-            return SelectDepartmentStateNodes(departmentStates, divisionGuid);
+            List<TreeViewNode> divisionChildren = SelectDivisionStateNodes(divisionStates, id);
+            _dictionaryTree[id.Value].Children = divisionChildren;
+            return divisionChildren;
         }
 
         private void FillRootDivision()
         {
             DivisionState root = _baseModel.DivisionStates.First(i => i.ParentId == null);
             Root = new TreeViewNode(root);
+            _dictionaryTree.Add(Root.Id,Root);
         }
 
-        private IEnumerable<TreeViewNode> SelectDepartmentStateNodes(IEnumerable<DepartmentState> departmentStates, Guid? parentId)
+        private List<TreeViewNode> SelectDepartmentStateNodes(IEnumerable<DepartmentState> departmentStates, Guid? parentId)
         {
-            return departmentStates.Select(state => new TreeViewNode(state) {ParentId = parentId}).ToList();
+            List<TreeViewNode> children=new List<TreeViewNode>();
+            foreach (DepartmentState department in departmentStates)
+            {
+                var node = new TreeViewNode(department) {ParentId = parentId};
+                _dictionaryTree.Add(node.Id, node);
+                children.Add(node);
+            }
+            return children;
         }
 
-        private IEnumerable<TreeViewNode> SelectDivisionStateNodes(IEnumerable<DivisionState> divisionStates, Guid? parentId)
+        private List<TreeViewNode> SelectDivisionStateNodes(IEnumerable<DivisionState> divisionStates, Guid? parentId)
         {
-            return divisionStates.Select(state => new TreeViewNode(state) {ParentId = parentId}).ToList();
+            List<TreeViewNode> children = new List<TreeViewNode>();
+            foreach (DivisionState division in divisionStates)
+            {
+                var node = new TreeViewNode(division) { ParentId = parentId };
+                _dictionaryTree.Add(node.Id, node);
+                children.Add(node);
+            }
+            return children;
         }
     }
 }

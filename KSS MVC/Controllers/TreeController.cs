@@ -19,15 +19,15 @@ namespace KSS.Controllers
             return View("Tree", _treeVM);
         }
 
-        public ActionResult TreeNodesDivision(Guid id,string type)
+        public ActionResult TreeNodesDivision(Guid id)
         {
-            ViewBag.Children = _treeVM.GetChildrens(id,type);
+            ViewBag.Children = _treeVM.GetChildrens(id,"DivisionState");
             return View("TreeNodes");
         }
 
-        public ActionResult TreeNodesDepartment(Guid id, Guid? division)
+        public ActionResult TreeNodesDepartment(Guid id)
         {
-            ViewBag.Children = _treeVM.GetDepartmentChildrens(id, division);
+            ViewBag.Children = _treeVM.GetChildrens(id, "DepartmentState");
             return View("TreeNodes");
         }
 
