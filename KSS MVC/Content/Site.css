@@ -59,3 +59,38 @@ textarea {
 .validation-summary-valid {
     display: none;
 }
+
+.plus {
+	
+}
+
+.plus:before {
+	content: "+";
+}
+
+.minus:before {
+	content: "-";
+}
+
+ul {
+	list-style-type: none;
+}
+
+ul li {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+
+	cursor: default;
+	color: black;
+}
+
+.hasChilds {
+	color: darkcyan;
+}
+
+.hasChilds:hover {
+	cursor: pointer;
+}

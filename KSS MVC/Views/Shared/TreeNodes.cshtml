@@ -15,13 +15,15 @@
                 }
                 else
                 {
-                    <span class="folder @node.Type"
+                    <span class="folder plus hasChilds @node.Type"
                           data-url='@Url.Action("TreeNodesDepartment", "Home", new {id = node.Id, division = node.DivisionId})'>@node.Name</span>
                 }
             </li>
         }
     }
 }
+
+
 
 <ul id="continentFolders">
     @{

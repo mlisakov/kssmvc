@@ -1,4 +1,7 @@
-﻿@using KSS.Models
+﻿
+<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+
+@using KSS.Models
 @model TreeViewModel
 
 @helper TreeView(IEnumerable<TreeViewNode> nodes)
@@ -8,7 +11,7 @@
         <li>
             @if (node.IsLeaf)
             {
-                <span class="leaf @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodesDivision", "Home", new { id = node.Id })'>@node.Name</span>
+                <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodesDivision", "Home", new {id = node.Id})'>@node.Name</span>
             }
             else
             {
@@ -20,7 +23,6 @@
         </li>
     }
 }
-
 
 
 <span class="folder">@Model.Root.Name</span>
@@ -39,11 +41,14 @@
 
             if (url != null) {
 
-                if (currentListItem.has('.divBody').length == 0)
+                if (currentListItem.has('.divBody').length == 0) {
                     loadDivisionStates(currentListItem, url);
+                    currentListItem.toggleClass("minus");                    
+                }
                 else {
                     var body = currentListItem.children('.divBody').first();
                     body.children('#continentFolders').slideToggle('slow');
+                    currentListItem.toggleClass("minus");
                 }
             }
                 
