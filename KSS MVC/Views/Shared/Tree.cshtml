@@ -42,8 +42,8 @@
                 if (currentListItem.has('.divBody').length == 0)
                     loadDivisionStates(currentListItem, url);
                 else {
-                    var body = currentListItem.find('.divBody');
-                    body.find('#continentFolders').toggle();
+                    var body = currentListItem.children('.divBody').first();
+                    body.children('#continentFolders').slideToggle('slow');
                 }
             }
                 
