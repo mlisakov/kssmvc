@@ -4,36 +4,39 @@
 @using KSS.Models
 @model TreeViewModel
 
-@helper TreeView(IEnumerable<TreeViewNode> nodes)
+@helper TreeView(TreeViewNode node)
 {
-    foreach (TreeViewNode node in nodes)
+    <span class="folder">@node.Name</span>
+    if (node.HasChilds)
     {
-        <li>
-            @if (node.IsLeaf)
-            {
-                <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodesDivision", "Home", new {id = node.Id})'>@node.Name</span>
-            }
-            else
-            {
-                <span class="folder">@node.Name</span>
-                <ul>
-                    @TreeView(node.Children)
-                </ul>
-            }
-        </li>
+        foreach (TreeViewNode childNode in node.Children)
+        {
+            <li>
+                @if (node.IsLeaf)
+                {
+                    <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodesDivision", "Tree", new {id = node.Id})'>@node.Name</span>
+                }
+                else
+                {
+                    <span class="folder">@node.Name</span>
+                    <ul>
+                        @TreeView(childNode)
+                    </ul>
+                }
+            </li>
+        }
     }
 }
 
 
-<span class="folder">@Model.Root.Name</span>
+<@*span class="folder">@Model.Root.Name</span>*@
 
 <ul id="rootNode">
-    @TreeView(Model.Root.Children)
+    @TreeView(Model.Root)
 </ul>
 
 <script type="text/javascript">
     $(document).ready(function () {
-        //        $('#rootNode').treeview({ collapsed: true });
         
         $('.DivisionState').on('click', function (e) {
             var currentListItem = $(e.target);

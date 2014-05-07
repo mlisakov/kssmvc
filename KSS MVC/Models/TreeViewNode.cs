@@ -13,59 +13,38 @@ namespace KSS.Models
         public List<TreeViewNode> Children { get; set; }
 
         public bool IsLeaf {
-            get { return HasChilds || Children == null || !Children.Any(); }
+            get { return !HasChilds; }
         }
 
-        public bool HasChilds { get; set; }
-        public Guid? DivisionId { get; set; }
-
-        CompanyBaseModel _baseModel;
-
-        public TreeViewNode()
-        {
-            _baseModel = new CompanyBaseModel();
+        public bool HasChilds {
+            get { return Children != null && Children.Any();} 
         }
+        public Guid? ParentId { get; set; }
 
-        public TreeViewNode(DivisionState divisionState):this()
+        public TreeViewNode(DivisionState divisionState)
         {
-            InitNode(divisionState);
+            InitDivisionStateNode(divisionState);
         }
 
         public TreeViewNode(DepartmentState departmentState)
-            : this()
+           
         {
-            InitNode(departmentState);
+            InitDepartmentStateNode(departmentState);
         }
 
 
-        private void InitNode(DivisionState divisionState)
+        private void InitDivisionStateNode(DivisionState divisionState)
         {
             Id = divisionState.Id;
             Name = divisionState.Division;
             Type = "DivisionState";
-            List<DivisionState> divisionStates = _baseModel.DivisionStates.Where(i => i.ParentId == Id).ToList();
-            foreach (DivisionState divState in divisionStates)
-            {
-                if (Children==null)
-                    Children=new List<TreeViewNode>();
-                Children.Add(new TreeViewNode(divState));
-            }
-                
         }
 
-        private void InitNode(DepartmentState departmentState)
+        private void InitDepartmentStateNode(DepartmentState departmentState)
         {
             Id = departmentState.Id;
             Name = departmentState.Department;
             Type = "DepartmentState";
-            List<DivisionState> divisionStates = _baseModel.DivisionStates.Where(i => i.ParentId == Id).ToList();
-            foreach (DivisionState divState in divisionStates)
-            {
-                if (Children == null)
-                    Children = new List<TreeViewNode>();
-                Children.Add(new TreeViewNode(divState));
-            }
-
         }
     }
 }

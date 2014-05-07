@@ -4,23 +4,31 @@ using KSS.Models;
 
 namespace KSS.Controllers
 {
-    public class Tree:Controller
+    public class TreeController:Controller
     {
-        public ActionResult Index()
+        private static TreeViewModel _treeVM;
+
+        public TreeController()
         {
-            TreeViewModel tree = new TreeViewModel();
-            return View("Tree",tree);
+            if (_treeVM == null)
+                _treeVM = new TreeViewModel();
         }
 
-
-        [HttpGet]
-        public virtual ActionResult GetDivisionChildren()
+        public ActionResult Index()
         {
-            //var city = this._cityRepository.Find(cityId);
+            return View("Tree", _treeVM);
+        }
 
-            return Json(
-                new { Name = "123"},
-                JsonRequestBehavior.AllowGet);
+        public ActionResult TreeNodesDivision(Guid id,string type)
+        {
+            ViewBag.Children = _treeVM.GetChildrens(id,type);
+            return View("TreeNodes");
+        }
+
+        public ActionResult TreeNodesDepartment(Guid id, Guid? division)
+        {
+            ViewBag.Children = _treeVM.GetDepartmentChildrens(id, division);
+            return View("TreeNodes");
         }
 
        
