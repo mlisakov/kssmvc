@@ -25,13 +25,17 @@ namespace KSS.Models
         }
         public Guid? ParentId { get; set; }
 
-        public TreeViewNode(DivisionState divisionState,bool hasChildren)
+        public TreeViewNode()
+        {
+            Children = new List<TreeViewNode>();
+        }
+
+        public TreeViewNode(DivisionState divisionState,bool hasChildren):this()
         {
             InitDivisionStateNode(divisionState,hasChildren);
         }
 
-        public TreeViewNode(DepartmentState departmentState,bool hasChildren)
-           
+        public TreeViewNode(DepartmentState departmentState, bool hasChildren): this()
         {
             InitDepartmentStateNode(departmentState,hasChildren);
         }

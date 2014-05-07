@@ -28,15 +28,18 @@ namespace KSS.Models
                 var departmentStates =
                     _baseModel.DepartmentStates.Where(t => t.ParentId == id.Value);
 
-                List<TreeViewNode> departmentChildren = SelectDepartmentStateNodes(departmentStates, id);
-                _dictionaryTree[id.Value].Children = departmentChildren;
-                return departmentChildren;
+                _dictionaryTree[id.Value].Children = SelectDepartmentStateNodes(departmentStates, id);
+                return _dictionaryTree[id.Value].Children;
             }
-            var divisionStates =
+            var divisions =
                 _baseModel.DivisionStates.Where(t => t.ParentId == id.Value);
-            List<TreeViewNode> divisionChildren = SelectDivisionStateNodes(divisionStates, id);
-            _dictionaryTree[id.Value].Children = divisionChildren;
-            return divisionChildren;
+            var departments = _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId==null);
+            if (departments.Any())
+            {
+                _dictionaryTree[id.Value].Children.AddRange(SelectDepartmentStateNodes(departments, id));
+            }
+            _dictionaryTree[id.Value].Children.AddRange( SelectDivisionStateNodes(divisions, id));
+            return _dictionaryTree[id.Value].Children;
         }
 
         private void FillRootDivision()
@@ -55,7 +58,8 @@ namespace KSS.Models
             {
                 bool hasChildren = _baseModel.DepartmentStates.Any(i => i.ParentId == department.Id);
                 var node = new TreeViewNode(department, hasChildren) { ParentId = parentId };
-                _dictionaryTree.Add(node.Id, node);
+                if (!_dictionaryTree.ContainsKey(node.Id))
+                    _dictionaryTree.Add(node.Id, node);
                 children.Add(node);
             }
             return children;
@@ -66,9 +70,12 @@ namespace KSS.Models
             List<TreeViewNode> children = new List<TreeViewNode>();
             foreach (DivisionState division in divisionStates)
             {
-                bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == division.Id);
-                var node = new TreeViewNode(division, hasChildren) { ParentId = parentId };
-                _dictionaryTree.Add(node.Id, node);
+                bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == division.Id) ||
+                                   _baseModel.DepartmentStates.Any(
+                                       t => t.DivisionId == division.Id && t.ParentId == null);
+                var node = new TreeViewNode(division, hasChildren) {ParentId = parentId};
+                if (!_dictionaryTree.ContainsKey(node.Id))
+                    _dictionaryTree.Add(node.Id, node);
                 children.Add(node);
             }
             return children;

@@ -16,7 +16,7 @@
                 else
                 {
                     <span class="folder plus hasChilds @node.Type"
-                          data-url='@Url.Action("TreeNodesDepartment", "Tree", new {id = node.Id, division = node.ParentId})'>@node.Name</span>
+                          data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>@node.Name</span>
                 }
             </li>
         }
