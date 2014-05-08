@@ -8,7 +8,7 @@ namespace KSS.Models
     public class TreeViewModel
     {
         private static CompanyBaseModel _baseModel;
-        public TreeViewNode Root;
+        public List<TreeViewNode> RootNodes;
         private Dictionary<Guid,TreeViewNode> _dictionaryTree;
 
         public TreeViewModel()
@@ -16,6 +16,7 @@ namespace KSS.Models
             if (_baseModel == null)
                 _baseModel = new CompanyBaseModel();
             _dictionaryTree=new Dictionary<Guid, TreeViewNode>();
+            RootNodes=new List<TreeViewNode>();
             FillRootDivision();
         }
 
@@ -34,21 +35,27 @@ namespace KSS.Models
             var divisions =
                 _baseModel.DivisionStates.Where(t => t.ParentId == id.Value);
             var departments = _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId==null);
+            List<TreeViewNode> children=new List<TreeViewNode>();
             if (departments.Any())
             {
-                _dictionaryTree[id.Value].Children.AddRange(SelectDepartmentStateNodes(departments, id));
+                children.AddRange(SelectDepartmentStateNodes(departments, id));
             }
-            _dictionaryTree[id.Value].Children.AddRange( SelectDivisionStateNodes(divisions, id));
+            children.AddRange( SelectDivisionStateNodes(divisions, id));
+            _dictionaryTree[id.Value].Children = children;
             return _dictionaryTree[id.Value].Children;
         }
 
         private void FillRootDivision()
         {
-            DivisionState root = _baseModel.DivisionStates.First(i => i.ParentId == null);
-            bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == root.Id) ||
-                               _baseModel.DepartmentStates.Any(i => i.ParentId == root.Id);
-            Root = new TreeViewNode(root, hasChildren);
-            _dictionaryTree.Add(Root.Id,Root);
+            List<DivisionState> rootNodes = _baseModel.DivisionStates.Where(i => i.ParentId == null).ToList();
+            foreach (DivisionState divisionState in rootNodes)
+            {
+                bool hasChildren = _baseModel.DivisionStates.Any(i => i.ParentId == divisionState.Id) ||
+                                   _baseModel.DepartmentStates.Any(i => i.DivisionId == divisionState.Id);
+                TreeViewNode rootNode = new TreeViewNode(divisionState, hasChildren);
+                RootNodes.Add(rootNode);
+                _dictionaryTree.Add(rootNode.Id, rootNode);
+            }
         }
 
         private List<TreeViewNode> SelectDepartmentStateNodes(IEnumerable<DepartmentState> departmentStates, Guid? parentId)
