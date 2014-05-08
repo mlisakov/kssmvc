@@ -35,7 +35,10 @@
 
 
 <ul id="rootNode">
-    @TreeView(Model.Root)
+         @foreach (TreeViewNode rootNode in Model.RootNodes)
+         {
+             @TreeView(rootNode)
+         }
 </ul>
 
 <script type="text/javascript">
