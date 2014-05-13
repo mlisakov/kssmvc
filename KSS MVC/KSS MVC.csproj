@@ -143,6 +143,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Controllers\TreeController.cs" />
+    <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
     <Compile Include="Models\TreeViewNode.cs" />
     <Compile Include="NLogFactory.cs" />
