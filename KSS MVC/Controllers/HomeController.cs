@@ -7,8 +7,13 @@ namespace KSS.Controllers
     {
         public ActionResult Index()
         {
-            var TreeVM = new TreeViewModel();
-            return View(TreeVM);
+            //TreeViewModel TreeVM;
+            //if (Session["Tree"] == null)
+            //    TreeVM = new TreeViewModel();
+            //else
+            //    TreeVM = (TreeViewModel) Session["Tree"];
+            HomeViewModel homeViewModel=new HomeViewModel(Session);
+            return View(homeViewModel);
         }
 
         public ActionResult Favorites()

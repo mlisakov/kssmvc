@@ -1,33 +1,44 @@
 ﻿
 <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+@{
+    Layout = "";
+}
 
 @using KSS.Models
 @model TreeViewModel
 
 @helper TreeView(TreeViewNode node)
 {
-    <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>
-        @node.Name
-        <span>loading</span>
-    </span>
-    
+    if (node.HasChilds)
+    {
+        if (node.Children != null && node.Children.Any())
+        {
+            <span class="folder minus hasChilds @node.Type" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+                @node.Name
+            </span>
+        }
+        else
+        {
+            <span class="folder plus hasChilds @node.Type" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+                @node.Name
+            </span>
+        }
+    }
+    else
+    {
+          <span class="leaf @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+            @node.Name
+        </span>
+    }
+
     if (node.HasChilds && node.Children!=null)
     {
         foreach (TreeViewNode childNode in node.Children)
         {
             <li>
-                @if (node.IsLeaf)
-                {
-                    <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>@node.Name</span>
-                    
-                }
-                else
-                {
-                    <span class="folder">@node.Name</span>
-                    <ul>
-                        @TreeView(childNode)
-                    </ul>
-                }
+                <ul>
+                    @TreeView(childNode)
+                </ul>
             </li>
         }
     }
