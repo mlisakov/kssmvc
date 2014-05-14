@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="Controllers\TreeController.cs" />
     <Compile Include="Helpers\DBHelper.cs" />
+    <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
     <Compile Include="Models\TreeViewNode.cs" />
     <Compile Include="NLogFactory.cs" />
@@ -244,6 +245,10 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Shared\TreeNodes.cshtml" />
     <Content Include="Views\Shared\Tree.cshtml" />
+    <Content Include="Views\Employee.cshtml" />
+    <Content Include="Web.sitemap" />
+    <Content Include="Views\Home\Favorites.cshtml" />
+    <Content Include="Views\Home\Help.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

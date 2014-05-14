@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap xmlns="http://schemas.microsoft.com/AspNet/SiteMap-File-1.0" >
+    <siteMapNode>
+      <siteMapNode title="Главная"  description="" url="~/"/>
+      <siteMapNode title="Избранное"  description="" url="~/Home/Favorites" />
+      <siteMapNode title="Поддержка"  description="" url="~/Home/Help" />
+    </siteMapNode>
+</siteMap>

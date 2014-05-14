@@ -10,6 +10,16 @@ namespace KSS.Controllers
             var TreeVM = new TreeViewModel();
             return View(TreeVM);
         }
+
+        public ActionResult Favorites()
+        {
+            return View();
+        }
+
+        public ActionResult Help()
+        {
+            return View();
+        }
         
     }
 }
