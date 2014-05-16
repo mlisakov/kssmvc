@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Web.Providers.Entities;
 using KSS.Server.Entities;
 
 namespace KSS.Models
@@ -21,13 +22,22 @@ namespace KSS.Models
             FillRootDivision();
         }
 
-        public IEnumerable<TreeViewNode> GetChildrens(Guid? id,string type)
+        public TreeViewNode GetNode(Guid id)
         {
-//            Thread.Sleep(5000);
-            if (!id.HasValue) return null;
+            return _dictionaryTree[id];
+        }
 
+        public IEnumerable<TreeViewNode> GetChildrens(Guid? id, string type)
+        {
+            //Thread.Sleep(5000);
+            if (!id.HasValue) return null;
+            //Берем данные их кэш
+            if (_dictionaryTree.ContainsKey(id.Value) && _dictionaryTree[id.Value].Children.Any())
+                return _dictionaryTree[id.Value].Children;
             if (type.Equals("DepartmentState"))
             {
+
+
                 var departmentStates =
                     _baseModel.DepartmentStates.Where(t => t.ParentId == id.Value);
 
@@ -36,13 +46,13 @@ namespace KSS.Models
             }
             var divisions =
                 _baseModel.DivisionStates.Where(t => t.ParentId == id.Value);
-            var departments = _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId==null);
-            List<TreeViewNode> children=new List<TreeViewNode>();
+            var departments = _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId == null);
+            List<TreeViewNode> children = new List<TreeViewNode>();
             if (departments.Any())
             {
                 children.AddRange(SelectDepartmentStateNodes(departments, id));
             }
-            children.AddRange( SelectDivisionStateNodes(divisions, id));
+            children.AddRange(SelectDivisionStateNodes(divisions, id));
             _dictionaryTree[id.Value].Children = children;
             return _dictionaryTree[id.Value].Children;
         }

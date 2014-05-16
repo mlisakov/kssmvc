@@ -1,5 +1,8 @@
 ﻿
 <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+@{
+    Layout = "";
+}
 
 @using KSS.Models
 @model TreeViewModel
@@ -11,10 +14,10 @@
     <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
         <div class="plus rootArrow"></div>
         <span class="rootItem folder hasChilds @node.Type" id="@node.Id">
-            @node.Name
-        </span>
+        @node.Name
+    </span>
     </li>
-
+    
     //    </div>
 
     if (node.HasChilds && node.Children != null)
@@ -35,31 +38,31 @@
                     <ul class="innerUL">
                         @TreeView(childNode)
                     </ul>
-                </li>
-            }
+            </li>
         }
     }
+}
 }
 
 
 <ul class="innerUL rootUL">
-    @foreach (TreeViewNode rootNode in Model.RootNodes)
-    {
-        @TreeView(rootNode)
-    }
+         @foreach (TreeViewNode rootNode in Model.RootNodes)
+         {
+             @TreeView(rootNode)
+         }
 </ul>
 
 
 
 <script type="text/javascript">
     $(document).ready(function () {
-
+        
         $('.innerUL').on('click', function(e) {
             var currentListItem = $(e.target);
             var url = currentListItem.data('url');
 
             if (url != null) {
-                
+
                 if (!currentListItem.next().hasClass('innerUL')) {
 
                     //hide background parent UL
@@ -96,7 +99,7 @@
                 }
             }
         });
-
+                
 //
 //        $('.innerUL').on('click', function (e) {
 //            var currentListItem = $(e.target);
