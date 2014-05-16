@@ -6,66 +6,124 @@
 
 @helper TreeView(TreeViewNode node)
 {
-    <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>
-        @node.Name
-        <span>loading</span>
-    </span>
-    
-    if (node.HasChilds && node.Children!=null)
+
+@*    <div class="folder-parent">*@
+    <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+        <div class="plus rootArrow"></div>
+        <span class="rootItem folder hasChilds @node.Type" id="@node.Id">
+            @node.Name
+        </span>
+    </li>
+
+    //    </div>
+
+    if (node.HasChilds && node.Children != null)
     {
         foreach (TreeViewNode childNode in node.Children)
         {
-            <li>
-                @if (node.IsLeaf)
-                {
-                    <span class="leaf plus hasChilds @node.Type" id="@node.Id" data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>@node.Name</span>
-                    
-                }
-                else
-                {
-                    <span class="folder">@node.Name</span>
-                    <ul>
+
+            if (node.IsLeaf)
+            {
+                <li data-url='@Url.Action("TreeNodes", "Tree", new{id =node.Id,type = node.Type})'>
+                    <span class="leaf hasChilds @node.Type" id="@node.Id">@node.Name</span>
+                </li>
+            }
+            else
+            {
+                <li>            
+                    <span class="folder" id="@node.Id">@node.Name</span>
+                    <ul class="innerUL">
                         @TreeView(childNode)
                     </ul>
-                }
-            </li>
+                </li>
+            }
         }
     }
 }
 
 
-<ul id="rootNode">
-         @foreach (TreeViewNode rootNode in Model.RootNodes)
-         {
-             @TreeView(rootNode)
-         }
+<ul class="innerUL rootUL">
+    @foreach (TreeViewNode rootNode in Model.RootNodes)
+    {
+        @TreeView(rootNode)
+    }
 </ul>
+
+
 
 <script type="text/javascript">
     $(document).ready(function () {
-        
-        $('.DivisionState').on('click', function (e) {
+
+        $('.innerUL').on('click', function(e) {
             var currentListItem = $(e.target);
             var url = currentListItem.data('url');
 
             if (url != null) {
+                
+                if (!currentListItem.next().hasClass('innerUL')) {
 
-                if (currentListItem.has('.divBody').length == 0) {
+                    //hide background parent UL
+                    var list = currentListItem.parent();
+                    if (!list.hasClass('rootUL'))
+                        list.toggleClass('innerUL-background');
+                    
+                    //show minus, hide plus
+                    var minus = currentListItem.children('.plus');
+                    minus.toggleClass("minus");
+                    minus.toggleClass("plus");
+
+                    //load items
                     loadDivisionStates(currentListItem, url);
-                    currentListItem.toggleClass("minus");                    
-                }
-                else {
-                    var body = currentListItem.children('.divBody').first();
-                    body.children('#continentFolders').slideToggle('slow');
-                    currentListItem.toggleClass("minus");
+
+
+
+                    e.stopPropagation();
+                } else {
+                    
+                    //add background to parent UL
+                    var list = currentListItem.parent();
+                    if (!list.hasClass('rootUL'))
+                        list.toggleClass('innerUL-background');
+
+                    //hide items
+                    currentListItem.next().slideToggle('slow');
+
+
+                    //show plus, hide minus
+                    var minus = currentListItem.children('.minus');
+                    minus.toggleClass("minus");
+                    minus.toggleClass("plus");
                 }
             }
-                
         });
+
+//
+//        $('.innerUL').on('click', function (e) {
+//            var currentListItem = $(e.target);
+//            var url = currentListItem.data('url');
+//
+//            if (url != null) {
+//
+//                if (currentListItem.closest('.folder-parent').parent().has('.divBody').length == 0) {
+//
+//                } else {
+//                    var body = currentListItem.closest('.folder-parent').parent().children('.divBody').first();
+//                    
+//                    body.children('.innerUL').slideToggle('slow');
+//
+//                    e.stopPropagation();
+//                    console.log("hide");
+//                }
+//            }
+//
+//        });
 
         function loadDivisionStates(listItem, url) {
             $.get(url, function (data) {
-                listItem.append(data);
+                //                listItem.parent().after(data);
+                
+                listItem.after(data);
+                listItem.next().addClass('innerUL-background');
             });
         }
     });

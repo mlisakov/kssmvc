@@ -6,28 +6,30 @@
     {
         foreach (TreeViewNode node in nodes)
         {
-
-            <li>
-                @if (!node.HasChilds)
-                {
-                    <span class="leaf @node.Type" id="@node.Id" 
-                        >@node.Name</span>
-                }
-                else
-                {
-                    <span class="folder plus hasChilds @node.Type"
-                          data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id,type=node.Type})'>@node.Name</span>
-                }
-            </li>
+            if (!node.HasChilds)
+            {
+                <li>
+                    <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+                </li>
+            }
+            else
+            {
+                <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+                    
+                    <div class="plus"></div>
+                    <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
+                    <span class="tooltip">@node.Name</span>
+                </li>
+            }
         }
     }
 }
 
 
 
-<ul id="continentFolders">
+<ul class="innerUL">
     @{
         var data = ViewBag.Children;
     }
-    @TreeView( data)
+    @TreeView(data)
 </ul>

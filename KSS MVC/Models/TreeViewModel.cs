@@ -23,7 +23,7 @@ namespace KSS.Models
 
         public IEnumerable<TreeViewNode> GetChildrens(Guid? id,string type)
         {
-            Thread.Sleep(5000);
+//            Thread.Sleep(5000);
             if (!id.HasValue) return null;
 
             if (type.Equals("DepartmentState"))
