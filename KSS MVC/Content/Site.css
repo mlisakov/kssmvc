@@ -67,6 +67,7 @@ textarea {
 
 .rootArrow {
 	float: left;	
+	pointer-events: none;
 }
 
 .plus {
@@ -77,6 +78,7 @@ textarea {
 	
 	border-top: 5px solid #00325d;
 	margin-top: 13px;
+	pointer-events: none;
 }
 
 
@@ -99,11 +101,8 @@ textarea {
 	border-right: 5px solid transparent;
 	border-bottom: 5px solid #95b8ff;
 	margin-top: 13px;
+	pointer-events: none;
 }
-
-	/*.minus:before {
-		content: "-";
-	}*/
 
 ul {
 	list-style-type: none;
@@ -233,21 +232,3 @@ ul {
 	.folder-parent span {
 		display: inherit;
 	}
-
-
-.arrow-up {
-	width: 0;
-	height: 0;
-	border-left: 5px solid transparent;
-	border-right: 5px solid transparent;
-	border-bottom: 5px solid black;
-}
-
-.arrow-down {
-	width: 0; 
-	height: 0; 
-	border-left: 20px solid transparent;
-	border-right: 20px solid transparent;
-	
-	border-top: 20px solid #f00;
-}
