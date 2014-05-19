@@ -62,9 +62,9 @@ namespace KSS
 #else
             Session["CurrentUser"] = "B88F6C02-77F2-41B7-9C66-098A7262EE12";
             Session["CurrentUserDepartment"] =
-                DBHelper.GetUserDepartment(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12"));
+                DBHelper.GetEmployeeDepartment(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
             Session["CurrentUserDivision"] =
-                DBHelper.GetUserDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Item1;
+                DBHelper.GetEmployeeDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
             Session["UserName"] = "Петрович Василий Пупкин";
    
 
