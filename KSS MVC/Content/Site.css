@@ -5,9 +5,10 @@
 
 body {
 	font-size: .85em;
-	font-family: "Segoe UI", Verdana, Helvetica, Sans-Serif;
+	font-family: "PT Sans";
 	color: #232323;
 	background-color: #fff;
+	margin: 0;
 }
 
 header, footer, nav, section {
@@ -127,11 +128,10 @@ ul {
 #divTree {
 	width: 630px;
 	position: absolute;
-	top: 0;
+	top: 80px;
 	bottom: 0;
 	left: 0;
 	background: #c6ecff;
-	font-family: "PT Sans";
 	color: #00325d;
 	font-size: 20px;
 	overflow: auto;
@@ -232,3 +232,31 @@ ul {
 	.folder-parent span {
 		display: inherit;
 	}
+
+
+
+
+
+
+
+
+
+
+	/*Menu region start*/
+
+	.mainMenuLayout {
+		height: 80px;
+		background-image: url("../Images/headpx.png");
+		background-repeat: repeat-x;
+		line-height: 80px;
+	}
+
+	.userLabel {
+		font-size: 16px;
+		color: #fffefe;
+		margin-left: 20px;
+		text-decoration: none;
+		vertical-align: text-bottom;
+	}
+
+	/*Menu region end*/

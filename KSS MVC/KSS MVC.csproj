@@ -215,6 +215,8 @@
     <Content Include="Fonts\PTS75F_W.TTF" />
     <Content Include="Fonts\PTS76F_W.TTF" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Images\headpx.png" />
+    <Content Include="Images\logo.png" />
     <Content Include="Images\progress.gif" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
