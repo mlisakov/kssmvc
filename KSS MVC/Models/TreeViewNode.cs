@@ -11,6 +11,11 @@ namespace KSS.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
+        /// <summary>
+        /// Развернут нод или нет
+        /// </summary>
+        public bool Expanded { get; set; }
+
         public List<TreeViewNode> Children { get; set; }
 
         public bool IsLeaf {

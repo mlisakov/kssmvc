@@ -1,10 +1,27 @@
 ﻿@model KSS.Models.HomeViewModel
 
 <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
-    <a href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Пользователь...</a>
+
+
+
+
+
+@section Header
+{
+    <nav class="mainMenuLayout">
+        <img src="~/Images/logo.png"/>
+        
+            <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
+
+        @*        <ul class="MainMenu">*@
+@*            <li>@Html.ActionLink("Главная", "Index", "Home")</li>*@
+@*        </ul>*@
+    </nav>
+}
+
+
 <div id="divTree">
-    @*    <ul class="innerUL">*@
-    @*        <li>*@
+
     @Html.Partial("Tree", Model.TreeViewModel)
     @*        </li>*@
     @*    </ul>*@

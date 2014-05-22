@@ -9,54 +9,68 @@
 
 @helper TreeView(TreeViewNode node)
 {
-
-@*    <div class="folder-parent">*@
-    <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
-        <div class="plus rootArrow"></div>
-        <span class="rootItem folder hasChilds @node.Type" id="@node.Id">
-        @node.Name
-    </span>
-    </li>
-    
-    //    </div>
-
-    if (node.HasChilds && node.Children != null)
+    if (!node.HasChilds)
     {
-        foreach (TreeViewNode childNode in node.Children)
+        <li>
+            <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+        </li>
+    }
+    else
+    {
+        if (node.Expanded)
         {
-
-            if (node.IsLeaf)
+            <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+                <div class="minus"></div>
+                <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
+                <span class="tooltip">@node.Name</span>
+            </li>
+            if (node.HasChilds && node.Children != null)
             {
-                <li data-url='@Url.Action("TreeNodes", "Tree", new{id =node.Id,type = node.Type})'>
-                    <span class="leaf hasChilds @node.Type" id="@node.Id">@node.Name</span>
-                </li>
+                foreach (TreeViewNode childNode in node.Children)
+                {
+                    if (!node.HasChilds)
+                    {
+                        <li>
+                            <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <ul class="innerUL">
+                                @TreeView(childNode)
+                            </ul>
+                        </li>
+                    }
+                }
             }
-            else
-            {
-                <li>            
-                    <span class="folder" id="@node.Id">@node.Name</span>
-                    <ul class="innerUL">
-                        @TreeView(childNode)
-                    </ul>
+        }
+        else
+        {
+            <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
+                <div class="plus"></div>
+                <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
+                <span class="tooltip">@node.Name</span>
             </li>
         }
     }
-}
+
+    //    </div>
 }
 
 
 <ul class="innerUL rootUL">
-         @foreach (TreeViewNode rootNode in Model.RootNodes)
-         {
-             @TreeView(rootNode)
-         }
+    @foreach (TreeViewNode rootNode in Model.RootNodes)
+    {
+        @TreeView(rootNode)
+    }
 </ul>
 
 
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        
+    $(document).ready(function() {
+
         $('.innerUL').on('click', function(e) {
             var currentListItem = $(e.target);
             var url = currentListItem.data('url');
@@ -67,9 +81,13 @@
 
                     //hide background parent UL
                     var list = currentListItem.parent();
-                    if (!list.hasClass('rootUL'))
-                        list.toggleClass('innerUL-background');
-                    
+                    if (!list.hasClass('rootUL')) {
+
+                        //hide background only if already HAVE background
+                        if (list.hasClass('innerUL-background'))
+                            list.toggleClass('innerUL-background');
+                    }
+
                     //show minus, hide plus
                     var minus = currentListItem.children('.plus');
                     minus.toggleClass("minus");
@@ -79,17 +97,32 @@
                     loadDivisionStates(currentListItem, url);
 
 
-
                     e.stopPropagation();
                 } else {
-                    
+
+                    var next = currentListItem.next();
+
                     //add background to parent UL
                     var list = currentListItem.parent();
-                    if (!list.hasClass('rootUL'))
-                        list.toggleClass('innerUL-background');
+                    if (!list.hasClass('rootUL')) {
+
+                        //check if childer have opened li
+                        var bodies = list.children('ul .innerUL-background:visible');
+
+                        if (bodies.length == 0)
+                            list.toggleClass('innerUL-background');
+                        else {
+                            if (bodies.length == 1) {
+
+                                if (next.hasClass('innerUL-background') && $(next).is(':visible'))
+                                    list.toggleClass('innerUL-background');
+
+                            }
+                        }
+                    }
 
                     //hide items
-                    currentListItem.next().slideToggle('slow');
+                    next.slideToggle('slow');
 
 
                     //show plus, hide minus
@@ -99,7 +132,7 @@
                 }
             }
         });
-                
+
 //
 //        $('.innerUL').on('click', function (e) {
 //            var currentListItem = $(e.target);
@@ -122,12 +155,13 @@
 //        });
 
         function loadDivisionStates(listItem, url) {
-            $.get(url, function (data) {
+            $.get(url, function(data) {
                 //                listItem.parent().after(data);
-                
+
                 listItem.after(data);
                 listItem.next().addClass('innerUL-background');
             });
         }
+
     });
 </script>

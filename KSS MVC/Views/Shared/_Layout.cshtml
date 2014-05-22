@@ -10,9 +10,7 @@
 
     <body>
         <div class="divHeader">
-            @{
-                Html.RenderNavMenu();
-            }
+                @RenderSection("Header")
         </div>
         <div class="divBody">
             @RenderBody()

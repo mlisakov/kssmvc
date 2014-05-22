@@ -31,17 +31,24 @@ namespace KSS.Models
         {
             //Thread.Sleep(5000);
             if (!id.HasValue) return null;
+
+            if (_dictionaryTree.ContainsKey(id.Value))
+                _dictionaryTree[id.Value].Expanded = !_dictionaryTree[id.Value].Expanded;
+            //if (!_dictionaryTree[id.Value].Expanded && _dictionaryTree[id.Value].Children.Any())
+            //    return null;
+
             //Берем данные их кэш
             if (_dictionaryTree.ContainsKey(id.Value) && _dictionaryTree[id.Value].Children.Any())
+            {
                 return _dictionaryTree[id.Value].Children;
+            }
             if (type.Equals("DepartmentState"))
             {
-
-
                 var departmentStates =
                     _baseModel.DepartmentStates.Where(t => t.ParentId == id.Value);
 
                 _dictionaryTree[id.Value].Children = SelectDepartmentStateNodes(departmentStates, id);
+
                 return _dictionaryTree[id.Value].Children;
             }
             var divisions =
