@@ -176,15 +176,6 @@ ul {
 			text-decoration: underline;
 		}
 
-.rootItem {
-	padding: 14.5px 0;
-	/*height: 55px;
-	line-height: 55px;*/
-}
-
-	.rootItem:hover, .leaf:hover {
-		cursor: pointer;
-	}
 
 .innerUL li span.tooltip {
 	pointer-events: none;
@@ -206,7 +197,7 @@ ul {
 }
 
 	.innerUL li span.tooltip:after {
-		content: "dsfsdf";
+		content: "";
 		position: absolute;
 		width: 0;
 		height: 0;
