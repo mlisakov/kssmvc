@@ -24,6 +24,7 @@
                 <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
                 <span class="tooltip">@node.Name</span>
             </li>
+<ul class="innerUL innerUL-background">
             if (node.HasChilds && node.Children != null)
             {
                 foreach (TreeViewNode childNode in node.Children)
@@ -36,11 +37,9 @@
                     }
                     else
                     {
-                        <li>
-                            <ul class="innerUL">
+                            
                                 @TreeView(childNode)
                             </ul>
-                        </li>
                     }
                 }
             }
@@ -77,7 +76,8 @@
 
             if (url != null) {
 
-                if (!currentListItem.next().hasClass('innerUL')) {
+                if (!currentListItem.next().hasClass('innerUL'))
+                {
 
                     //hide background parent UL
                     var list = currentListItem.parent();
@@ -98,8 +98,9 @@
 
 
                     e.stopPropagation();
-                } else {
-
+                }
+                else {
+                    $.get(url);
                     var next = currentListItem.next();
 
                     //add background to parent UL

@@ -34,8 +34,9 @@ namespace KSS.Models
 
             if (_dictionaryTree.ContainsKey(id.Value))
                 _dictionaryTree[id.Value].Expanded = !_dictionaryTree[id.Value].Expanded;
-            //if (!_dictionaryTree[id.Value].Expanded && _dictionaryTree[id.Value].Children.Any())
-            //    return null;
+
+            if (!_dictionaryTree[id.Value].Expanded)
+                return null;
 
             //Берем данные их кэш
             if (_dictionaryTree.ContainsKey(id.Value) && _dictionaryTree[id.Value].Children.Any())
