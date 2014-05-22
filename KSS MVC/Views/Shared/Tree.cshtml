@@ -20,37 +20,36 @@
         if (node.Expanded)
         {
             <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
-                <div class="minus"></div>
+                <div class="minus rootArrow"></div>
                 <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
                 <span class="tooltip">@node.Name</span>
             </li>
             if (node.HasChilds && node.Children != null)
             {
-                foreach (TreeViewNode childNode in node.Children)
-                {
-                    if (!node.HasChilds)
+                <ul class="innerUL innerUL-background">
+                    @foreach (TreeViewNode childNode in node.Children)
                     {
-                        <li>
-                            <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
-                        </li>
+                        if (!node.HasChilds)
+                        {
+                            <li>
+                                <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+                            </li>
+                        }
+                        else
+                        {
+                            @TreeView(childNode)
+                        }
                     }
-                    else
-                    {
-                        <li>
-                            <ul class="innerUL">
-                                @TreeView(childNode)
-                            </ul>
-                        </li>
-                    }
-                }
+                </ul>
             }
         }
         else
         {
             <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
-                <div class="plus"></div>
-                <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
-                <span class="tooltip">@node.Name</span>
+                <div class="plus rootArrow"></div>
+                <span class="folder hasChilds @node.Type" id="@node.Id">
+                    @node.Name
+                </span>
             </li>
         }
     }
@@ -59,7 +58,7 @@
 }
 
 
-<ul class="innerUL rootUL">
+<ul class="innerUL">
     @foreach (TreeViewNode rootNode in Model.RootNodes)
     {
         @TreeView(rootNode)
@@ -126,33 +125,14 @@
 
 
                     //show plus, hide minus
-                    var minus = currentListItem.children('.minus');
+                    var minus = currentListItem.children('.minus, .plus');
                     minus.toggleClass("minus");
                     minus.toggleClass("plus");
+
+                    e.stopPropagation();
                 }
             }
         });
-
-//
-//        $('.innerUL').on('click', function (e) {
-//            var currentListItem = $(e.target);
-//            var url = currentListItem.data('url');
-//
-//            if (url != null) {
-//
-//                if (currentListItem.closest('.folder-parent').parent().has('.divBody').length == 0) {
-//
-//                } else {
-//                    var body = currentListItem.closest('.folder-parent').parent().children('.divBody').first();
-//                    
-//                    body.children('.innerUL').slideToggle('slow');
-//
-//                    e.stopPropagation();
-//                    console.log("hide");
-//                }
-//            }
-//
-//        });
 
         function loadDivisionStates(listItem, url) {
             $.get(url, function(data) {
