@@ -63,10 +63,11 @@ namespace KSS.Helpers
             return (from employee in _baseModel.Employees
                 join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
-                join posState in _baseModel.PositionStates on m.PositionId equals  posState.Id into positionState
+                join posState in _baseModel.PositionStates on m.PositionId equals posState.Id into positionState
                 from ps in positionState.DefaultIfEmpty()
+                where employee.Id == employeeGuid
                 select ps
-            ).First();
+                ).First();
         }
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
@@ -79,6 +80,7 @@ namespace KSS.Helpers
                 join ssp in _baseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
                     specificStaffPlace
                 from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
+                where employee.Id == employeeGuid
                 select specStaffPlace
                 ).ToList();
         }
@@ -96,10 +98,11 @@ namespace KSS.Helpers
 
         public static List<EmployeePlace> GetEmployeePlaces(Guid employeeGuid)
         {
-           return (from employee in _baseModel.Employees
-                   join ep in _baseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
-                   from empPlace in employeePlase.DefaultIfEmpty()
-                   select empPlace
+            return (from employee in _baseModel.Employees
+                join ep in _baseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
+                from empPlace in employeePlase.DefaultIfEmpty()
+                where employee.Id == employeeGuid
+                select empPlace
                 ).ToList();
         }
     }
