@@ -9,13 +9,19 @@
 @section Header
 {
     <nav class="mainMenuLayout">
-        <img src="~/Images/logo.png"/>
+        <img class="logo" src="~/Images/logo.png"/>
         
             <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
 
-        @*        <ul class="MainMenu">*@
-@*            <li>@Html.ActionLink("Главная", "Index", "Home")</li>*@
-@*        </ul>*@
+                <ul class="mainMenu">
+                    <li class="selectedPage">
+                        <div>
+                            @Html.ActionLink("Главная", "Index", "Home")    
+                        </div>
+                    </li>
+            <li>@Html.ActionLink("Избранное", "Index", "Home")</li>
+            <li>@Html.ActionLink("Помощь", "Index", "Home")</li>
+        </ul>
     </nav>
 }
 
