@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using KSS.Models;
 using KSS.Server.Entities;
 
 namespace KSS.Helpers
@@ -104,6 +105,17 @@ namespace KSS.Helpers
                 where employee.Id == employeeGuid
                 select empPlace
                 ).ToList();
+        }
+
+        public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
+        {
+            List<Guid> favorites=
+             (from fe in _baseModel.Favorites
+                join emp in _baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                from e in employees.DefaultIfEmpty()
+                where fe.EmployeeId == employeeGuid
+                select e.Id).ToList();
+            return favorites.Select(i => new EmployeeModel(i)).ToList();
         }
     }
 }

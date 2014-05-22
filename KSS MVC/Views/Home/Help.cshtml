@@ -1,7 +1,22 @@
 ﻿@model dynamic
 
-@{
-    ViewBag.Title = "title";
+@section Header
+{
+    <nav class="mainMenuLayout">
+        <img class="logo" src="~/Images/logo.png"/>
+        
+        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
+
+        <ul class="mainMenu">
+            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
+            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
+            <li class="selectedPage">
+                <div>
+                    @Html.ActionLink("Помощь", "Help", "Home")
+                </div>
+            </li>
+        </ul>
+    </nav>
 }
 
 <h2>Помощь</h2>

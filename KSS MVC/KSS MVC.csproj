@@ -147,6 +147,7 @@
     <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
+    <Compile Include="Models\FavoritesModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
     <Compile Include="Models\TreeViewNode.cs" />

@@ -2,10 +2,6 @@
 
 <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
 
-
-
-
-
 @section Header
 {
     <nav class="mainMenuLayout">
@@ -19,8 +15,8 @@
                             @Html.ActionLink("Главная", "Index", "Home")    
                         </div>
                     </li>
-            <li>@Html.ActionLink("Избранное", "Index", "Home")</li>
-            <li>@Html.ActionLink("Помощь", "Index", "Home")</li>
+            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
+            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
         </ul>
     </nav>
 }

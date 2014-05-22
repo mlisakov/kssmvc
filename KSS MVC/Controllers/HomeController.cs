@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using KSS.Models;
 
 namespace KSS.Controllers
@@ -18,7 +19,13 @@ namespace KSS.Controllers
 
         public ActionResult Favorites()
         {
-            return View();
+            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
+            return View(favoritesViewModel);
+        }
+
+        public void RemoveFavorite(Guid id)
+        {
+            
         }
 
         public ActionResult Help()

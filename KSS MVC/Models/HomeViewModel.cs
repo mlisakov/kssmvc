@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using KSS.Helpers;
 using KSS.Server.Entities;
 
 namespace KSS.Models
@@ -9,7 +10,7 @@ namespace KSS.Models
     public class HomeViewModel
     {
         private TreeViewModel _treeViewModel;
-
+        private HttpSessionStateBase _session;
         public TreeViewModel TreeViewModel
         {
             get { return _treeViewModel; }
@@ -18,6 +19,7 @@ namespace KSS.Models
 
         public HomeViewModel(HttpSessionStateBase session)
         {
+            _session = session;
             if (session["Tree"] == null)
                 TreeViewModel = new TreeViewModel();
             else
@@ -28,8 +30,5 @@ namespace KSS.Models
         {
             throw new NotImplementedException();
         }
-
-
-
     }
 }

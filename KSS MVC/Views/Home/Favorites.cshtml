@@ -1,7 +1,48 @@
-﻿@model dynamic
+﻿@using KSS.Models
+@model KSS.Models.FavoritesModel
+@section Header
+{
+    <nav class="mainMenuLayout">
+        <img class="logo" src="~/Images/logo.png"/>
+        
+        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
 
-@{
-    ViewBag.Title = "title";
+        <ul class="mainMenu">
+            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
+            <li  class="selectedPage">
+                <div>
+                    @Html.ActionLink("Избранное", "Favorites", "Home")
+                </div>
+            </li>
+            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
+        </ul>
+    </nav>
 }
+<div>
+    <ul>
+        @foreach (EmployeeModel employee in Model.GetFavorites())
+        {
+            <li>
+                <img class="favorite" data-url="@Url.Action("RemoveFavorite", "Home", new {id = employee.Employee.Id})" title="Убрать" />
+                <span>@employee.Employee.Name</span>
+                <span>@employee.DepartmentState.Department</span>
+                <span>@employee.DivisionState.Division</span>
+            </li>
+        }
+    </ul>
+</div>
 
-<h2>Избранное</h2>
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('.favorite').on('click', function (e) {
+                var currentListItem = $(e.target);
+                var url = currentListItem.data('url');
+
+                if (url != null) {
+                    $.get(url);
+                }
+            }
+        );
+    });
+</script>
