@@ -148,6 +148,7 @@
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
     <Compile Include="Models\TreeViewNode.cs" />
     <Compile Include="NLogFactory.cs" />
@@ -259,6 +260,7 @@
     <Content Include="Views\Home\Favorites.cshtml" />
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Shared\SearchView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

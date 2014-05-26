@@ -9,6 +9,7 @@ body {
 	color: #232323;
 	background-color: #fff;
 	margin: 0;
+	min-width: 1220px;
 }
 
 header, footer, nav, section {
@@ -67,16 +68,15 @@ textarea {
 }
 
 .rootArrow {
-	float: left;	
+	float: left;
 	pointer-events: none;
 }
 
 .plus {
-	width: 0; 
-	height: 0; 
+	width: 0;
+	height: 0;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
-	
 	border-top: 5px solid #00325d;
 	margin-top: 13px;
 	pointer-events: none;
@@ -84,11 +84,11 @@ textarea {
 
 
 .divBody {
-	background: #9dd2ec;	
+	background: #9dd2ec;
 }
 
 .innerUL-background {
-	background: #9dd2ec;	
+	background: #9dd2ec;
 }
 
 .divBodyMutted {
@@ -96,7 +96,7 @@ textarea {
 }
 
 .minus {
-		width: 0;
+	width: 0;
 	height: 0;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
@@ -124,6 +124,16 @@ ul {
 	.hasChilds:hover {
 	}
 
+
+	#centralPart {
+		background: white;
+		position: absolute;
+		left: 630px;
+		right: 0;
+		top: 80px;
+		bottom: 0;
+		min-width: 600px;
+	}
 
 #divTree {
 	width: 630px;
@@ -177,36 +187,36 @@ ul {
 		}
 
 
-.innerUL li span.tooltip {
-	pointer-events: none;
-	display: none;
-	position: absolute;
-	height: 20px;
-	line-height: 20px;
-	padding: 10px;
-	font-size: 14px;
-	text-align: center;
-	color: rgb(113, 157, 171);
-	background: rgb(255, 255, 255);
-	border: 4px solid rgb(255, 255, 255);
-	border-radius: 5px;
-	text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
-	box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
-	left: 0;
-	margin-top: -45px;
-}
+		.innerUL li span.tooltip {
+			pointer-events: none;
+			display: none;
+			position: absolute;
+			height: 20px;
+			line-height: 20px;
+			padding: 10px;
+			font-size: 14px;
+			text-align: center;
+			color: rgb(113, 157, 171);
+			background: rgb(255, 255, 255);
+			border: 4px solid rgb(255, 255, 255);
+			border-radius: 5px;
+			text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
+			box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
+			left: 0;
+			margin-top: -45px;
+		}
 
-	.innerUL li span.tooltip:after {
-		content: "";
-		position: absolute;
-		width: 0;
-		height: 0;
-		border-width: 10px;
-		border-style: solid;
-		border-color: #FFFFFF transparent transparent transparent;
-		top: 44px;
-		left: 50px;
-	}
+			.innerUL li span.tooltip:after {
+				content: "";
+				position: absolute;
+				width: 0;
+				height: 0;
+				border-width: 10px;
+				border-style: solid;
+				border-color: #FFFFFF transparent transparent transparent;
+				top: 44px;
+				left: 50px;
+			}
 
 .folder-border {
 }
@@ -233,37 +243,38 @@ ul {
 
 
 
-	/*Menu region start*/
+/*Menu region start*/
 
-	.mainMenuLayout {
-		height: 80px;
-		background-image: url("../Images/headpx.png");
-		background-repeat: repeat-x;
-		line-height: 80px;
-		position: relative;
-	}
+.mainMenuLayout {
+	height: 80px;
+	background-image: url("../Images/headpx.png");
+	background-repeat: repeat-x;
+	line-height: 80px;
+	position: relative;
+}
 
-	.userLabel {
-		font-size: 16px;
-		color: #fffefe;
-		margin-left: 20px;
-		text-decoration: none;
-		vertical-align: text-bottom;
-		position: absolute;
-		left: 185px;
-	}
+.userLabel {
+	font-size: 16px;
+	color: #fffefe;
+	margin-left: 20px;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	position: absolute;
+	left: 185px;
+}
 
-	.logo {
-		position: absolute;
-		left: 0;
-	}
+.logo {
+	position: absolute;
+	left: 0;
+}
 
-	.mainMenu {
-		position: absolute;
-		margin: 0;
-		padding: 0;
-		left: 630px;
-	}
+.mainMenu {
+	position: absolute;
+	margin: 0;
+	padding: 0;
+	left: 630px;
+}
+
 	.mainMenu li {
 		width: 100px;
 		text-align: center;
@@ -271,13 +282,128 @@ ul {
 		font-size: 18px;
 	}
 
-	.mainMenu li a {
-		color: white;
-		text-decoration: none;
+		.mainMenu li a {
+			color: white;
+			text-decoration: none;
+		}
+
+.selectedPage div {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+.birthDayComboBox {
+	height: 55px;
+	float: right;
+	margin-top: 12.5px;
+	margin-right: 60px;
+	width: 230px;
+	background: lightskyblue;
+	color: white;
+	line-height: 55px;
+	border: 1px outset #004161;
+	background: #006aa9; /* Old browsers */
+	background: -moz-linear-gradient(top, #006aa9 0%, #004784 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#006aa9), color-stop(100%,#004784)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #006aa9 0%,#004784 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #006aa9 0%,#004784 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #006aa9 0%,#004784 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #006aa9 0%,#004784 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006aa9', endColorstr='#004784',GradientType=0 ); /* IE6-9 */
+	border-radius: 3px;
+}
+
+	.birthDayComboBox p {
+		margin: 0;
+		margin-left: 20px;
+		float: left;
+		font-size: 18px;
 	}
 
-	.selectedPage div {
-		background: rgba(255, 255, 255, 0.2);
+	.birthDayComboBox .plus {
+		float: right;
+		margin: 25px 20px 25px 0;
+		border-top-color: #1179c2;
+		border-left-width: 6px;
+		border-right-width: 6px;
+		border-top-width: 6px;
+		box-shadow: 1px 0 1px red inset;
 	}
 
-	/*Menu region end*/
+/*Menu region end*/
+
+
+
+
+/*search*/
+
+.searchLayout {
+	background: white;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.departmentHeader {
+	font-size: 26px;
+	
+	margin: 30px 0 0 30px;
+	font-weight: normal;
+}
+
+.shortSearch {
+	width: 819px;
+	height: 38px;
+	margin: 40px 0 0 30px;
+	font-size: 18px;
+	position: relative;
+}
+
+.departmentSearchText {
+	width: inherit;	
+	padding-left: 15px;
+	height: 34px;
+	margin: 0;
+	border: 1px solid #dadada;
+	background: #eeeeee;
+	-webkit-box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
+	-moz-box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
+	box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
+
+	position: absolute;
+	
+}
+
+.departmentSearchButton {
+	width: 100px;
+	height: 38px;
+	float: right;
+	
+	border: 1px solid #d2ac67;
+	color: white;
+
+	position: absolute;
+	right: -17px;
+
+	background: #d2ac67; /* Old browsers */
+background: -moz-linear-gradient(top,  #d2ac67 0%, #c18d40 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2ac67), color-stop(100%,#c18d40)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* IE10+ */
+background: linear-gradient(to bottom,  #d2ac67 0%,#c18d40 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', endColorstr='#c18d40',GradientType=0 ); /* IE6-9 */
+
+}
+
+.advancedSearch {
+	font-size: 14px;
+	color: #4988b9;
+	margin: 15px 0 0 30px;
+	display: block;
+}
+
+.advancedSearch:hover {
+	cursor: pointer;
+}
