@@ -13,8 +13,15 @@ namespace KSS.Controllers
             //    TreeVM = new TreeViewModel();
             //else
             //    TreeVM = (TreeViewModel) Session["Tree"];
-            HomeViewModel homeViewModel=new HomeViewModel(Session);
+            HomeViewModel homeViewModel = new HomeViewModel(Session);
             return View(homeViewModel);
+        }
+
+
+        public ActionResult SearchView(Guid id)
+        {
+            SearchViewModel model = new SearchViewModel(id);
+            return View(model);
         }
 
         public ActionResult Favorites()

@@ -7,24 +7,68 @@
     <nav class="mainMenuLayout">
         <img class="logo" src="~/Images/logo.png"/>
         
-            <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
+        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
 
-                <ul class="mainMenu">
-                    <li class="selectedPage">
-                        <div>
-                            @Html.ActionLink("Главная", "Index", "Home")    
-                        </div>
-                    </li>
+        <ul class="mainMenu">
+            <li class="selectedPage">
+                <div>
+                    @Html.ActionLink("Главная", "Index", "Home")    
+                </div>
+            </li>
             <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
             <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
         </ul>
+        
+        
+        <div class="birthDayComboBox">
+            <p>Дни рождения</p>
+            <div class="plus"></div>
+        </div>
     </nav>
 }
 
 
 <div id="divTree">
-
     @Html.Partial("Tree", Model.TreeViewModel)
-    @*        </li>*@
-    @*    </ul>*@
 </div>
+
+<div id="centralPart">
+    
+</div>
+
+
+<script type="text/javascript">
+    var _lastId = '-1';
+
+    $(document).ready(function () {
+
+        $('#divTree').on('click', function (e) {
+            var target = $(e.target);
+            var isSpan = $(e.target).is('span');
+
+            if (isSpan) {
+                //reload central part
+                var ids = target.attr('id');
+
+                if (_lastId != ids) {
+                    var url = '@Url.Action("SearchView", new {id="-1"})';
+                    url = url.replace('-1', ids);
+
+                    loadSearchPage(url);
+
+                    _lastId = ids;
+                }
+            }
+        });
+    });
+
+    function loadSearchPage(url) {
+        $.get(url, function (data) {
+            var parent = $('#centralPart');
+            if (parent != null) {
+                    parent.empty();
+                parent.append(data);
+            }
+        });
+    }
+</script>

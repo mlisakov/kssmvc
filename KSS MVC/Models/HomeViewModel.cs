@@ -9,13 +9,9 @@ namespace KSS.Models
 {
     public class HomeViewModel
     {
-        private TreeViewModel _treeViewModel;
         private HttpSessionStateBase _session;
-        public TreeViewModel TreeViewModel
-        {
-            get { return _treeViewModel; }
-            private set { _treeViewModel = value; }
-        }
+
+        public TreeViewModel TreeViewModel { get; private set; }
 
         public HomeViewModel(HttpSessionStateBase session)
         {

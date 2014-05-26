@@ -1,0 +1,20 @@
+﻿
+<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+@{
+    Layout = "";
+}
+
+@using KSS.Models
+@model SearchViewModel
+
+
+<div class="searchLayout">
+    <h3 class="departmentHeader">@Model.GetName()</h3>
+    
+    <div class="shortSearch">
+        <input type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
+        <input type="button" class="departmentSearchButton" value="найти" />        
+    </div>
+    
+    <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
+</div>
