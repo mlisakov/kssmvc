@@ -19,20 +19,20 @@ namespace KSS.Controllers
 
         public ActionResult Favorites()
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
             return View(favoritesViewModel);
         }
 
         public bool RemoveFavorite(Guid id)
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
-            return favoritesViewModel.RemoveFromFavorites(id);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
+            return favoritesViewModel.RemoveFromFavorite(id);
         }
 
         public bool AddFavorite(Guid id)
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
-            return favoritesViewModel.AddToFavorites(id);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
+            return favoritesViewModel.AddToFavorite(id);
         }
 
         public ActionResult Help()

@@ -30,5 +30,20 @@ namespace KSS.Models
         {
             throw new NotImplementedException();
         }
+
+        public IEnumerable<EmployeeModel> GetFavorites()
+        {
+            return DBHelper.GetFavorites(new Guid(_session["CurrentUser"].ToString()));
+        }
+
+        public bool AddToFavorite(Guid id)
+        {
+            return DBHelper.AddToFavorites(new Guid(_session["CurrentUser"].ToString()), id);
+        }
+
+        public bool RemoveFromFavorite(Guid id)
+        {
+            return DBHelper.RemoveFromFavorites(new Guid(_session["CurrentUser"].ToString()), id);
+        }
     }
 }
