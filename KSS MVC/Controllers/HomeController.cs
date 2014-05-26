@@ -23,9 +23,16 @@ namespace KSS.Controllers
             return View(favoritesViewModel);
         }
 
-        public void RemoveFavorite(Guid id)
+        public bool RemoveFavorite(Guid id)
         {
-            
+            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
+            return favoritesViewModel.RemoveFromFavorites(id);
+        }
+
+        public bool AddFavorite(Guid id)
+        {
+            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
+            return favoritesViewModel.AddToFavorites(id);
         }
 
         public ActionResult Help()

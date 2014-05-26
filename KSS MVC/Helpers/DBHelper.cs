@@ -20,29 +20,29 @@ namespace KSS.Helpers
         public static DepartmentState GetEmployeeDepartment(Guid userGuid)
         {
             return (from employee in _baseModel.Employees
-                    join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join depState in _baseModel.DepartmentStates on m.DepartmentId equals depState.Id into departmentState
-                    from ds in departmentState.DefaultIfEmpty()
-                    where employee.Id == userGuid && m.ExpirationDate == null
-                    select ds).First();
+                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                from m in employeeStaff.DefaultIfEmpty()
+                join depState in _baseModel.DepartmentStates on m.DepartmentId equals depState.Id into departmentState
+                from ds in departmentState.DefaultIfEmpty()
+                where employee.Id == userGuid && m.ExpirationDate == null
+                select ds).First();
         }
 
         public static DivisionState GetEmployeeDivision(Guid userGuid)
         {
             return (from employee in _baseModel.Employees
-                    join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join departmentState in _baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                        depState
-                    from ds in depState.DefaultIfEmpty()
-                    join divisionState in _baseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
-                    from divS in divState.DefaultIfEmpty()
-                    where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
-                    select divS).First();
+                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                from m in employeeStaff.DefaultIfEmpty()
+                join departmentState in _baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                    depState
+                from ds in depState.DefaultIfEmpty()
+                join divisionState in _baseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
+                from divS in divState.DefaultIfEmpty()
+                where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
+                select divS).First();
         }
 
-        public static Tuple<Guid,string> GetEmployeeFullName(string userLogin)
+        public static Tuple<Guid, string> GetEmployeeFullName(string userLogin)
         {
             var t = from employee in _baseModel.Employees
                 where employee.AccountName.Equals(userLogin)
@@ -55,8 +55,8 @@ namespace KSS.Helpers
         public static Employee GetEmployee(Guid employeeGuid)
         {
             return (from employee in _baseModel.Employees
-                   where employee.Id.Equals(employeeGuid)
-                   select employee).First();
+                where employee.Id.Equals(employeeGuid)
+                select employee).First();
         }
 
         public static PositionState GetEmployeePositionState(Guid employeeGuid)
@@ -109,13 +109,47 @@ namespace KSS.Helpers
 
         public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
         {
-            List<Guid> favorites=
-             (from fe in _baseModel.Favorites
-                join emp in _baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                from e in employees.DefaultIfEmpty()
-                where fe.EmployeeId == employeeGuid
-                select e.Id).ToList();
+            List<Guid> favorites =
+                (from fe in _baseModel.Favorites
+                    join emp in _baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid
+                    select e.Id).ToList();
             return favorites.Select(i => new EmployeeModel(i)).ToList();
+        }
+
+        public static bool AddToFavorites(Guid idCurrentUset, Guid idFavoriteUser)
+        {
+            try
+            {
+                Favorite favoriteEmp =new Favorite(){EmployeeId = idCurrentUset,LinkedEmployeeId = idFavoriteUser};
+                _baseModel.Favorites.Add(favoriteEmp);
+                _baseModel.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        public static bool RemoveFromFavorites(Guid idCurrentUset, Guid idFavoriteUser)
+        {
+            try
+            {
+                Favorite favoriteEmp =
+                    _baseModel.Favorites.First(
+                        j => j.EmployeeId == idCurrentUset && j.LinkedEmployeeId == idFavoriteUser);
+                _baseModel.Favorites.Remove(favoriteEmp);
+                _baseModel.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+
         }
     }
 }
