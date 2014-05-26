@@ -9,12 +9,29 @@
 
 
 <div class="searchLayout">
-    <h3 class="departmentHeader">@Model.GetName()</h3>
+    <h3 class="departmentHeader">@Model.GetDepartmentName()</h3>
+    @using (Html.BeginForm("SearchEmployees", "Home"))
+    {
+        <div class="shortSearch">
+            @Html.TextBox("employeeName", null, new {@class = "departmentSearchText", @placeholder = "поиск по ФИО", @maxlength = "100"})
+            <input type="submit" class="departmentSearchButton" value="Найти" />
+        </div>
+    }
     
-    <div class="shortSearch">
+    @*    <div class="shortSearch">
         <input type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
-        <input type="button" class="departmentSearchButton" value="найти" />        
-    </div>
+        <input type="button" class="departmentSearchButton" value="найти"  data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"/>        
+    </div>*@
+
     
     <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
 </div>
+
+<script type="text/javascript">
+
+    function Search(url) {
+        $.getJSON(url, function (data) {
+            alert(data);
+        });
+    }
+</script>

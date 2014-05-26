@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
+using KSS.Helpers;
 using KSS.Models;
+using KSS.Server.Entities;
+using Newtonsoft.Json;
 
 namespace KSS.Controllers
 {
@@ -20,7 +24,7 @@ namespace KSS.Controllers
 
         public ActionResult SearchView(Guid id)
         {
-            SearchViewModel model = new SearchViewModel(id);
+            SearchViewModel model = new SearchViewModel(Session,id);
             return View(model);
         }
 
@@ -45,6 +49,18 @@ namespace KSS.Controllers
         public ActionResult Help()
         {
             return View();
+        }
+
+        public JsonResult SearchEmployees(string employeeName)
+        {
+            List<Employee> employees =DBHelper.Search(employeeName);
+            JsonResult result = new JsonResult
+            {
+                Data = employees,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = int.MaxValue
+            };
+            return result;
         }
         
     }
