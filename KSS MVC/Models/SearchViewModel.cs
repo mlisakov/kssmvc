@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Web;
 using KSS.Helpers;
-using KSS.Server.Entities;
 
 namespace KSS.Models
 {
@@ -11,7 +9,7 @@ namespace KSS.Models
         private Guid _id;
         private HttpSessionStateBase _session;
 
-        private static CompanyBaseModel _baseModel;
+        //private static CompanyBaseModel _baseModel;
 
         public SearchViewModel(HttpSessionStateBase session,Guid id)
         {

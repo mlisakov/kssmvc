@@ -10,28 +10,46 @@
 
 <div class="searchLayout">
     <h3 class="departmentHeader">@Model.GetDepartmentName()</h3>
-    @using (Html.BeginForm("SearchEmployees", "Home"))
+    @*    @using (Html.BeginForm("SearchEmployees", "Home"))
     {
         <div class="shortSearch">
             @Html.TextBox("employeeName", null, new {@class = "departmentSearchText", @placeholder = "поиск по ФИО", @maxlength = "100"})
             <input type="submit" class="departmentSearchButton" value="Найти" />
         </div>
-    }
+    }*@
     
-    @*    <div class="shortSearch">
-        <input type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
-        <input type="button" class="departmentSearchButton" value="найти"  data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"/>        
-    </div>*@
+    <div class="shortSearch">
+        <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
+        <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        
+    </div>
 
-    
+    @*data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"*@
     <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
+    <div id="searchResult">
+    
+    </div>
+
 </div>
 
 <script type="text/javascript">
 
-    function Search(url) {
-        $.getJSON(url, function (data) {
-            alert(data);
+    $(document).ready(function() {
+
+        $('#searchBtn').on('click', function(e) {
+            var value = $('#searchText').val();
+            var url = '@Url.Action("SearchEmployees", "Home", new {employeeName = "-1"})';
+            url = url.replace('-1', value);
+            loadSearchPage(url);
         });
-    }
+    });
+
+    function loadSearchPage(url) {
+        $.get(url, function(data) {
+            var resultDiv = $('#searchResult');
+            if (resultDiv != null) {
+                resultDiv.empty();
+                resultDiv.append(data);
+            }
+        });
+    };
 </script>

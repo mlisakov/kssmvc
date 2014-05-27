@@ -1,0 +1,13 @@
+﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+@{
+    Layout = "";
+}
+@using KSS.Models
+@model List<KSS.Server.Entities.Employee>
+
+<div>
+    @foreach (KSS.Server.Entities.Employee employee in Model)
+    {
+       <span>@employee.Name</span>
+    }
+</div>

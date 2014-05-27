@@ -51,16 +51,10 @@ namespace KSS.Controllers
             return View();
         }
 
-        public JsonResult SearchEmployees(string employeeName)
+        public ActionResult SearchEmployees(string employeeName)
         {
-            List<Employee> employees =DBHelper.Search(employeeName);
-            JsonResult result = new JsonResult
-            {
-                Data = employees,
-                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                MaxJsonLength = int.MaxValue
-            };
-            return result;
+            var employees = DBHelper.Search(employeeName);
+            return View("SearchEmployeeResult", employees);
         }
         
     }
