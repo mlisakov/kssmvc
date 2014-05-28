@@ -39,6 +39,7 @@
 
 <script type="text/javascript">
     var _lastId = '-1';
+    var _lastObject = null;
 
     $(document).ready(function () {
 
@@ -51,12 +52,20 @@
                 var ids = target.attr('id');
 
                 if (_lastId != ids) {
+                    
+                    if (_lastObject != null) {
+                        _lastObject.toggleClass('selectedTreeNode');
+                    }
+
+
                     var url = '@Url.Action("SearchView", new {id="-1"})';
                     url = url.replace('-1', ids);
 
                     loadSearchPage(url);
 
                     _lastId = ids;
+                    _lastObject = target.parent();
+                    _lastObject.toggleClass('selectedTreeNode');
                 }
             }
         });
