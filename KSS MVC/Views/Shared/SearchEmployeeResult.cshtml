@@ -3,11 +3,39 @@
     Layout = "";
 }
 @using KSS.Models
+@using Microsoft.Ajax.Utilities
 @model List<KSS.Server.Entities.Employee>
 
-<div>
-    @foreach (KSS.Server.Entities.Employee employee in Model)
+@*<div>*@
+<ul class="personUL">
+    
+    @for (int i = 0; i < 5; i++)
     {
-       <span>@employee.Name</span>
+        <li>
+            <div class="lyncStatusDiv"></div>
+            <div class="personIMGLayout">
+                <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    
+            </div>
+            <div class="innerPersonLayout">
+                <h5 class="personName">
+                    @Model[i].Name
+                </h5>
+                <p class="personDepartment">Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра</p>
+                <p class="personJob">Директор центра</p>
+                <div class="phonesLine">
+                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>    
+                </div>
+                <div class="phonesLine">
+                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>
+                </div>
+            </div>
+        </li>
     }
-</div>
+        
+@*    @foreach (KSS.Server.Entities.Employee employee in Model)*@
+@*    {*@
+@**@
+@*    }*@
+            
+</ul>
+@*</div>*@
