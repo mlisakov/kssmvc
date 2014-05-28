@@ -147,7 +147,6 @@
     <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
-    <Compile Include="Models\FavoritesModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
@@ -262,6 +261,7 @@
     <Content Include="Views\Home\Help.cshtml" />
     <Content Include="Views\Employee\Index.cshtml" />
     <Content Include="Views\Shared\SearchView.cshtml" />
+    <Content Include="Views\Shared\SearchEmployeeResult.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

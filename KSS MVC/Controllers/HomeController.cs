@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
+using KSS.Helpers;
 using KSS.Models;
+using KSS.Server.Entities;
+using Newtonsoft.Json;
 
 namespace KSS.Controllers
 {
@@ -20,31 +24,37 @@ namespace KSS.Controllers
 
         public ActionResult SearchView(Guid id)
         {
-            SearchViewModel model = new SearchViewModel(id);
+            SearchViewModel model = new SearchViewModel(Session,id);
             return View(model);
         }
 
         public ActionResult Favorites()
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
             return View(favoritesViewModel);
         }
 
         public bool RemoveFavorite(Guid id)
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
-            return favoritesViewModel.RemoveFromFavorites(id);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
+            return favoritesViewModel.RemoveFromFavorite(id);
         }
 
         public bool AddFavorite(Guid id)
         {
-            FavoritesModel favoritesViewModel = new FavoritesModel(Session);
-            return favoritesViewModel.AddToFavorites(id);
+            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
+            return favoritesViewModel.AddToFavorite(id);
         }
 
         public ActionResult Help()
         {
             return View();
+        }
+
+        public ActionResult SearchEmployees(string employeeName)
+        {
+            var employees = DBHelper.Search(employeeName);
+            return View("SearchEmployeeResult", employees);
         }
         
     }

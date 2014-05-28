@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Web.Management;
 using KSS.Models;
 using KSS.Server.Entities;
 
@@ -12,17 +13,27 @@ namespace KSS.Helpers
     {
         private static CompanyBaseModel _baseModel;
 
-        static DBHelper()
+        private static CompanyBaseModel baseModel
         {
-            _baseModel = new CompanyBaseModel();
+           get { return _baseModel ?? (_baseModel = new CompanyBaseModel()); }
+        }
+
+        public static DepartmentState GetDepartmentState(Guid id)
+        {
+            return baseModel.DepartmentStates.FirstOrDefault(t => t.Id == id);
+        }
+
+        public static DivisionState GetDivisionState(Guid id)
+        {
+            return baseModel.DivisionStates.FirstOrDefault(t => t.Id == id);
         }
 
         public static DepartmentState GetEmployeeDepartment(Guid userGuid)
         {
-            return (from employee in _baseModel.Employees
-                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+            return (from employee in baseModel.Employees
+                    join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
-                join depState in _baseModel.DepartmentStates on m.DepartmentId equals depState.Id into departmentState
+                    join depState in baseModel.DepartmentStates on m.DepartmentId equals depState.Id into departmentState
                 from ds in departmentState.DefaultIfEmpty()
                 where employee.Id == userGuid && m.ExpirationDate == null
                 select ds).First();
@@ -30,13 +41,13 @@ namespace KSS.Helpers
 
         public static DivisionState GetEmployeeDivision(Guid userGuid)
         {
-            return (from employee in _baseModel.Employees
-                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+            return (from employee in baseModel.Employees
+                    join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
-                join departmentState in _baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                    join departmentState in baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
                     depState
                 from ds in depState.DefaultIfEmpty()
-                join divisionState in _baseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
+                    join divisionState in baseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
                 from divS in divState.DefaultIfEmpty()
                 where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
                 select divS).First();
@@ -44,7 +55,7 @@ namespace KSS.Helpers
 
         public static Tuple<Guid, string> GetEmployeeFullName(string userLogin)
         {
-            var t = from employee in _baseModel.Employees
+            var t = from employee in baseModel.Employees
                 where employee.AccountName.Equals(userLogin)
                 select new {employee.Id, employee.Name};
             return t.Any()
@@ -54,17 +65,17 @@ namespace KSS.Helpers
 
         public static Employee GetEmployee(Guid employeeGuid)
         {
-            return (from employee in _baseModel.Employees
+            return (from employee in baseModel.Employees
                 where employee.Id.Equals(employeeGuid)
                 select employee).First();
         }
 
         public static PositionState GetEmployeePositionState(Guid employeeGuid)
         {
-            return (from employee in _baseModel.Employees
-                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+            return (from employee in baseModel.Employees
+                    join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
-                join posState in _baseModel.PositionStates on m.PositionId equals posState.Id into positionState
+                    join posState in baseModel.PositionStates on m.PositionId equals posState.Id into positionState
                 from ps in positionState.DefaultIfEmpty()
                 where employee.Id == employeeGuid
                 select ps
@@ -73,12 +84,12 @@ namespace KSS.Helpers
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
         {
-            return (from employee in _baseModel.Employees
-                join staff in _baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+            return (from employee in baseModel.Employees
+                    join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
-                join ss in _baseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
+                    join ss in baseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
                 from specStaff in specificStaff.DefaultIfEmpty()
-                join ssp in _baseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
+                    join ssp in baseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
                     specificStaffPlace
                 from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
                 where employee.Id == employeeGuid
@@ -99,8 +110,8 @@ namespace KSS.Helpers
 
         public static List<EmployeePlace> GetEmployeePlaces(Guid employeeGuid)
         {
-            return (from employee in _baseModel.Employees
-                join ep in _baseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
+            return (from employee in baseModel.Employees
+                    join ep in baseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
                 from empPlace in employeePlase.DefaultIfEmpty()
                 where employee.Id == employeeGuid
                 select empPlace
@@ -110,8 +121,8 @@ namespace KSS.Helpers
         public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
         {
             List<Guid> favorites =
-                (from fe in _baseModel.Favorites
-                    join emp in _baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                (from fe in baseModel.Favorites
+                 join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
                     from e in employees.DefaultIfEmpty()
                     where fe.EmployeeId == employeeGuid
                     select e.Id).ToList();
@@ -123,8 +134,8 @@ namespace KSS.Helpers
             try
             {
                 Favorite favoriteEmp =new Favorite(){EmployeeId = idCurrentUset,LinkedEmployeeId = idFavoriteUser};
-                _baseModel.Favorites.Add(favoriteEmp);
-                _baseModel.SaveChanges();
+                baseModel.Favorites.Add(favoriteEmp);
+                baseModel.SaveChanges();
                 return true;
             }
             catch (Exception ex)
@@ -139,10 +150,10 @@ namespace KSS.Helpers
             try
             {
                 Favorite favoriteEmp =
-                    _baseModel.Favorites.First(
+                    baseModel.Favorites.First(
                         j => j.EmployeeId == idCurrentUset && j.LinkedEmployeeId == idFavoriteUser);
-                _baseModel.Favorites.Remove(favoriteEmp);
-                _baseModel.SaveChanges();
+                baseModel.Favorites.Remove(favoriteEmp);
+                baseModel.SaveChanges();
                 return true;
             }
             catch (Exception ex)
@@ -150,6 +161,14 @@ namespace KSS.Helpers
                 return false;
             }
 
+        }
+
+        public static List<Employee> Search(string employeeName)
+        {
+            return (from employee in baseModel.Employees
+                    where employee.Name.Contains(employeeName)
+                    select employee
+                ).ToList();
         }
     }
 }
