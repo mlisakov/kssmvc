@@ -93,6 +93,10 @@
 
         $('.innerUL').on('click', function(e) {
             var currentListItem = $(e.target);
+
+
+
+
             var url = currentListItem.data('url');
 
             if (url != null) {
@@ -113,6 +117,9 @@
                     minus.toggleClass("minus");
                     minus.toggleClass("plus");
 
+
+                    var treeProgress = $('<img class="treeProgress" src="Images/progress.gif" />');
+                    currentListItem.append(treeProgress);
                     //load items
                     loadDivisionStates(currentListItem, url);
 
@@ -160,6 +167,7 @@
                 //                listItem.parent().after(data);
 
                 listItem.after(data);
+                listItem.find('.treeProgress').remove();
                 listItem.next().addClass('innerUL-background');
             });
         }
