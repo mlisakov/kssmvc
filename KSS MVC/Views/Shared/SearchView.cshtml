@@ -23,10 +23,68 @@
         <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
         <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        
     </div>
-    
-    @*data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"*@
-    <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
+    <div class="additionalSearchPanel">
+        <div class=" additionalSearchRowFirst additionalSearchRow ">
+            <p class="fieldLabel">филиал</p>
 
+            <p class="fieldLabel  rightItem">местоположение</p>
+
+            <select class="field ">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Filial</option>
+            </select>
+
+
+            <select class="field rightItem">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+        </div>
+
+        <div class="additionalSearchRow">
+            <p class="fieldLabel">член штаба</p>
+            
+            <p class="fieldLabel rightItem">номер телефона</p>
+
+            <select class="field">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Filial</option>
+            </select>
+
+            <input type="text" class="field rightItem"/>            
+        </div>
+
+        <div class="additionalSearchRow">
+            <p class="fieldLabel">подразделение</p>
+            
+            
+            <p class="fieldLabel rightItem">дни рождения</p>
+
+            <select class="field">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+            
+            <div class="rightItem">
+                <input type="text" class="dataPicker" />
+                <p class="dataPickerSeparator">&ndash;</p>
+                <input type="text" class="dataPicker" />                   
+            </div>
+
+        </div>
+        <div class="additionalSearchRow">
+            <p class="fieldLabel noFloatItem">должность</p>
+            <select class="field ">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+        </div>
+    </div>
+    
+
+    @*data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"*@
+    <a class="advancedSearch">Расширенный поиск <span>↓</span></a>
+    
     
     <div id="searchResult">
         
@@ -46,6 +104,21 @@
             $('.searchProgress').show();
 
             loadSearchPageResult(url);
+        });
+
+
+        $('.advancedSearch').on('click', function(e) {
+            //toggle visibility of additional search panel
+            $('.additionalSearchPanel').slideToggle('slow');
+
+            var arrow = $(e.target).children('span');
+            if (arrow.length > 0) {                
+                if (arrow.html() == '↓')
+                    arrow.text('↑');
+                else
+                    arrow.text('↓');
+            }            
+
         });
     });
 

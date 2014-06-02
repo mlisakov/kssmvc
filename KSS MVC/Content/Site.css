@@ -246,6 +246,16 @@ ul {
 	.treeProgress {
 		width: 16px;
 		height: 16px;
+		-moz-min-width: 16px;
+		-ms-min-width: 16px;
+		-o-min-width: 16px;
+		-webkit-min-width: 16px;
+		min-width: 16px;
+		min-height: 16px;
+
+		margin: 7px 0 0 0;
+		position: absolute;
+		left: 5px;
 	}
 
 
@@ -358,16 +368,16 @@ ul {
 
 .departmentHeader {
 	font-size: 26px;
-	white-space: nowrap;
+	/*white-space: nowrap;
 	text-overflow: ellipsis;
-	overflow: hidden;
+	overflow: hidden;*/
 	margin: 30px 30px 0 30px;
 	font-weight: normal;
 }
 
 .shortSearch {
-	width: 819px;
-	height: 38px;
+	width: 820px;
+	height: 36px;
 	margin: 40px 0 0 30px;
 	font-size: 18px;
 	position: relative;
@@ -376,7 +386,7 @@ ul {
 .departmentSearchText {
 	width: inherit;	
 	padding-left: 15px;
-	height: 34px;
+	height: 32px;
 	margin: 0;
 	border: 1px solid #dadada;
 	background: #eeeeee;
@@ -390,7 +400,7 @@ ul {
 
 .departmentSearchButton {
 	width: 100px;
-	height: 38px;
+	height: 36px;
 	float: right;
 	
 	border: 1px solid #d2ac67;
@@ -421,6 +431,63 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 .advancedSearch:hover {
 	cursor: pointer;
 }
+
+.additionalSearchPanel {
+	width: 776px;
+	padding: 30px 44px 18px 16px;
+	background: #fafafa;
+	margin: 0 0 0 30px;
+	border: 1px solid #dadada;
+	border-top-width: 0;
+	-webkit-box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	-moz-box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	display: none;
+}
+
+.additionalSearchRow {
+	display: inline-block;
+	width: inherit;	
+}
+.additionalSearchRowFirst {
+	
+}
+
+.fieldLabel {
+	margin: 0;
+	width: 45%;
+	float: left;
+}
+
+.field {
+	width: 45%;
+	float: left;
+}
+
+.dataPicker {
+	width: 100px;	
+	display: inline-block;
+}
+
+div.rightItem p {
+		display: inline-block;
+	margin: 0;
+}
+
+.dataPickerSeparator {
+	
+}
+
+.rightItem {
+	margin-left: 10%;
+	float: right;
+	width: 44%;
+}
+
+.noFloatItem {
+	float: none;
+}
+
 
 #searchResult {
 	margin: 0 30px;
