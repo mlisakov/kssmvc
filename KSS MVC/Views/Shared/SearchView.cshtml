@@ -10,61 +10,15 @@
 
 <div class="searchLayout">
     <h3 class="departmentHeader">@Model.GetDepartmentName()</h3>
-    @*    @using (Html.BeginForm("SearchEmployees", "Home"))
-    {
-        <div class="shortSearch">
-            @Html.TextBox("employeeName", null, new {@class = "departmentSearchText", @placeholder = "поиск по ФИО", @maxlength = "100"})
-            <input type="submit" class="departmentSearchButton" value="Найти" />
-        </div>
-    }*@
     
     <div class="shortSearch">
         <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
         <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        
     </div>
-    
-    @*data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"*@
+   
     <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
-    
-@*    <ul class="personUL">*@
-@*        <li>*@
-@*            <div class="lyncStatusDiv"></div>*@
-@*            <div class="personIMGLayout">*@
-@*                <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    *@
-@*            </div>*@
-@*            *@
-@*            <div class="innerPersonLayout">*@
-@*                <h5 class="personName">Титов Герман Степанович</h5>*@
-@*                <p class="personDepartment">Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра</p>*@
-@*                <p class="personJob">Директор центра</p>*@
-@*                <div class="phonesLine">*@
-@*                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>    *@
-@*                </div>*@
-@*                <div class="phonesLine">*@
-@*                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>*@
-@*                </div>*@
-@*            </div>*@
-@*        </li>*@
-@*        <li>*@
-@*            <div class="lyncStatusDiv"></div>*@
-@*            <div class="personIMGLayout">*@
-@*                <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />*@
-@*            </div>*@
-@*            <div class="innerPersonLayout">*@
-@*                <h5 class="personName">Титов Герман Степанович большое имя еще вот тут</h5>*@
-@*                <p class="personDepartment">Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра</p>*@
-@*                <p class="personJob">Директор центра, герцог Ижорский, генерал-фельдмаршал, президент Военной коллегии</p>*@
-@*                <div class="phonesLine">*@
-@*                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>*@
-@*                </div>*@
-@*                <div class="phonesLine">*@
-@*                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>*@
-@*                </div>*@
-@*            </div>*@
-@*        </li>*@
-@**@
-    @*    </ul>*@
     <img class="progress" src="~/Images/progress.gif" style="display: none" />
+
     <div id="searchResult">
         
     </div>

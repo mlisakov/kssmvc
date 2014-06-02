@@ -4,6 +4,7 @@ using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
 using System.Web.Management;
+using System.Web.UI;
 using KSS.Models;
 using KSS.Server.Entities;
 
@@ -20,28 +21,60 @@ namespace KSS.Helpers
 
         public static DepartmentState GetDepartmentState(Guid id)
         {
-            return baseModel.DepartmentStates.FirstOrDefault(t => t.Id == id);
+            try
+            {
+                return baseModel.DepartmentStates.FirstOrDefault(t => t.Id == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         public static DivisionState GetDivisionState(Guid id)
         {
-            return baseModel.DivisionStates.FirstOrDefault(t => t.Id == id);
+            try
+            {
+                return baseModel.DivisionStates.FirstOrDefault(t => t.Id == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
         }
 
         public static DepartmentState GetEmployeeDepartment(Guid userGuid)
         {
-            return (from employee in baseModel.Employees
-                    join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                from m in employeeStaff.DefaultIfEmpty()
-                    join depState in baseModel.DepartmentStates on m.DepartmentId equals depState.Id into departmentState
-                from ds in departmentState.DefaultIfEmpty()
-                where employee.Id == userGuid && m.ExpirationDate == null
-                select ds).First();
+            try
+            {
+                DepartmentState depSt = (from employee in baseModel.Employees
+                                      join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                      from m in employeeStaff.DefaultIfEmpty()
+                                      join depState in baseModel.DepartmentStates on m.DepartmentId equals depState.Id into
+                                          departmentState
+                                      from ds in departmentState.DefaultIfEmpty()
+                                      where employee.Id == userGuid && m.ExpirationDate == null
+                                      select ds).FirstOrDefault();
+                if (depSt != null)
+                    return depSt;
+                return new DepartmentState() {Department = "Не задано!"};
+            }
+            catch (Exception ex)
+            {
+                return new DepartmentState() { Department = "Не удалось получить данные!" };
+            }
+
         }
 
         public static DivisionState GetEmployeeDivision(Guid userGuid)
         {
-            return (from employee in baseModel.Employees
+            try
+            {
+                DivisionState dState=(from employee in baseModel.Employees
                     join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
                     join departmentState in baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
@@ -50,7 +83,16 @@ namespace KSS.Helpers
                     join divisionState in baseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
                 from divS in divState.DefaultIfEmpty()
                 where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
-                select divS).First();
+                select divS).FirstOrDefault();
+                if (dState != null)
+                    return dState;
+                return new DivisionState(){Division = "Не задано!"};
+            }
+            catch (Exception)
+            {
+                return new DivisionState() { Division = "Не удалось получить данные!" };
+            }
+
         }
 
         public static Tuple<Guid, string> GetEmployeeFullName(string userLogin)
@@ -65,26 +107,46 @@ namespace KSS.Helpers
 
         public static Employee GetEmployee(Guid employeeGuid)
         {
-            return (from employee in baseModel.Employees
-                where employee.Id.Equals(employeeGuid)
-                select employee).First();
+            try
+            {
+                return (from employee in baseModel.Employees
+                    where employee.Id.Equals(employeeGuid)
+                    select employee).FirstOrDefault();
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+
         }
 
         public static PositionState GetEmployeePositionState(Guid employeeGuid)
         {
-            return (from employee in baseModel.Employees
+            try
+            {
+                PositionState pState=(from employee in baseModel.Employees
                     join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
                     join posState in baseModel.PositionStates on m.PositionId equals posState.Id into positionState
                 from ps in positionState.DefaultIfEmpty()
                 where employee.Id == employeeGuid
                 select ps
-                ).First();
+                ).FirstOrDefault();
+                if (pState != null)
+                    return pState;
+                return new PositionState() { Title = "Не задано!" };
+            }
+            catch (Exception ex)
+            {
+
+                return new PositionState() { Title = "Не удалось получить данные!" };
+            }
+
         }
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
         {
-            return (from employee in baseModel.Employees
+            IQueryable<SpecificStaffPlace> sSP=(from employee in baseModel.Employees
                     join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
                 from m in employeeStaff.DefaultIfEmpty()
                     join ss in baseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
@@ -94,7 +156,10 @@ namespace KSS.Helpers
                 from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
                 where employee.Id == employeeGuid
                 select specStaffPlace
-                ).ToList();
+                );
+            if (sSP != null)
+                return sSP.Where(i=>i!=null).ToList();
+            return new List<SpecificStaffPlace>();
         }
 
         //public static List<SpecificStaff> GetEmployeeSpecificStaffs(Guid employeeGuid)
@@ -110,12 +175,15 @@ namespace KSS.Helpers
 
         public static List<EmployeePlace> GetEmployeePlaces(Guid employeeGuid)
         {
-            return (from employee in baseModel.Employees
+            IQueryable<EmployeePlace> eP=(from employee in baseModel.Employees
                     join ep in baseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
                 from empPlace in employeePlase.DefaultIfEmpty()
                 where employee.Id == employeeGuid
                 select empPlace
-                ).ToList();
+                );
+            if (eP != null)
+                return eP.Where(i => i != null).ToList();
+            return new List<EmployeePlace>();
         }
 
         public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
@@ -163,12 +231,14 @@ namespace KSS.Helpers
 
         }
 
-        public static List<Employee> Search(string employeeName)
+        public static List<EmployeeModel> Search(string employeeName,int pageSize,int startIndex)
         {
-            return (from employee in baseModel.Employees
+            List<Employee> employees= (from employee in baseModel.Employees
                     where employee.Name.Contains(employeeName)
                     select employee
-                ).ToList();
+                ).OrderBy(j=>j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
+            var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
+            return t;
         }
     }
 }

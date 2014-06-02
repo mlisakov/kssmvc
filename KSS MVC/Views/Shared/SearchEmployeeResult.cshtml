@@ -2,40 +2,66 @@
 @{
     Layout = "";
 }
+@using System.Data.Entity.Core
 @using KSS.Models
+@using KSS.Server.Entities
 @using Microsoft.Ajax.Utilities
-@model List<KSS.Server.Entities.Employee>
+@model List<EmployeeModel>
 
-@*<div>*@
-<ul class="personUL">
+    <ul class="personUL">
     
-    @for (int i = 0; i < 5; i++)
+        @foreach (EmployeeModel employee in Model)
+        {
+            <li>
+                <div class="lyncStatusDiv"></div>
+                <div class="personIMGLayout">
+                    <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    
+                </div>
+                <div class="innerPersonLayout">
+                    <h5 class="personName">
+                        @employee.Employee.Name
+                    </h5>
+                    <p class="personDepartment"> @employee.DepartmentState.Department</p>
+                    <p class="personJob">@employee.PositionState.Title</p>
+                    <div class="phonesLine">
+                        @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
+                        {
+                            <p class="personCityPhone">33-24;</p>
+                            <p class="personMobilePhone">@empPlace.PhoneNumber</p> @*
+                        <p class="personMail">titov.german@rossety.com</p>*@
+                        }
+                    </div>
+                    <div class="phonesLine">
+                        @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
+                        {
+                            <p class="personCityPhone">33-24;</p>
+                            <p class="personMobilePhone">@specEmpPlace.PhoneNumber</p> @*
+                         <p class="personMail">titov.german@rossety.com</p>*@
+                        }
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+<div id="pages">
+    @for (int i = ViewBag.StartIndex; i < ViewBag.StartIndex + 5; i++)
     {
-        <li>
-            <div class="lyncStatusDiv"></div>
-            <div class="personIMGLayout">
-                <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    
-            </div>
-            <div class="innerPersonLayout">
-                <h5 class="personName">
-                    @Model[i].Name
-                </h5>
-                <p class="personDepartment">Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра</p>
-                <p class="personJob">Директор центра</p>
-                <div class="phonesLine">
-                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>    
-                </div>
-                <div class="phonesLine">
-                    <p class="personCityPhone">33-24;</p><p class="personMobilePhone">(495)995-53-33</p><p class="personMail">titov.german@rossety.com</p>
-                </div>
-            </div>
-        </li>
+        <a class='pageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new {employeeName = ViewBag.Search, startIndex = i})'>
+            @i
+        </a>
     }
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function() {
         
-@*    @foreach (KSS.Server.Entities.Employee employee in Model)*@
-@*    {*@
-@**@
-@*    }*@
-            
-</ul>
-@*</div>*@
+        $('.pageNmbr').on('click', function (e) {
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            loadSearchPage(url);
+        });
+    });
+
+</script>
