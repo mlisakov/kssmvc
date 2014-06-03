@@ -12,7 +12,7 @@ body {
 	min-width: 1220px;
 	min-height: 100%;
 	height: 100%;
-	overflow: auto;
+	overflow: hidden;
 }
 
 header, footer, nav, section {
@@ -129,18 +129,18 @@ ul {
 
 
 	#centralPart {
+		overflow: auto;
 		background: white;
 		position: absolute;
-		left: 630px;
+		left: 33%;
 		right: 0;
 		top: 80px;
 		bottom: 0;
-		min-width: 600px;
-		min-height: 600px;
 	}
 
 #divTree {
-	width: 630px;
+
+	width: 33%;
 	position: absolute;
 	top: 80px;
 	bottom: 0;
@@ -148,11 +148,11 @@ ul {
 	background: #c6ecff;
 	color: #00325d;
 	font-size: 20px;
-	overflow-y: auto;
-		min-height: 600px;
+	overflow: auto;
 }
 
 .innerUL {
+	min-width: 250px;
 	padding-left: 25px;
 	margin: 0;
 }
@@ -241,6 +241,21 @@ ul {
 
 	.folder-parent span {
 		display: inherit;
+	}
+
+	.treeProgress {
+		width: 16px;
+		height: 16px;
+		-moz-min-width: 16px;
+		-ms-min-width: 16px;
+		-o-min-width: 16px;
+		-webkit-min-width: 16px;
+		min-width: 16px;
+		min-height: 16px;
+
+		margin: 7px 0 0 0;
+		position: absolute;
+		left: 5px;
 	}
 
 
@@ -345,6 +360,7 @@ ul {
 
 /*search*/
 
+
 .searchLayout {
 	background: white;
 
@@ -352,16 +368,16 @@ ul {
 
 .departmentHeader {
 	font-size: 26px;
-	white-space: nowrap;
+	/*white-space: nowrap;
 	text-overflow: ellipsis;
-	overflow: hidden;
+	overflow: hidden;*/
 	margin: 30px 30px 0 30px;
 	font-weight: normal;
 }
 
 .shortSearch {
-	width: 819px;
-	height: 38px;
+	width: 820px;
+	height: 36px;
 	margin: 40px 0 0 30px;
 	font-size: 18px;
 	position: relative;
@@ -370,7 +386,7 @@ ul {
 .departmentSearchText {
 	width: inherit;	
 	padding-left: 15px;
-	height: 34px;
+	height: 32px;
 	margin: 0;
 	border: 1px solid #dadada;
 	background: #eeeeee;
@@ -379,14 +395,14 @@ ul {
 	box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
 
 	position: absolute;
-	
+
 }
 
 .departmentSearchButton {
 	width: 100px;
-	height: 38px;
+	height: 36px;
 	float: right;
-	
+
 	border: 1px solid #d2ac67;
 	color: white;
 
@@ -416,24 +432,80 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	cursor: pointer;
 }
 
+.additionalSearchPanel {
+	width: 776px;
+	padding: 30px 44px 18px 16px;
+	background: #fafafa;
+	margin: 0 0 0 30px;
+	border: 1px solid #dadada;
+	border-top-width: 0;
+	-webkit-box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	-moz-box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	box-shadow: inset 1px 0px 5px 0px rgba(11, 11, 11, 0.15);
+	display: none;
+}
+
+.additionalSearchRow {
+	display: inline-block;
+	width: inherit;	
+}
+.additionalSearchRowFirst {
+
+}
+
+.fieldLabel {
+	margin: 0;
+	width: 45%;
+	float: left;
+}
+
+.field {
+	width: 45%;
+	float: left;
+}
+
+.dataPicker {
+	width: 100px;	
+	display: inline-block;
+}
+
+div.rightItem p {
+		display: inline-block;
+	margin: 0;
+}
+
+.dataPickerSeparator {
+
+}
+
+.rightItem {
+	margin-left: 10%;
+	float: right;
+	width: 44%;
+}
+
+.noFloatItem {
+	float: none;
+}
+
+
+#searchResult {
+	margin: 0 30px;
+}
+
 .personUL {
-	position: absolute;
-	top: 185px;
-	bottom: 0;
-	left: 30px;
-	right: 30px;
 	padding: 0;
 }
 
 .personUL li {
-	
+
 	min-height: 130px;
 	position: relative;
 	margin: 15px 0;
 }
 
 .personIMG {
-	
+
 	width: 120px;		
 	/*vertical-align: middle;*/
 }
@@ -451,7 +523,11 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 .personName {
 	font-size: 26px;
 	color: #4988b9;
-	max-width: 400px;
+	-moz-min-width: 400px;
+	-ms-min-width: 400px;
+	-o-min-width: 400px;
+	-webkit-min-width: 400px;
+	min-width: 400px;
 	margin: 0;
 	margin-top: -4px;
 	display: inline-block;
@@ -462,13 +538,21 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	margin: 12px 0 0 0;
 	font-size: 16px;
 	color: rgb(73, 136, 185);
-	max-width: 360px;
+	-moz-min-width: 360px;
+	-ms-min-width: 360px;
+	-o-min-width: 360px;
+	-webkit-min-width: 360px;
+	min-width: 360px;
 }
 
 .personJob {
 	font-size: 16px;
 	margin: 0;
-	max-width: 360px;
+	-moz-min-width: 360px;
+	-ms-min-width: 360px;
+	-o-min-width: 360px;
+	-webkit-min-width: 360px;
+	min-width: 360px;
 }
 
 .personCityPhone {
@@ -494,7 +578,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	height: 100%;
 	background: #5dd255;
 	position: absolute;
-	
+
 }
 
 .personIMGLayout {
@@ -512,4 +596,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	padding-bottom: 14px;
 }
 
+.searchProgress {	
+	display: none;
+}
 
+
+/* end search*/

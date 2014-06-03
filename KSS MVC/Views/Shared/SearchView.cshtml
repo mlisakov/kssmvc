@@ -1,5 +1,4 @@
-﻿
-<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 @{
     Layout = "";
 }
@@ -7,43 +6,126 @@
 @using KSS.Models
 @model SearchViewModel
 
-
 <div class="searchLayout">
-    <h3 class="departmentHeader">@Model.GetDepartmentName()</h3>
+    <h3 class="departmentHeader">@Model.GetDepartmentName()
+        <img class="searchProgress" src="~/Images/progress.gif" />
+    </h3>
+    @*    @using (Html.BeginForm("SearchEmployees", "Home"))
+    {
+        <div class="shortSearch">
+            @Html.TextBox("employeeName", null, new {@class = "departmentSearchText", @placeholder = "поиск по ФИО", @maxlength = "100"})
+            <input type="submit" class="departmentSearchButton" value="Найти" />
+        </div>
+    }*@
     
     <div class="shortSearch">
         <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по ФИО" maxlength="100"/>
         <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        
     </div>
-   
-    <a class="advancedSearch">Расширенный поиск <span>&darr;</span></a>
-    <img class="progress" src="~/Images/progress.gif" style="display: none" />
+    <div class="additionalSearchPanel">
+        <div class=" additionalSearchRowFirst additionalSearchRow ">
+            <p class="fieldLabel">филиал</p>
 
+            <p class="fieldLabel  rightItem">местоположение</p>
+
+            <select class="field ">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Filial</option>
+            </select>
+
+
+            <select class="field rightItem">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+        </div>
+
+        <div class="additionalSearchRow">
+            <p class="fieldLabel">член штаба</p>
+            
+            <p class="fieldLabel rightItem">номер телефона</p>
+
+            <select class="field">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Filial</option>
+            </select>
+
+            <input type="text" class="field rightItem"/>            
+        </div>
+
+        <div class="additionalSearchRow">
+            <p class="fieldLabel">подразделение</p>
+            
+            
+            <p class="fieldLabel rightItem">дни рождения</p>
+
+            <select class="field">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+            
+            <div class="rightItem">
+                <input type="text" class="dataPicker" />
+                <p class="dataPickerSeparator">&ndash;</p>
+                <input type="text" class="dataPicker" />                   
+            </div>
+
+        </div>
+        <div class="additionalSearchRow">
+            <p class="fieldLabel noFloatItem">должность</p>
+            <select class="field ">
+                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>
+            </select>
+        </div>
+    </div>
+    
+
+    @*data-url="@Url.Action("SearchEmployees", "Home", new {id = employee.Employee.Id})"*@
+    <a class="advancedSearch">Расширенный поиск <span>↓</span></a>
+    
+    
     <div id="searchResult">
         
     </div>
 
 </div>
 
+
 <script type="text/javascript">
 
-    $(document).ready(function() {
-        
-        $('#searchBtn').on('click', function(e) {            
+    $(document).ready(function () {
+
+        $('#searchBtn').on('click', function (e) {
             var value = $('#searchText').val();
             var url = '@Url.Action("SearchEmployees", "Home", new {employeeName = "-1"})';
             url = url.replace('-1', value);
-            $('.progress').show();
+            $('.searchProgress').show();
 
-            loadSearchPage(url);
+            loadSearchPageResult(url);
+        });
+
+
+        $('.advancedSearch').on('click', function (e) {
+            //toggle visibility of additional search panel
+            $('.additionalSearchPanel').slideToggle('slow');
+
+            var arrow = $(e.target).children('span');
+            if (arrow.length > 0) {
+                if (arrow.html() == '↓')
+                    arrow.text('↑');
+                else
+                    arrow.text('↓');
+            }
+
         });
     });
 
-    function loadSearchPage(url) {
-        $.get(url, function(data) {
+    function loadSearchPageResult(url) {
+        $.get(url, function (data) {
             var resultDiv = $('#searchResult');
             if (resultDiv != null) {
-                $('.progress').hide();
+                $('.searchProgress').hide();
                 resultDiv.empty();
                 resultDiv.append(data);
             }
