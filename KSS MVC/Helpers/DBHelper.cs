@@ -47,6 +47,34 @@ namespace KSS.Helpers
 
         }
 
+        public static List<DivisionState> GetDivisionStates()
+        {
+            try
+            {
+                return baseModel.DivisionStates.ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public static List<DepartmentState> GetDepartmentStates()
+        {
+            try
+            {
+                return baseModel.DepartmentStates.ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
         public static DepartmentState GetEmployeeDepartment(Guid userGuid)
         {
             try

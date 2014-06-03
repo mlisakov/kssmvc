@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using KSS.Helpers;
+using KSS.Server.Entities;
 
 namespace KSS.Models
 {
@@ -46,6 +47,16 @@ namespace KSS.Models
                 result = item.Department;
             }
             return result;
+        }
+
+        public List<DivisionState> GetDivisionStates()
+        {
+            return DBHelper.GetDivisionStates();
+        }
+
+        public List<DepartmentState> GetDepartmentStates()
+        {
+            return DBHelper.GetDepartmentStates();
         }
 
         public List<EmployeeModel> Search(string employeeName, int page = 0)

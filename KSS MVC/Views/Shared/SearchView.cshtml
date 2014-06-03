@@ -4,6 +4,7 @@
 }
 
 @using KSS.Models
+@using KSS.Server.Entities
 @model SearchViewModel
 
 <div class="searchLayout">
@@ -29,12 +30,15 @@
             <p class="fieldLabel  rightItem">местоположение</p>
 
             <select class="field ">
-                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Filial</option>
+                <option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>
+                @foreach (DivisionState divState in Model.GetDivisionStates())
+                {
+                    <option class="comboBoxItem" value='@divState.Id'>@divState.Division</option>
+                }
             </select>
 
-
             <select class="field rightItem">
+
                 <option class="comboBoxItem" value="0"></option>
                 <option class="comboBoxItem" value="1">Placement</option>
             </select>
@@ -60,8 +64,13 @@
             <p class="fieldLabel rightItem">дни рождения</p>
 
             <select class="field">
-                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Placement</option>
+                <option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>
+                @foreach (DepartmentState depState in Model.GetDepartmentStates())
+                {
+                    <option class="comboBoxItem" value='@depState.Id'>@depState.Department</option>
+                }
+                @*                <option class="comboBoxItem" value="0"></option>
+                <option class="comboBoxItem" value="1">Placement</option>*@
             </select>
             
             <div class="rightItem">
@@ -94,9 +103,9 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
-        $('#searchBtn').on('click', function (e) {
+        $('#searchBtn').on('click', function(e) {
             var value = $('#searchText').val();
             var url = '@Url.Action("SearchEmployees", "Home", new {employeeName = "-1"})';
             url = url.replace('-1', value);
@@ -106,7 +115,7 @@
         });
 
 
-        $('.advancedSearch').on('click', function (e) {
+        $('.advancedSearch').on('click', function(e) {
             //toggle visibility of additional search panel
             $('.additionalSearchPanel').slideToggle('slow');
 
@@ -122,7 +131,7 @@
     });
 
     function loadSearchPageResult(url) {
-        $.get(url, function (data) {
+        $.get(url, function(data) {
             var resultDiv = $('#searchResult');
             if (resultDiv != null) {
                 $('.searchProgress').hide();
