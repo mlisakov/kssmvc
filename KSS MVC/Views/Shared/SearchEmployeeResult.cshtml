@@ -19,7 +19,7 @@
                 </div>
                 <div class="innerPersonLayout">
                     <h5 class="personName">
-                        @employee.Employee.Name
+                        <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
                     </h5>
                     <p class="personDepartment"> @employee.DepartmentState.Department</p>
                     <p class="personJob">@employee.PositionState.Title</p>
