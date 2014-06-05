@@ -128,18 +128,17 @@ ul {
 	}
 
 
-	#centralPart {
-		overflow: auto;
-		background: white;
-		position: absolute;
-		left: 33%;
-		right: 0;
-		top: 80px;
-		bottom: 0;
-	}
+#centralPart {
+	overflow: auto;
+	background: white;
+	position: absolute;
+	left: 33%;
+	right: 0;
+	top: 80px;
+	bottom: 0;
+}
 
 #divTree {
-	
 	width: 33%;
 	position: absolute;
 	top: 80px;
@@ -171,61 +170,61 @@ ul {
 			cursor: pointer;
 		}
 
-		.selectedTreeNode {
-			background: white;
-		}
+.selectedTreeNode {
+	background: white;
+}
 
-		.innerUL li span {
-			padding: 0 15px;
-			vertical-align: middle;
-			width: inherit;
-			display: block;
-			-moz-text-overflow: ellipsis;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			float: left;
-			white-space: nowrap;
-		}
+.innerUL li span {
+	padding: 0 15px;
+	vertical-align: middle;
+	width: inherit;
+	display: block;
+	-moz-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	float: left;
+	white-space: nowrap;
+}
 
-		.innerUL li:hover span.tooltip {
-			display: initial;
-		}
+.innerUL li:hover span.tooltip {
+	display: initial;
+}
 
-		.innerUL li span.folder:hover, .innerUL li span.leaf:hover {
-			text-decoration: underline;
-		}
+.innerUL li span.folder:hover, .innerUL li span.leaf:hover {
+	text-decoration: underline;
+}
 
 
-		.innerUL li span.tooltip {
-			pointer-events: none;
-			display: none;
-			position: absolute;
-			height: 20px;
-			line-height: 20px;
-			padding: 10px;
-			font-size: 14px;
-			text-align: center;
-			color: rgb(113, 157, 171);
-			background: rgb(255, 255, 255);
-			border: 4px solid rgb(255, 255, 255);
-			border-radius: 5px;
-			text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
-			box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
-			left: 0;
-			margin-top: -45px;
-		}
+.innerUL li span.tooltip {
+	pointer-events: none;
+	display: none;
+	position: absolute;
+	height: 20px;
+	line-height: 20px;
+	padding: 10px;
+	font-size: 14px;
+	text-align: center;
+	color: rgb(113, 157, 171);
+	background: rgb(255, 255, 255);
+	border: 4px solid rgb(255, 255, 255);
+	border-radius: 5px;
+	text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
+	box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
+	left: 0;
+	margin-top: -45px;
+}
 
-			.innerUL li span.tooltip:after {
-				content: "";
-				position: absolute;
-				width: 0;
-				height: 0;
-				border-width: 10px;
-				border-style: solid;
-				border-color: #FFFFFF transparent transparent transparent;
-				top: 44px;
-				left: 50px;
-			}
+	.innerUL li span.tooltip:after {
+		content: "";
+		position: absolute;
+		width: 0;
+		height: 0;
+		border-width: 10px;
+		border-style: solid;
+		border-color: #FFFFFF transparent transparent transparent;
+		top: 44px;
+		left: 50px;
+	}
 
 .folder-border {
 }
@@ -243,20 +242,19 @@ ul {
 		display: inherit;
 	}
 
-	.treeProgress {
-		width: 16px;
-		height: 16px;
-		-moz-min-width: 16px;
-		-ms-min-width: 16px;
-		-o-min-width: 16px;
-		-webkit-min-width: 16px;
-		min-width: 16px;
-		min-height: 16px;
-
-		margin: 7px 0 0 0;
-		position: absolute;
-		left: 5px;
-	}
+.treeProgress {
+	width: 16px;
+	height: 16px;
+	-moz-min-width: 16px;
+	-ms-min-width: 16px;
+	-o-min-width: 16px;
+	-webkit-min-width: 16px;
+	min-width: 16px;
+	min-height: 16px;
+	margin: 7px 0 0 0;
+	position: absolute;
+	left: 5px;
+}
 
 
 
@@ -363,7 +361,6 @@ ul {
 
 .searchLayout {
 	background: white;
-
 }
 
 .departmentHeader {
@@ -378,13 +375,13 @@ ul {
 .shortSearch {
 	width: 820px;
 	height: 36px;
-	margin: 40px 0 0 30px;
+	margin: 35px 0 0 30px;
 	font-size: 18px;
 	position: relative;
 }
 
 .departmentSearchText {
-	width: inherit;	
+	width: inherit;
 	padding-left: 15px;
 	height: 32px;
 	margin: 0;
@@ -393,32 +390,80 @@ ul {
 	-webkit-box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
 	-moz-box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
 	box-shadow: inset 0px 1px 5px 0px rgba(11,11,11,0.15);
-
+	font-size: 18px;
+	color: #000;
 	position: absolute;
-	
 }
+
+	.departmentSearchText:hover {
+		border-color: #ababab;
+	}
+
+
+	.departmentSearchText:focus {
+		border-color: #ababab;
+		outline: none;
+	}
+
+
+	.departmentSearchText::-webkit-input-placeholder { /* WebKit browsers */
+		color: #c8c8c8;
+	}
+
+	.departmentSearchText:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		color: #c8c8c8;
+	}
+
+	.departmentSearchText::-moz-placeholder { /* Mozilla Firefox 19+ */
+		color: #c8c8c8;
+	}
+
+	.departmentSearchText:-ms-input-placeholder { /* Internet Explorer 10+ */
+		color: #c8c8c8;
+	}
 
 .departmentSearchButton {
 	width: 100px;
 	height: 36px;
 	float: right;
-	
 	border: 1px solid #d2ac67;
 	color: white;
-
 	position: absolute;
+	outline: none;
 	right: -17px;
-
+	font-size: 18px;
 	background: #d2ac67; /* Old browsers */
-background: -moz-linear-gradient(top,  #d2ac67 0%, #c18d40 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2ac67), color-stop(100%,#c18d40)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  #d2ac67 0%,#c18d40 100%); /* IE10+ */
-background: linear-gradient(to bottom,  #d2ac67 0%,#c18d40 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', endColorstr='#c18d40',GradientType=0 ); /* IE6-9 */
-
+	background: -moz-linear-gradient(top, #d2ac67 0%, #c18d40 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2ac67), color-stop(100%,#c18d40)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #d2ac67 0%,#c18d40 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', endColorstr='#c18d40',GradientType=0 ); /* IE6-9 */
 }
+
+	.departmentSearchButton:hover {
+		background: -moz-linear-gradient(top, #e8cb97 0%, #cfa261 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e8cb97), color-stop(100%,#cfa261)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #e8cb97 0%,#cfa261 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #e8cb97 0%,#cfa261 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #e8cb97 0%,#cfa261 100%); /* IE10+ */
+		background: linear-gradient(to bottom, #e8cb97 0%,#cfa261 100%); /* W3C */
+	}
+
+	.departmentSearchButton:active {
+		background: -moz-linear-gradient(top, #cfa65f 0%, #c39044 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cfa65f), color-stop(100%,#c39044)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #cfa65f 0%,#c39044 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #cfa65f 0%,#c39044 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #cfa65f 0%,#c39044 100%); /* IE10+ */
+		background: linear-gradient(to bottom, #cfa65f 0%,#c39044 100%); /* W3C */
+		
+		-webkit-box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
+		-ms-box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
+		box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
+	}
+
 
 .advancedSearch {
 	font-size: 14px;
@@ -428,9 +473,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	width: 140px;
 }
 
-.advancedSearch:hover {
-	cursor: pointer;
-}
+	.advancedSearch:hover {
+		cursor: pointer;
+	}
 
 .additionalSearchPanel {
 	width: 776px;
@@ -447,41 +492,75 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 
 .additionalSearchRow {
 	display: inline-block;
-	width: inherit;	
+	width: inherit;
 }
+
 .additionalSearchRowFirst {
-	
+
+}
+
+.additionalSearchRowFirst .fieldLabel {
+	margin-top: 0px;
 }
 
 .fieldLabel {
-	margin: 0;
-	width: 45%;
+	margin: 6px 0 3px 0;
+	width: 360px;
 	float: left;
+	font-size: 12px;
+	color: #777;
 }
 
 .field {
-	width: 45%;
+	width: 360px;
 	float: left;
+	height: 27px;
+	background: #fff;
+	border: 1px solid #dadada;
+	color: #313131;
+	font-size: 14px;
+		outline: none;
+}
+
+input.field:hover, select.field:hover {
+	border-color: #9d9d9d;
+}
+
+input.field:active, select.field:active {
+	border-color: #9d9d9d;
+
 }
 
 .dataPicker {
-	width: 100px;	
+	width: 100px;
 	display: inline-block;
+	outline: none;
+	border: 1px solid #dadada;
+}
+
+.dataPicker:hover{
+	border-color: #9d9d9d;
+}
+
+.dataPicker:active{
+	border-color: #9d9d9d;
+
 }
 
 div.rightItem p {
-		display: inline-block;
-	margin: 0;
+	display: inline-block;
+	margin: 0 -4px;
+	width: 18px;
+	text-align: center;
 }
 
 .dataPickerSeparator {
-	
 }
 
 .rightItem {
-	margin-left: 10%;
-	float: right;
-	width: 44%;
+	margin-left: 36px;
+	float: left;
+	width: 360px;
 }
 
 .noFloatItem {
@@ -497,16 +576,14 @@ div.rightItem p {
 	padding: 0;
 }
 
-.personUL li {
-	
-	min-height: 130px;
-	position: relative;
-	margin: 15px 0;
-}
+	.personUL li {
+		min-height: 130px;
+		position: relative;
+		margin: 15px 0;
+	}
 
 .personIMG {
-	
-	width: 120px;		
+	width: 120px;
 	/*vertical-align: middle;*/
 }
 
@@ -517,7 +594,6 @@ div.rightItem p {
 	top: 0;
 	bottom: 0;*/
 	margin-left: 140px;
-
 }
 
 .personName {
@@ -560,17 +636,18 @@ div.rightItem p {
 	font-size: 16px;
 	display: inline-block;
 }
+
 .personMobilePhone {
 	margin: 0 0 0 17px;
 	font-size: 16px;
 	display: inline-block;
 }
+
 .personMail {
 	margin: 0 0 0 17px;
 	font-size: 16px;
 	color: rgb(73, 136, 185);
 	display: inline-block;
-
 }
 
 .lyncStatusDiv {
@@ -578,7 +655,6 @@ div.rightItem p {
 	height: 100%;
 	background: #5dd255;
 	position: absolute;
-	
 }
 
 .personIMGLayout {
@@ -590,13 +666,14 @@ div.rightItem p {
 
 .phonesLine {
 	max-width: 450px;
-	margin-top: 12px;	
-}
-.phonesLine:last-of-type {
-	padding-bottom: 14px;
+	margin-top: 12px;
 }
 
-.searchProgress {	
+	.phonesLine:last-of-type {
+		padding-bottom: 14px;
+	}
+
+.searchProgress {
 	display: none;
 }
 
