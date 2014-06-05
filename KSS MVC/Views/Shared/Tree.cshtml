@@ -1,5 +1,4 @@
-﻿
-<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 @{
     Layout = "";
 }
@@ -89,9 +88,9 @@
 
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
 
-        $('.innerUL').on('click', function(e) {
+        $('.innerUL').on('click', function (e) {
             var currentListItem = $(e.target);
 
 
@@ -164,7 +163,7 @@
         });
 
         function loadDivisionStates(listItem, url) {
-            $.get(url, function(data) {
+            $.get(url, function (data) {
                 //                listItem.parent().after(data);
 
                 listItem.after(data);

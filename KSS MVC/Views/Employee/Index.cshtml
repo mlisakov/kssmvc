@@ -1,9 +1,58 @@
-﻿@model KSS.Models.EmployeeModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
+﻿
+@using KSS.Server.Entities
+@model KSS.Models.EmployeeModel
+
+<script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
+
+@section Header
+{
+    <nav class="mainMenuLayout">
+        <img class="logo" src="~/Images/logo.png"/>
+        
+        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
+
+        @*        <ul class="mainMenu">
+            <li class="selectedPage">
+                <div>
+                    @Html.ActionLink("Главная", "Index", "Home")    
+                </div>
+            </li>
+            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
+            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
+        </ul>*@
+       
+        <div class="birthDayComboBox">
+            <p>Дни рождения</p>
+            <div class="plus"></div>
+        </div>
+    </nav>
 }
 
-<h2>Employee</h2>
-Имя @Model.Employee.Name
-Должность  @Model.PositionState.Title
-Дивизион  @Model.DivisionState.Division
+<div>
+    <div class="personIMGLayout">
+        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    
+    </div>
+    <div class="innerPersonLayout">
+        <h5 class="personName">
+            @Model.Employee.Name
+        </h5>
+        <p class="personDepartment"> @Model.DepartmentState.Department</p>
+        <p class="personJob">@Model.PositionState.Title</p>
+        <div class="phonesLine">
+            @foreach (EmployeePlace empPlace in Model.EmployeePlaces)
+            {
+                <p class="personCityPhone">33-24;</p>
+                <p class="personMobilePhone">@empPlace.PhoneNumber</p> @*
+                        <p class="personMail">titov.german@rossety.com</p>*@
+            }
+        </div>
+        <div class="phonesLine">
+            @foreach (SpecificStaffPlace specEmpPlace in Model.SpecificStaffPlaces)
+            {
+                <p class="personCityPhone">33-24;</p>
+                <p class="personMobilePhone">@specEmpPlace.PhoneNumber</p> @*
+                         <p class="personMail">titov.german@rossety.com</p>*@
+            }
+        </div>
+    </div>
+</div>

@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using KSS.Helpers;
+using KSS.Server.Entities;
 
 namespace KSS.Models
 {
@@ -8,15 +11,23 @@ namespace KSS.Models
     {
         private Guid _id;
         private HttpSessionStateBase _session;
+        private int _pageCount;
+
+        public int PageCount
+        {
+            get { return _pageCount; }
+        }
+
 
         //private static CompanyBaseModel _baseModel;
 
-        public SearchViewModel(HttpSessionStateBase session,Guid id)
+        public SearchViewModel(HttpSessionStateBase session, Guid? id = null)
         {
             //if (_baseModel == null)
             //    _baseModel = new CompanyBaseModel();
             _session = session;
-            _id = id;
+            if (id.HasValue)
+                _id = id.Value;
         }
 
         public string GetDepartmentName()
@@ -36,6 +47,25 @@ namespace KSS.Models
                 result = item.Department;
             }
             return result;
+        }
+
+        public List<DivisionState> GetDivisionStates()
+        {
+            return DBHelper.GetDivisionStates();
+        }
+
+        public List<DepartmentState> GetDepartmentStates()
+        {
+            return DBHelper.GetDepartmentStates();
+        }
+
+        public List<EmployeeModel> Search(string employeeName, int page = 0)
+        {
+            List<EmployeeModel> employees=DBHelper.Search(employeeName,5, page).ToList();
+            int _pageCount = employees.Count() / 5;
+                if ((employees.Count() % 5) != 0)
+                    _pageCount++;
+            return employees;
         }
     }
 }
