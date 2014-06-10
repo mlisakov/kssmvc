@@ -37,9 +37,9 @@ namespace KSS.Models
             return DBHelper.AddToFavorites(new Guid(_session["CurrentUser"].ToString()), id);
         }
 
-        public string GetString()
+        public IEnumerable<EmployeeModel> GetBirthdayPeople()
         {
-            return "some string";
+            return DBHelper.GetBirthdayPeople(_session["CurrentUserDivision"].ToString());
         }
 
         public bool RemoveFromFavorite(Guid id)

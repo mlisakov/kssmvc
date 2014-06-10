@@ -1,4 +1,5 @@
-﻿@model KSS.Models.HomeViewModel
+﻿@using WebGrease.Css.Extensions
+@model KSS.Models.HomeViewModel
 
 <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
 
@@ -20,8 +21,6 @@
             {11, "ноября"},
             {12, "декабря"},
         };
-        
-        
     }
     
 
@@ -40,15 +39,20 @@
             <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
         </ul>
         
-        
-        <div class="birthDayComboBox">
-            <div class="hasBirthdayTriangle"></div>
-            <p>Дни рождения</p>
-            <div class="plus"></div>
-        </div>
-        <div class="birthDayLayout">
-            @*            @Model.GetString();*@
+        @{
+            var people = Model.GetBirthdayPeople();
             
+            
+            <div class="birthDayComboBox">                
+                @if (people.Any(t => t.Employee.BirthDay.Value.Month == DateTime.Today.Month && t.Employee.BirthDay.Value.Day == DateTime.Today.Day))
+                {
+                    <div class="hasBirthdayTriangle"></div>    
+                }
+                <p>Дни рождения</p>
+                <div class="plus"></div>
+            </div>
+            
+        <div class="birthDayLayout">
             <div class="tabHeadersPanel">
                 <h3 id="tabHeader1" class="tabHeader selectedTabHeader">Сегодня</h3>
                 <h3 id="tabHeader2" class="tabHeader">Неделя</h3>
@@ -57,132 +61,62 @@
             <div class="tabItemContainer">
                 <div id="tabItem1" class="tabItemContent selectedTabItemContent">
                     <ul class="birthDayPeopleList">
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Титов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
+                        @foreach (var item in people.Where(t => t.Employee.BirthDay.Value.Day == DateTime.Today.Day && t.Employee.BirthDay.Value.Month == DateTime.Today.Month))
+                        {
+                            <li class="birthDayPeopleItem">
+                                <h3 class="birthDayName">@item.Employee.Name</h3>
+                                <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                                <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                                <p class="birthDayJob">@item.PositionState.Title</p>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div id="tabItem2" class="tabItemContent">
                     <ul class="birthDayPeopleList">
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Иванов Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-                       
+                        @{
+                            var now = DateTime.Today;
+
+                            var items = people.Where(t =>
+                            {
+                                var first = new DateTime(t.Employee.BirthDay.Value.Year, now.Month, now.Day);
+                                var last = first.AddDays(7);
+
+                                if (t.Employee.BirthDay.Value >= first && t.Employee.BirthDay.Value <= last)
+                                    return true;
+                                return false;
+                            });
+                            
+                            foreach (var item in items)
+                            {
+                                <li class="birthDayPeopleItem">
+                                    <h3 class="birthDayName">@item.Employee.Name</h3>
+                                    <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                                    <p class="birthDayJob">@item.PositionState.Title</p>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
                 <div id="tabItem3" class="tabItemContent">
                     <ul class="birthDayPeopleList">
-                        <li class="birthDayPeopleItem">
-                            <h3 class="birthDayName">Петров Герман Степанович</h3>
-                            <p class="birthDayDate">@DateTime.Now.Day @months[DateTime.Now.Month]</p>
-                            <p class="birthDayDepartment">
-                                Исполнительный аппарат ОАО "Россети" Руководство Ситуационно-аналитического центра
-                            </p>
-                            <p class="birthDayJob">
-                                Заместитель директора центра
-                            </p>
-                        </li>
-
+                        @foreach (var item in people)
+                        {
+                            <li class="birthDayPeopleItem">
+                                <h3 class="birthDayName">@item.Employee.Name</h3>
+                                <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                                <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                                <p class="birthDayJob">@item.PositionState.Title</p>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
         </div>
-    </nav>
+        }
 
+    </nav>
 }
 
 

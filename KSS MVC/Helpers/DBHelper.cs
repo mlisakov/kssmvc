@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Web.Management;
 using System.Web.UI;
+using System.Web.UI.WebControls.Expressions;
 using KSS.Models;
 using KSS.Server.Entities;
 
@@ -267,6 +270,37 @@ namespace KSS.Helpers
                 ).OrderBy(j=>j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
             var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
             return t;
+        }
+
+        public static List<EmployeeModel> GetBirthdayPeople(string guid)
+        {
+            if (string.IsNullOrEmpty(guid))
+                return new List<EmployeeModel>();
+
+            var today = DateTime.Today;
+            var tommorow = today.AddMonths(1);
+            var division = new Guid(guid);
+
+            var result = (from employee in baseModel.Employees
+                join staff in baseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                where
+                    employee.BirthDay.HasValue &&
+                    ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
+                     (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
+
+                from m in employeeStaff.DefaultIfEmpty()
+                join departmentState in baseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                    depState
+
+                from ds in depState.DefaultIfEmpty()
+                where ds.DivisionId.Equals(division) && ds.ExpirationDate == null
+                select employee.Id).ToList();
+
+            return
+                result.Select(t => new EmployeeModel(t, true, false, true, false, false))
+                    .OrderBy(t => t.Employee.BirthDay.Value.Month)
+                    .ThenBy(t => t.Employee.BirthDay.Value.Day)
+                    .ToList();
         }
     }
 }
