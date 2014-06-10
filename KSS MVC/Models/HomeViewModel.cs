@@ -37,6 +37,11 @@ namespace KSS.Models
             return DBHelper.AddToFavorites(new Guid(_session["CurrentUser"].ToString()), id);
         }
 
+        public string GetString()
+        {
+            return "some string";
+        }
+
         public bool RemoveFromFavorite(Guid id)
         {
             return DBHelper.RemoveFromFavorites(new Guid(_session["CurrentUser"].ToString()), id);

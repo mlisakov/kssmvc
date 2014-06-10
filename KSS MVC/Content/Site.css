@@ -294,7 +294,7 @@ ul {
 	position: absolute;
 	margin: 0;
 	padding: 0;
-	left: 630px;
+	left: 33%;
 }
 
 	.mainMenu li {
@@ -314,15 +314,15 @@ ul {
 }
 
 .birthDayComboBox {
-	height: 55px;
+	height: 50px;
 	float: right;
-	margin-top: 12.5px;
+	margin-top: 15px;
 	margin-right: 60px;
 	width: 230px;
 	background: lightskyblue;
 	color: white;
-	line-height: 55px;
-	border: 1px outset #004161;
+	line-height: 50px;
+	border: 1px solid #004161;
 	background: #006aa9; /* Old browsers */
 	background: -moz-linear-gradient(top, #006aa9 0%, #004784 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#006aa9), color-stop(100%,#004784)); /* Chrome,Safari4+ */
@@ -331,25 +331,169 @@ ul {
 	background: -ms-linear-gradient(top, #006aa9 0%,#004784 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #006aa9 0%,#004784 100%); /* W3C */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006aa9', endColorstr='#004784',GradientType=0 ); /* IE6-9 */
-	border-radius: 3px;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+	-ms-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 }
-
 	.birthDayComboBox p {
 		margin: 0;
 		margin-left: 20px;
 		float: left;
 		font-size: 18px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+		cursor: default;
 	}
 
-	.birthDayComboBox .plus {
+	.birthDayComboBox:hover {
+		border: 1px solid #004161;
+		background: -moz-linear-gradient(top, #127fbf 0%, #0f5c9e 100%); /* FF3.6+ */
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#127fbf), color-stop(100%,#0f5c9e)); /* Chrome,Safari4+ */
+		background: -webkit-linear-gradient(top, #127fbf 0%,#0f5c9e 100%); /* Chrome10+,Safari5.1+ */
+		background: -o-linear-gradient(top, #127fbf 0%,#0f5c9e 100%); /* Opera 11.10+ */
+		background: -ms-linear-gradient(top, #127fbf 0%,#0f5c9e 100%); /* IE10+ */
+		background: linear-gradient(to bottom, #127fbf 0%,#0f5c9e 100%); /* W3C */
+	}
+
+	.activeBirthDayComboBox {
+		background: #dadada;
+		border: 1px solid #9b9b9b;
+	}
+
+	.activeBirthDayComboBox:hover {
+				background: #dadada;
+		border: 1px solid #9b9b9b;
+	}
+
+	.activeBirthDayComboBox p {
+		color: #082236;
+	}
+
+.hasBirthdayTriangle {
+	width: 0;
+	height: 0;
+	border-style: solid;
+	border-width: 16px 16px 0 0;
+	border-color: #f7f7f7 transparent transparent transparent;
+	position: absolute;
+}
+
+.birthDayComboBox .plus {
 		float: right;
 		margin: 25px 20px 25px 0;
 		border-top-color: #1179c2;
 		border-left-width: 6px;
 		border-right-width: 6px;
 		border-top-width: 6px;
-		box-shadow: 1px 0 1px red inset;
+		
 	}
+.birthDayComboBox .activePlus {
+		border-top-color: #a1a5a8;
+}
+
+.birthDayLayout {
+	display: none;
+	width: 390px;
+	min-height: 283px;
+	max-height: 566px;
+	background: #ededed;
+	border: 1px solid #dadada;
+	position: absolute;
+	right: 0;
+	margin-right: 60px;
+	margin-top: 67px;
+	z-index: 100;
+
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+	-ms-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
+}
+
+.tabHeadersPanel {
+	line-height: initial;
+	width: inherit;	
+}
+.tabHeader {
+	margin: 0;
+	font-size: 18px;
+	text-decoration: underline;
+	color: #4988b9;
+	margin-left: 34px;
+	margin-top: 17px;
+	line-height: initial;
+	display: inline-block;
+}
+
+.tabHeader:hover {
+	cursor: pointer;
+}
+
+.selectedTabHeader {
+	color: #191919;
+	text-decoration: none;
+}
+
+.selectedTabHeader:hover {
+	cursor: default;
+}
+
+.tabItemContainer {
+	width: inherit;
+	overflow-y: auto;
+	margin-top: 34px;
+	margin-bottom: 24px;
+	min-height: 180px;
+	max-height: 463px;
+}
+
+.tabItemContent {
+	display: none;
+}
+
+.selectedTabItemContent {
+	display: block;
+}
+
+.birthDayPeopleList {
+	line-height: initial;
+	margin: 0;
+	padding: 0 34px 0 50px;
+}
+
+.birthDayPeopleItem {
+	line-height: initial;
+	list-style-type: disc;
+	margin-bottom: 18px;
+}
+
+.birthDayName {
+	margin: 0;
+	display: inline-block;
+	font-size: 16px;
+	color: #4988b9;
+}
+
+.birthDayDate {
+	margin: 0;
+	display: inline-block;
+	font-size: 16px;
+	color: #4d4d4d;
+}
+
+.birthDayDepartment {
+	font-size: 11px;
+	color: #9a9a9a;
+	margin: 0;	
+}
+
+.birthDayJob {
+	font-size: 11px;
+	color: #9a9a9a;		
+	margin: 0;
+}
 
 /*Menu region end*/
 
