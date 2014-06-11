@@ -15,9 +15,9 @@
 @*            <li class="selectedPage">@Html.ActionLink("Главная", "Index", "Home")</li>*@
 @*            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>*@
             @*            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>*@
-            <li class="selectedPage">Главная</li>
-            <li data-url='@Url.Action("Favorites", "Home")'>Избранное</li>
-            <li data-url='@Url.Action("Help", "Home")'>Помощь</li>
+            <li id="mainMenuItem0" class="selectedPage">Главная</li>
+            <li id="mainMenuItem1" data-url='@Url.Action("Favorites", "Home")'>Избранное</li>
+            <li id="mainMenuItem2" data-url='@Url.Action("Help", "Home")'>Помощь</li>
         </ul>
         
         <div class="birthDayComboBox">                                
@@ -53,30 +53,20 @@
     $(document).ready(function() {
 
         //клик по пунктам главного меню
-        $('.mainMenu li').on('click', function (e) {
-
+        $('.mainMenu li').on('click', function(e) {
             var clickedItem = $(e.target);
-            if (!clickedItem.hasClass('selectedPage')) {
-                $('.selectedPage').removeClass('selectedPage');
-                clickedItem.addClass('selectedPage');
 
-                $('#centralPart').empty();
-
-                var url = clickedItem.data('url');
-                if (url != null) {
-                    loadSearchPage(url);
-                }
-            }
+            var idItem = clickedItem.attr('id');
+            ChangeSelectedPage(idItem.substr(idItem.length - 1));
         });
 
         //клик по комбобоксу с днями рождений
-        $('.birthDayComboBox').on('click', function (e) {
+        $('.birthDayComboBox').on('click', function(e) {
             var comboBox = $('.birthDayComboBox');
             comboBox.toggleClass('activeBirthDayComboBox');
             comboBox.find('.plus').toggleClass('activePlus');
 
             $('.birthDayLayout').toggle();
-
 
 
             if ($('.birthDayLayout').find('.tabHeadersPanel').length == 0 && !_isLoading) {
@@ -88,7 +78,7 @@
         });
 
         //клик по пункту дерева
-        $('#divTree').on('click', function (e) {
+        $('#divTree').on('click', function(e) {
             var target = $(e.target);
             var isSpan = $(e.target).is('span');
 
@@ -97,14 +87,16 @@
                 var ids = target.attr('id');
 
                 if (_lastId != ids) {
-                    
+
                     if (_lastObject != null) {
                         _lastObject.toggleClass('selectedTreeNode');
                     }
 
 
-                    var url = '@Url.Action("SearchView", new {id="-1"})';
+                    var url = '@Url.Action("SearchView", new {id = "-1"})';
                     url = url.replace('-1', ids);
+
+                    ChangeSelectedPage(0);
 
                     loadSearchPage(url);
 
@@ -115,6 +107,49 @@
             }
         });
     });
+
+    function ChangeSelectedPage(page) {
+//        var clickedItem = $(e.target);
+//        if (!clickedItem.hasClass('selectedPage')) {
+//            $('.selectedPage').removeClass('selectedPage');
+//            clickedItem.addClass('selectedPage');
+//
+//            $('#centralPart').empty();
+//
+//            var url = clickedItem.data('url');
+//            if (url != null) {
+//
+//                ClearTreeSelection();
+//
+//                loadSearchPage(url);
+//            }
+//        }
+
+        var clickedItem = $('#mainMenuItem' + page);
+        if (!clickedItem.hasClass('selectedPage')) {
+            $('.selectedPage').removeClass('selectedPage');
+            clickedItem.addClass('selectedPage');
+        
+            $('#centralPart').empty();
+        
+            var url = clickedItem.data('url');
+            if (url != null) {
+        
+                ClearTreeSelection();
+        
+                loadSearchPage(url);
+            }
+        }
+    }
+
+    //сброс выделения в дереве
+    function ClearTreeSelection() {
+        if (_lastObject != null) {
+            _lastObject.removeClass('selectedTreeNode');
+            _lastObject = null;
+            _lastId = '-1';
+        }
+    }
 
     //загрузка центральной части для главной страницы
     function loadSearchPage(url) {
