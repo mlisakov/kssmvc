@@ -59,7 +59,9 @@
 
             $('.birthDayLayout').toggle();
 
-            if ($('.birthDayLayout').find('tabHeadersPanel').length == 0) {
+
+
+            if ($('.birthDayLayout').find('.tabHeadersPanel').length == 0) {
                 var url = '@Url.Action("GetBirthdays", "Home")';
 
                 loadBirthdays(url);
