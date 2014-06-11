@@ -302,14 +302,15 @@ ul {
 		text-align: center;
 		float: left;
 		font-size: 18px;
+		color: white;
+		text-decoration: none;
 	}
 
-		.mainMenu li a {
-			color: white;
-			text-decoration: none;
-		}
+	.mainMenu li:hover {
+		cursor: pointer;
+	}
 
-.selectedPage div {
+.selectedPage {
 	background: rgba(255, 255, 255, 0.2);
 }
 

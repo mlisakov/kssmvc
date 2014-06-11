@@ -12,13 +12,12 @@
         <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
 
         <ul class="mainMenu">
-            <li class="selectedPage">
-                <div>
-                    @Html.ActionLink("Главная", "Index", "Home")    
-                </div>
-            </li>
-            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
-            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
+@*            <li class="selectedPage">@Html.ActionLink("Главная", "Index", "Home")</li>*@
+@*            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>*@
+            @*            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>*@
+            <li class="selectedPage">Главная</li>
+            <li data-url='@Url.Action("Favorites", "Home")'>Избранное</li>
+            <li data-url='@Url.Action("Help", "Home")'>Помощь</li>
         </ul>
         
         <div class="birthDayComboBox">                                
@@ -49,9 +48,28 @@
 <script type="text/javascript">
     var _lastId = '-1';
     var _lastObject = null;
+    var _isLoading = false;
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
+        //клик по пунктам главного меню
+        $('.mainMenu li').on('click', function (e) {
+
+            var clickedItem = $(e.target);
+            if (!clickedItem.hasClass('selectedPage')) {
+                $('.selectedPage').removeClass('selectedPage');
+                clickedItem.addClass('selectedPage');
+
+                $('#centralPart').empty();
+
+                var url = clickedItem.data('url');
+                if (url != null) {
+                    loadSearchPage(url);
+                }
+            }
+        });
+
+        //клик по комбобоксу с днями рождений
         $('.birthDayComboBox').on('click', function (e) {
             var comboBox = $('.birthDayComboBox');
             comboBox.toggleClass('activeBirthDayComboBox');
@@ -61,13 +79,15 @@
 
 
 
-            if ($('.birthDayLayout').find('.tabHeadersPanel').length == 0) {
+            if ($('.birthDayLayout').find('.tabHeadersPanel').length == 0 && !_isLoading) {
                 var url = '@Url.Action("GetBirthdays", "Home")';
 
                 loadBirthdays(url);
+                _isLoading = true;
             }
         });
 
+        //клик по пункту дерева
         $('#divTree').on('click', function (e) {
             var target = $(e.target);
             var isSpan = $(e.target).is('span');
@@ -96,6 +116,7 @@
         });
     });
 
+    //загрузка центральной части для главной страницы
     function loadSearchPage(url) {
         $.get(url, function (data) {
             var parent = $('#centralPart');
@@ -106,6 +127,7 @@
         });
     }
 
+    //Загрузка именниников
     function loadBirthdays(url) {
         $.get(url, function (data) {
             var parent = $('.birthDayLayout');
@@ -113,6 +135,7 @@
                 parent.empty();
                 parent.append(data);
             }
+            _isLoading = false;
         });
     }
 </script>

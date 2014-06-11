@@ -9,11 +9,7 @@
 
         <ul class="mainMenu">
             <li>@Html.ActionLink("Главная", "Index", "Home")</li>
-            <li  class="selectedPage">
-                <div>
-                    @Html.ActionLink("Избранное", "Favorites", "Home")
-                </div>
-            </li>
+            <li  class="selectedPage">@Html.ActionLink("Избранное", "Favorites", "Home")</li>
             <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
         </ul>
     </nav>
