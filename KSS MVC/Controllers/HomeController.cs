@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Antlr.Runtime;
 using KSS.Helpers;
@@ -27,7 +28,9 @@ namespace KSS.Controllers
         public ActionResult SearchView(Guid id)
         {
             SearchViewModel model = new SearchViewModel(Session,id);
-            return View(model);
+            ViewResult view= View(model);
+            view.ViewBag.Divisions = new SelectList(DBHelper.GetDivisionStates(),"Id","Division");
+            return view;
         }
 
         public ActionResult Favorites()
@@ -53,6 +56,7 @@ namespace KSS.Controllers
             return View();
         }
 
+
         public ActionResult SearchEmployees(string employeeName,int startIndex=0)
         {
             var employees = DBHelper.Search(employeeName,_pageSize,startIndex);
@@ -68,6 +72,12 @@ namespace KSS.Controllers
             view.ViewBag.PageCount = count;
             view.ViewBag.Search = employeeName;
             return view;
+        }
+
+        public ActionResult GetDepartments(Guid divisionId)
+        {
+            return Json(new SelectList(DBHelper.GetDepartmentStatesByDivision(divisionId), "Id", "Department"),
+                JsonRequestBehavior.AllowGet);
         }
         
     }

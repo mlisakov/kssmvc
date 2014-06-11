@@ -33,6 +33,20 @@ namespace KSS.Helpers
 
         }
 
+        public static IEnumerable<DepartmentState> GetDepartmentStatesByDivision(Guid id)
+        {
+            try
+            {
+                return baseModel.DepartmentStates.Where(i => i.DivisionId == id);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
         public static DivisionState GetDivisionState(Guid id)
         {
             try

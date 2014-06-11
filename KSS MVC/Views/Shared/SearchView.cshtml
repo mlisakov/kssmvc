@@ -28,9 +28,10 @@
             <p class="fieldLabel">филиал</p>
 
             <p class="fieldLabel  rightItem">местоположение</p>
-
-            <select class="field ">
-                <option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>
+            @*@Html.DropDownList("Divisions", ViewBag.Divisions as SelectList,"Выберите филиал", new { id = "DivisionsID" })*@
+            <select class="field " id="Divisions">
+                 
+                <option class="comboBoxItem">Выберите филиал</option>
                 @foreach (DivisionState divState in Model.GetDivisionStates())
                 {
                     <option class="comboBoxItem" value='@divState.Id'>@divState.Division</option>
@@ -63,14 +64,12 @@
             
             <p class="fieldLabel rightItem">дни рождения</p>
 
-            <select class="field">
-                <option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>
-                @foreach (DepartmentState depState in Model.GetDepartmentStates())
+            <select class="field" id="Departments">
+                @*<option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>*@
+                @*                @foreach (DepartmentState depState in Model.GetDepartmentStates())
                 {
                     <option class="comboBoxItem" value='@depState.Id'>@depState.Department</option>
-                }
-                @*                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Placement</option>*@
+                }*@
             </select>
             
             <div class="rightItem">
@@ -140,4 +139,18 @@
             }
         });
     };
+
+    $('#Divisions').change(function() {
+        //var URL = $('#CountryStateFormID').data('stateListAction');
+        var url = '@Url.Action("GetDepartments", "Home", new {divisionId = "-1"})';
+        url = url.replace('-1', $('#Divisions').val());
+        $.getJSON(url, function(data) {
+            var items = '<option>Выберите подразделение</option>';
+            $.each(data, function(i, state) {
+                items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
+            });
+            $('#Departments').html(items);
+
+        });
+    });
 </script>
