@@ -23,5 +23,29 @@ namespace KSS.Models
             SpecificStaffPlaces = DBHelper.GetEmployeeSpecificStaffPlaces(employeeGuid);
             EmployeePlaces = DBHelper.GetEmployeePlaces(employeeGuid);
         }
+
+        public EmployeeModel(Guid employeeGuid, bool loadDepartmentInfo,
+            bool loadDivision,
+            bool loadPosition,
+            bool loadSpecificStaffs,
+            bool loadEmployeePlace)
+        {
+            Employee = DBHelper.GetEmployee(employeeGuid);
+
+            if (loadDepartmentInfo)
+                DepartmentState = DBHelper.GetEmployeeDepartment(employeeGuid);
+
+            if (loadDivision)
+                DivisionState = DBHelper.GetEmployeeDivision(employeeGuid);
+
+            if (loadPosition)
+                PositionState = DBHelper.GetEmployeePositionState(employeeGuid);
+
+            if (loadSpecificStaffs)
+                SpecificStaffPlaces = DBHelper.GetEmployeeSpecificStaffPlaces(employeeGuid);
+
+            if (loadEmployeePlace)
+                EmployeePlaces = DBHelper.GetEmployeePlaces(employeeGuid);
+        }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Antlr.Runtime;
 using KSS.Helpers;
@@ -15,14 +15,21 @@ namespace KSS.Controllers
         private int _pageSize = 5;
         public ActionResult Index()
         {
-            //TreeViewModel TreeVM;
-            //if (Session["Tree"] == null)
-            //    TreeVM = new TreeViewModel();
-            //else
-            //    TreeVM = (TreeViewModel) Session["Tree"];
             HomeViewModel homeViewModel = new HomeViewModel(Session);
+
+
             return View(homeViewModel);
         }
+
+//        public async Task<ActionResult> Index()
+//        {
+//            HomeViewModel homeViewModel = new HomeViewModel(Session);
+//
+//            var items = await Task.Run(() => homeViewModel.GetBirthdayPeople());
+//            homeViewModel.Birthdays = items;
+//
+//            return View(homeViewModel);
+//        }
 
 
         public ActionResult SearchView(Guid id)
@@ -71,6 +78,15 @@ namespace KSS.Controllers
             view.ViewBag.StartIndex = startIndex;
             view.ViewBag.PageCount = count;
             view.ViewBag.Search = employeeName;
+            return view;
+        }
+        
+        public async Task<ActionResult> GetBirthdays()
+        {
+            List<EmployeeModel> people =
+                await Task.Run(() => DBHelper.GetBirthdayPeople(Session["CurrentUserDivision"].ToString()));
+
+            ViewResult view = View("BirthDayResult", people);            
             return view;
         }
 
