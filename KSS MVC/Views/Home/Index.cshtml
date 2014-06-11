@@ -5,24 +5,6 @@
 
 @section Header
 {
-    @{
-        var months = new Dictionary<int, string>
-        {
-            {1, "января"},
-            {2, "февраля"},
-            {3, "марта"},
-            {4, "апреля"},
-            {5, "мая"},
-            {6, "июня"},
-            {7, "июля"},
-            {8, "августа"},
-            {9, "сентября"},
-            {10, "октября"},
-            {11, "ноября"},
-            {12, "декабря"},
-        };
-    }
-    
 
     <nav class="mainMenuLayout">
         <img class="logo" src="~/Images/logo.png"/>
@@ -39,83 +21,18 @@
             <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
         </ul>
         
-        @{
-            var people = Model.GetBirthdayPeople();
-            
-            
-            <div class="birthDayComboBox">                
-                @if (people.Any(t => t.Employee.BirthDay.Value.Month == DateTime.Today.Month && t.Employee.BirthDay.Value.Day == DateTime.Today.Day))
-                {
-                    <div class="hasBirthdayTriangle"></div>    
-                }
-                <p>Дни рождения</p>
-                <div class="plus"></div>
-            </div>
-            
-        <div class="birthDayLayout">
-            <div class="tabHeadersPanel">
-                <h3 id="tabHeader1" class="tabHeader selectedTabHeader">Сегодня</h3>
-                <h3 id="tabHeader2" class="tabHeader">Неделя</h3>
-                <h3 id="tabHeader3" class="tabHeader">Месяц</h3>
-            </div>
-            <div class="tabItemContainer">
-                <div id="tabItem1" class="tabItemContent selectedTabItemContent">
-                    <ul class="birthDayPeopleList">
-                        @foreach (var item in people.Where(t => t.Employee.BirthDay.Value.Day == DateTime.Today.Day && t.Employee.BirthDay.Value.Month == DateTime.Today.Month))
-                        {
-                            <li class="birthDayPeopleItem">
-                                <h3 class="birthDayName">@item.Employee.Name</h3>
-                                <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                                <p class="birthDayDepartment">@item.DepartmentState.Department</p>
-                                <p class="birthDayJob">@item.PositionState.Title</p>
-                            </li>
-                        }
-                    </ul>
-                </div>
-                <div id="tabItem2" class="tabItemContent">
-                    <ul class="birthDayPeopleList">
-                        @{
-                            var now = DateTime.Today;
-
-                            var items = people.Where(t =>
-                            {
-                                var first = new DateTime(t.Employee.BirthDay.Value.Year, now.Month, now.Day);
-                                var last = first.AddDays(7);
-
-                                if (t.Employee.BirthDay.Value >= first && t.Employee.BirthDay.Value <= last)
-                                    return true;
-                                return false;
-                            });
-                            
-                            foreach (var item in items)
-                            {
-                                <li class="birthDayPeopleItem">
-                                    <h3 class="birthDayName">@item.Employee.Name</h3>
-                                    <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
-                                    <p class="birthDayJob">@item.PositionState.Title</p>
-                                </li>
-                            }
-                        }
-                    </ul>
-                </div>
-                <div id="tabItem3" class="tabItemContent">
-                    <ul class="birthDayPeopleList">
-                        @foreach (var item in people)
-                        {
-                            <li class="birthDayPeopleItem">
-                                <h3 class="birthDayName">@item.Employee.Name</h3>
-                                <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                                <p class="birthDayDepartment">@item.DepartmentState.Department</p>
-                                <p class="birthDayJob">@item.PositionState.Title</p>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </div>
+        <div class="birthDayComboBox">                                
+            @if(Model.CheckBirthdaysAtDay(DateTime.Today))
+            {
+                <div class="hasBirthdayTriangle"></div>
+            }
+            <p>Дни рождения</p>
+            <div class="plus"></div>
         </div>
-        }
 
+        <div class="birthDayLayout">
+            <img id="birthDayProgress" src="Images/progress.gif" />
+        </div>
     </nav>
 }
 
@@ -135,33 +52,18 @@
 
     $(document).ready(function () {
 
-
-        $('.tabHeader').on('click', function(e) {
-            var clickedItem = $(e.target);
-            if (!clickedItem.hasClass('selectedTabHeader')) {
-
-                //hide old selected tabHeader
-                $('.selectedTabHeader').toggleClass('selectedTabHeader');
-                //hide old selected tabItem                
-                $('.tabItemContent').removeClass('selectedTabItemContent');
-
-                //show current selected tabHeader
-                clickedItem.toggleClass('selectedTabHeader');
-
-                var id = clickedItem.attr('id');
-                id = id.substr(id.length - 1);
-                var tabItem = '#tabItem' + id;
-                
-                $(tabItem).toggleClass('selectedTabItemContent');
-            }
-        });
-
         $('.birthDayComboBox').on('click', function (e) {
             var comboBox = $('.birthDayComboBox');
             comboBox.toggleClass('activeBirthDayComboBox');
             comboBox.find('.plus').toggleClass('activePlus');
 
             $('.birthDayLayout').toggle();
+
+            if ($('.birthDayLayout').find('tabHeadersPanel').length == 0) {
+                var url = '@Url.Action("GetBirthdays", "Home")';
+
+                loadBirthdays(url);
+            }
         });
 
         $('#divTree').on('click', function (e) {
@@ -197,6 +99,16 @@
             var parent = $('#centralPart');
             if (parent != null) {
                     parent.empty();
+                parent.append(data);
+            }
+        });
+    }
+
+    function loadBirthdays(url) {
+        $.get(url, function (data) {
+            var parent = $('.birthDayLayout');
+            if (parent != null) {
+                parent.empty();
                 parent.append(data);
             }
         });

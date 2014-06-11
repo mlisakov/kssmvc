@@ -1,0 +1,120 @@
+﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+@{
+    Layout = "";
+}
+@using KSS.Models
+@model List<EmployeeModel>
+
+@{
+    var months = new Dictionary<int, string>
+    {
+        {1, "января"},
+        {2, "февраля"},
+        {3, "марта"},
+        {4, "апреля"},
+        {5, "мая"},
+        {6, "июня"},
+        {7, "июля"},
+        {8, "августа"},
+        {9, "сентября"},
+        {10, "октября"},
+        {11, "ноября"},
+        {12, "декабря"},
+    };
+}
+
+<div class="tabHeadersPanel">
+    <h3 id="tabHeader1" class="tabHeader selectedTabHeader">Сегодня</h3>
+    <h3 id="tabHeader2" class="tabHeader">Неделя</h3>
+    <h3 id="tabHeader3" class="tabHeader">Месяц</h3>
+</div>
+<div class="tabItemContainer">    
+    <div id="tabItem1" class="tabItemContent selectedTabItemContent">
+        <ul class="birthDayPeopleList">
+            @foreach (var item in Model.Where(t => t.Employee.BirthDay.Value.Day == DateTime.Today.Day && t.Employee.BirthDay.Value.Month == DateTime.Today.Month))
+            {
+                <li class="birthDayPeopleItem">
+                    <h3 class="birthDayName">@item.Employee.Name</h3>
+                    <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                    <p class="birthDayJob">@item.PositionState.Title</p>
+                </li>
+            }
+        </ul>
+    </div>
+    <div id="tabItem2" class="tabItemContent">
+        <ul class="birthDayPeopleList">
+            @{
+                var now = DateTime.Today;
+
+                var items = Model.Where(t =>
+                {
+                    var first = new DateTime(t.Employee.BirthDay.Value.Year, now.Month, now.Day);
+                    var last = first.AddDays(7);
+
+                    if (t.Employee.BirthDay.Value >= first && t.Employee.BirthDay.Value <= last)
+                        return true;
+                    return false;
+                });
+
+                foreach (var item in items)
+                {
+                    <li class="birthDayPeopleItem">
+                        <h3 class="birthDayName">@item.Employee.Name</h3>
+                        <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                        <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                        <p class="birthDayJob">@item.PositionState.Title</p>
+                    </li>
+                }
+            }
+        </ul>
+    </div>
+    <div id="tabItem3" class="tabItemContent">
+        <ul class="birthDayPeopleList">
+            @foreach (var item in Model)
+            {
+                <li class="birthDayPeopleItem">
+                    <h3 class="birthDayName">@item.Employee.Name</h3>
+                    <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
+                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                    <p class="birthDayJob">@item.PositionState.Title</p>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        
+        $('.tabHeader').on('click', function (e) {
+            var clickedItem = $(e.target);
+            if (!clickedItem.hasClass('selectedTabHeader')) {
+
+                //hide old selected tabHeader
+                $('.selectedTabHeader').toggleClass('selectedTabHeader');
+                //hide old selected tabItem                
+                $('.tabItemContent').removeClass('selectedTabItemContent');
+
+                //show current selected tabHeader
+                clickedItem.toggleClass('selectedTabHeader');
+
+                var id = clickedItem.attr('id');
+                id = id.substr(id.length - 1);
+                var tabItem = '#tabItem' + id;
+
+                $(tabItem).toggleClass('selectedTabItemContent');
+            }
+        });
+
+//        $('.pageNmbr').on('click', function (e) {
+//            var currentPageItem = $(e.target);
+//            var url = currentPageItem.data('url');
+//            $('.progress').show();
+//
+//            loadSearchPage(url);
+//        });
+    });
+
+</script>

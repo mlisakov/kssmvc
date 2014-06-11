@@ -272,6 +272,13 @@ namespace KSS.Helpers
             return t;
         }
 
+        public static bool CheckBirthdaysAtDay(DateTime date)
+        {
+            return
+                baseModel.Employees.Any(
+                    t => t.BirthDay.HasValue && t.BirthDay.Value.Day == date.Day && t.BirthDay.Value.Month == date.Month);
+        }
+
         public static List<EmployeeModel> GetBirthdayPeople(string guid)
         {
             if (string.IsNullOrEmpty(guid))

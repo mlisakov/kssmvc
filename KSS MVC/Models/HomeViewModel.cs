@@ -13,6 +13,8 @@ namespace KSS.Models
 
         public TreeViewModel TreeViewModel { get; private set; }
 
+        public IEnumerable<EmployeeModel> Birthdays { get; set; }
+
         public HomeViewModel(HttpSessionStateBase session)
         {
             _session = session;
@@ -40,6 +42,11 @@ namespace KSS.Models
         public IEnumerable<EmployeeModel> GetBirthdayPeople()
         {
             return DBHelper.GetBirthdayPeople(_session["CurrentUserDivision"].ToString());
+        }
+
+        public bool CheckBirthdaysAtDay(DateTime date)
+        {
+            return DBHelper.CheckBirthdaysAtDay(date);
         }
 
         public bool RemoveFromFavorite(Guid id)
