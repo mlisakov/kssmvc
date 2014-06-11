@@ -59,6 +59,11 @@ namespace KSS.Models
             return DBHelper.GetDepartmentStates();
         }
 
+        public Dictionary<Guid, string> GetCustomLocality()
+        {
+            return DBHelper.GetCustomLocality();
+        }
+
         public List<EmployeeModel> Search(string employeeName, int page = 0)
         {
             List<EmployeeModel> employees=DBHelper.Search(employeeName,5, page).ToList();

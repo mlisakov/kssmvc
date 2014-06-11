@@ -95,6 +95,12 @@ namespace KSS.Controllers
             return Json(new SelectList(DBHelper.GetDepartmentStatesByDivision(divisionId), "Id", "Department"),
                 JsonRequestBehavior.AllowGet);
         }
+
+        public ActionResult GetPositions(Guid departmentId)
+        {
+            return Json(new SelectList(DBHelper.GetPositionStatesByDepartment(departmentId), "Id", "Title"),
+                JsonRequestBehavior.AllowGet);
+        }
         
     }
 }

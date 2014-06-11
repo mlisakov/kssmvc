@@ -50,6 +50,26 @@ namespace KSS.Helpers
 
         }
 
+        public static IEnumerable<PositionState> GetPositionStatesByDepartment(Guid id)
+        {
+            try
+            {
+                List<PositionState> t = (from posState in baseModel.PositionStates
+                    join pos in baseModel.Positions on posState.Id equals pos.Id into positionState
+                    from m in positionState.DefaultIfEmpty()
+                    where m.DepartmentId == id
+                    select posState).ToList();
+                return t;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
         public static DivisionState GetDivisionState(Guid id)
         {
             try
@@ -83,6 +103,34 @@ namespace KSS.Helpers
             try
             {
                 return baseModel.DepartmentStates.ToList();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public static IEnumerable<Locality> GetLocality()
+        {
+            try
+            {
+                return baseModel.Localities;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        public static Dictionary<Guid,string> GetCustomLocality()
+        {
+            try
+            {
+                return GetLocality().ToDictionary(i=>i.Id,j=>j.Region+","+j.Locality1);
             }
             catch (Exception)
             {

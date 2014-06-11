@@ -39,9 +39,11 @@
             </select>
 
             <select class="field rightItem">
-
-                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Placement</option>
+                 <option class="comboBoxItem">Выберите местоположение</option>
+                @foreach (KeyValuePair<Guid,String> locality in Model.GetCustomLocality())
+                {
+                    <option class="comboBoxItem" value='@locality.Key'>@locality.Value</option>
+                }
             </select>
         </div>
 
@@ -81,9 +83,7 @@
         </div>
         <div class="additionalSearchRow">
             <p class="fieldLabel noFloatItem">должность</p>
-            <select class="field ">
-                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Placement</option>
+            <select class="field " id="Positions">
             </select>
         </div>
     </div>
@@ -153,4 +153,18 @@
 
         });
     });
+
+    $('#Departments').change(function () {
+        //var URL = $('#CountryStateFormID').data('stateListAction');
+        var url = '@Url.Action("GetPositions", "Home", new {departmentId = "-1"})';
+        url = url.replace('-1', $('#Departments').val());
+         $.getJSON(url, function (data) {
+             var items = '<option>Выберите должность</option>';
+             $.each(data, function (i, state) {
+                 items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
+             });
+             $('#Positions').html(items);
+
+         });
+     });
 </script>
