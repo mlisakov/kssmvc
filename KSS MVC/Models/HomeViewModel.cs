@@ -29,10 +29,10 @@ namespace KSS.Models
             throw new NotImplementedException();
         }
 
-        public IEnumerable<EmployeeModel> GetFavorites()
-        {
-            return DBHelper.GetFavorites(new Guid(_session["CurrentUser"].ToString()));
-        }
+//        public IEnumerable<EmployeeModel> GetFavorites()
+//        {
+//            return DBHelper.GetFavorites(new Guid(_session["CurrentUser"].ToString()));
+//        }
 
         public bool AddToFavorite(Guid id)
         {

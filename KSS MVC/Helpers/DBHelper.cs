@@ -290,6 +290,30 @@ namespace KSS.Helpers
             return favorites.Select(i => new EmployeeModel(i)).ToList();
         }
 
+        public static int GetFavoritesCount(Guid employeeGuid)
+        {
+            return
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid
+                    orderby e.Name
+                    select e.Id).Count();
+        }
+
+        public static List<EmployeeModel> GetFavorites(Guid employeeGuid, int pageSize, int startIndex)
+        {
+            List<Guid> favorites =
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid
+                    orderby e.Name
+                    select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
+
+            return favorites.Select(i => new EmployeeModel(i)).ToList();
+        }
+
         public static bool AddToFavorites(Guid idCurrentUset, Guid idFavoriteUser)
         {
             try

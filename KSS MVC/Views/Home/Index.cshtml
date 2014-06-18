@@ -16,7 +16,7 @@
 @*            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>*@
             @*            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>*@
             <li id="mainMenuItem0" class="selectedPage">Главная</li>
-            <li id="mainMenuItem1" data-url='@Url.Action("Favorites", "Home")'>Избранное</li>
+            <li id="mainMenuItem1" data-url='@Url.Action("Favorites", "Home", new { startIndex = 0 })'>Избранное</li>
             <li id="mainMenuItem2" data-url='@Url.Action("Help", "Home")'>Помощь</li>
         </ul>
         
@@ -109,21 +109,6 @@
     });
 
     function ChangeSelectedPage(page) {
-//        var clickedItem = $(e.target);
-//        if (!clickedItem.hasClass('selectedPage')) {
-//            $('.selectedPage').removeClass('selectedPage');
-//            clickedItem.addClass('selectedPage');
-//
-//            $('#centralPart').empty();
-//
-//            var url = clickedItem.data('url');
-//            if (url != null) {
-//
-//                ClearTreeSelection();
-//
-//                loadSearchPage(url);
-//            }
-//        }
 
         var clickedItem = $('#mainMenuItem' + page);
         if (!clickedItem.hasClass('selectedPage')) {

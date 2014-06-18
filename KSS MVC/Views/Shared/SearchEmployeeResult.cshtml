@@ -27,7 +27,7 @@
                         @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
                         {
                             <p class="personCityPhone">33-24;</p>
-                            <p class="personMobilePhone">@empPlace.PhoneNumber</p> @*
+                            <p class="personMobilePhone">@empPlace.PhoneNumber;</p> @*
                         <p class="personMail">titov.german@rossety.com</p>*@
                         }
                     </div>
@@ -35,15 +35,15 @@
                         @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
                         {
                             <p class="personCityPhone">33-24;</p>
-                            <p class="personMobilePhone">@specEmpPlace.PhoneNumber</p> @*
-                         <p class="personMail">titov.german@rossety.com</p>*@
+                            <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p> 
+                            @*<p class="personMail">titov.german@rossety.com</p>*@
                         }
                     </div>
                 </div>
             </li>
         }
     </ul>
-<div id="pages">
+<div id="pages" class="pagesContainer">
     @for (int i = ViewBag.StartIndex; i < ViewBag.StartIndex + 5; i++)
     {
         <a class='pageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new {employeeName = ViewBag.Search, startIndex = i})'>

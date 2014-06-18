@@ -1,0 +1,199 @@
+﻿@{
+    Layout = "";
+}
+
+@using KSS.Models
+@using KSS.Server.Entities
+@model List<EmployeeModel>
+<input id="editListBtn" type="button" class="departmentSearchButton editListButton" value="редактировать порядок" data-edit="1"/>        
+<div class="centralResultPanel">
+    <ul class="personUL">
+        @foreach (EmployeeModel employee in Model)
+        {
+            <li class="listItem" data-id="@employee.Employee.Id" data-position="@employee.Employee.Code">
+                <div class="lyncStatusDiv"></div>
+                <div class="personIMGLayout">
+                    <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />
+                </div>
+                <div class="innerPersonLayout">
+                    <h5 class="personName">
+                        <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
+                    </h5>
+
+                    <p class="personDepartment"> @employee.DepartmentState.Department</p>
+                    <p class="personJob">@employee.PositionState.Title</p>
+                    <div class="phonesLine">
+                        @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
+                        {
+                            <p class="personCityPhone">33-24;</p>
+                            <p class="personMobilePhone">@empPlace.PhoneNumber;</p>
+                        }
+                    </div>
+                    <div class="phonesLine">
+                        @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
+                        {
+                            <p class="personCityPhone">33-24;</p>
+                            <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p>
+                        }
+                    </div>
+                </div>
+                
+                <div class="editPositionPanel">
+                    <div>
+                        <a class="paginationNavigationLink">на самый верх</a><p>↑</p>
+                    </div>
+                    <div>
+                        <a class="paginationNavigationLink">выше</a>
+                        <p>↑</p>
+                        <a class="paginationNavigationLink">ниже</a>
+                        <p>↓</p>
+                    </div>
+                    <div>
+                        <a class="paginationNavigationLink">в самый низ</a>
+                        <p>↓</p>
+                    </div>
+                </div>
+
+                @*                <img class="favorite" data-url="@Url.Action("RemoveFavorite", "Home", new {id = employee.Employee.Id})" title="Убрать" />*@
+            </li>
+        }
+    </ul>
+</div>
+
+
+@helper DrawPages(int startIndex, int count, bool after, bool before)
+{
+    if (before)
+    {
+        <a style="text-align: center; width: 30px; display: inline-block; margin-left: -33px">...</a>
+    }
+
+    for (int i = startIndex; i < count; i++)
+    {
+        if (i == ViewBag.StartIndex)
+        {
+            <a class='pageNmbr selectedPageNmbr' data-url='@Url.Action("Favorites", "Home", new {startIndex = i})'>
+                @(i+1)
+            </a>
+        }
+        else
+        {
+            <a class='pageNmbr' data-url='@Url.Action("Favorites", "Home", new {startIndex = i})'>
+                @(i+1)
+            </a>
+        }
+    }
+
+    if (after)
+    {
+        <a style="text-align: center; width: 30px; display: inline-block">...</a>
+    }
+}
+
+<div class="pagesContainer">
+    @{
+        if (ViewBag.StartIndex > 0)
+        {
+            <p class="paginationArrow">←</p>
+            <a class="paginationNavigationLink" data-url='@Url.Action("Favorites", "Home", new {startIndex = ViewBag.StartIndex - 1})'>Назад</a>
+        }
+        else
+        {
+            <p class="paginationArrow" style="visibility: collapse">←</p>
+            <a class="paginationNavigationLink" style="visibility: collapse">Назад</a>
+        }
+
+        if (ViewBag.StartIndex + 1 < ViewBag.PageCount)
+        {
+            <a class="paginationNavigationLink forwardLink" data-url='@Url.Action("Favorites", "Home", new {startIndex = ViewBag.StartIndex + 1})'>Вперед</a>
+            <p class="paginationArrow">→</p>
+        }
+    }
+</div>
+
+
+<div id="pages" class="pagesContainer">
+    @{
+        const int maxPagesCount = 4;
+        var length = ViewBag.PageCount;
+        var startIndex = ViewBag.StartIndex;        
+
+        if (length > maxPagesCount)
+        {
+            //отрисовываем вариант при куче страниц
+
+
+            if (length - startIndex < maxPagesCount)
+            {
+                //отрисовываем остатки
+                @DrawPages(length - maxPagesCount,length,false,true);
+            }
+            else
+            {
+                if (startIndex > 1)
+                {
+                    //отрисовываем средний случай (2 /3/ 4 5)
+                    @DrawPages(startIndex -1, maxPagesCount + startIndex -1, true, true);
+                }
+                else
+                {
+                    //отрисовываем стартовый случай (1 /2/ 3 4 или /1/ 2 3 4)
+                    @DrawPages(0, maxPagesCount, true, false);
+                }
+            }
+        }
+        else
+        {
+            //отрисовываем меньше 5 страниц
+            @DrawPages(0, length, false, false);
+        }
+    }
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function() {
+
+        $('#editListBtn').on('click', function(e) {
+            var target = $('#editListBtn');
+
+            if (target.data('edit') == "1") {
+                //меняем кнопку
+                target.data('edit', '0');
+                target.attr('value', 'сохранить');
+
+                //меняем стили у лист-айтемов
+                $('.listItem').addClass('editListItem');
+                //освобождаем у лист-айтемов правый край
+                $('.listItem .innerPersonLayout').css('margin-right', '140px');
+
+                //показываем панель редактирования
+
+            } else {
+                target.data('edit', '1');
+                target.attr('value', 'редактировать порядок');
+                $('.listItem').removeClass('editListItem');
+
+                $('.listItem .innerPersonLayout').css('margin-right', '0');
+            }
+        });
+
+        $('.pageNmbr, .paginationNavigationLink').on('click', function (e) {
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            loadSearchPage(url);
+        });
+
+        $('.favorite').on('click', function (e) {
+                var currentListItem = $(e.target);
+                var url = currentListItem.data('url');
+
+                if (url != null) {
+                    $.get(url);
+                }
+            }
+        );
+    });
+
+</script>

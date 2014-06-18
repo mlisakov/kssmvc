@@ -1,19 +1,9 @@
-﻿@using KSS.Models
-@model KSS.Models.HomeViewModel
-@section Header
-{
-    <nav class="mainMenuLayout">
-        <img class="logo" src="~/Images/logo.png"/>
-        
-        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
-
-        <ul class="mainMenu">
-            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
-            <li  class="selectedPage">@Html.ActionLink("Избранное", "Favorites", "Home")</li>
-            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>
-        </ul>
-    </nav>
+﻿@{
+    Layout = "";
 }
+
+@using KSS.Models
+@model KSS.Models.HomeViewModel
 <div>
     <ul>
         @foreach (EmployeeModel employee in Model.GetFavorites())

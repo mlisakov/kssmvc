@@ -263,6 +263,7 @@
     <Content Include="Views\Shared\SearchView.cshtml" />
     <Content Include="Views\Shared\SearchEmployeeResult.cshtml" />
     <Content Include="Views\Shared\BirthDayResult.cshtml" />
+    <Content Include="Views\Home\FavoritesPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

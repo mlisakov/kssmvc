@@ -40,10 +40,24 @@ namespace KSS.Controllers
             return view;
         }
 
-        public ActionResult Favorites()
+        public ActionResult Favorites(int startIndex)
         {
-            HomeViewModel favoritesViewModel = new HomeViewModel(Session);
-            return View(favoritesViewModel);
+            Guid guid = new Guid(Session["CurrentUser"].ToString());
+
+            var employees = DBHelper.GetFavorites(guid, _pageSize, startIndex);
+            ViewResult view = View("FavoritesPage", employees);
+            
+            int count = DBHelper.GetFavoritesCount(guid) / _pageSize;
+            if ((employees.Count % _pageSize) != 0)
+                count++;
+//            int step = _pageSize / 2;
+//            if (startIndex - step > 0)
+//                startIndex = startIndex - step;
+
+            view.ViewBag.StartIndex = startIndex;
+            view.ViewBag.PageCount = count;
+            return view;
+
         }
 
         public bool RemoveFavorite(Guid id)
