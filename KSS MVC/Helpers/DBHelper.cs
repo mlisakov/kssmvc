@@ -279,17 +279,22 @@ namespace KSS.Helpers
             return new List<EmployeePlace>();
         }
 
-        public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
-        {
-            List<Guid> favorites =
-                (from fe in baseModel.Favorites
-                 join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid
-                    select e.Id).ToList();
-            return favorites.Select(i => new EmployeeModel(i)).ToList();
-        }
+//        public static List<EmployeeModel> GetFavorites(Guid employeeGuid)
+//        {
+//            List<Guid> favorites =
+//                (from fe in baseModel.Favorites
+//                 join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+//                    from e in employees.DefaultIfEmpty()
+//                    where fe.EmployeeId == employeeGuid
+//                    select e.Id).ToList();
+//            return favorites.Select(i => new EmployeeModel(i)).ToList();
+//        }
 
+        /// <summary>
+        /// Получение количества человек в избранном для юзера
+        /// </summary>
+        /// <param name="employeeGuid"></param>
+        /// <returns></returns>
         public static int GetFavoritesCount(Guid employeeGuid)
         {
             return
@@ -297,10 +302,17 @@ namespace KSS.Helpers
                     join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
                     from e in employees.DefaultIfEmpty()
                     where fe.EmployeeId == employeeGuid
-                    orderby e.Name
+                    orderby e.Position
                     select e.Id).Count();
         }
 
+        /// <summary>
+        /// Получение списка избранных для юзера, начиная с startIndex и количеством pageSize
+        /// </summary>
+        /// <param name="employeeGuid"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
         public static List<EmployeeModel> GetFavorites(Guid employeeGuid, int pageSize, int startIndex)
         {
             List<Guid> favorites =
@@ -308,18 +320,172 @@ namespace KSS.Helpers
                     join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
                     from e in employees.DefaultIfEmpty()
                     where fe.EmployeeId == employeeGuid
-                    orderby e.Name
+                    orderby e.Position
                     select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
 
             return favorites.Select(i => new EmployeeModel(i)).ToList();
         }
 
-        public static bool AddToFavorites(Guid idCurrentUset, Guid idFavoriteUser)
+        /// <summary>
+        /// Поиск максимальной позиции в избранных для указанного пользователя
+        /// </summary>
+        /// <param name="employeeGuid"></param>
+        /// <returns></returns>
+        public static int GetFavoritesMaxPosition(Guid employeeGuid)
+        {
+            return
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()                    
+                    where fe.EmployeeId == employeeGuid
+                    select e.Position).Max();
+        }
+
+        private static Employee GetFavoriteOnNextPosition(Guid employeeGuid, int position)
+        {
+            var guids =
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid && e.Position > position
+                    orderby e.Position
+                    select e.Id);
+            if (guids.Any())
+            {
+                return GetEmployee(guids.First());
+            }
+            return null;
+        }
+
+        private static Employee GetFavoriteOnPreviousPosition(Guid employeeGuid, int position)
+        {
+            var guids =
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid && e.Position < position
+                    orderby e.Position
+                    select e.Id).ToList();
+            if (guids.Any())
+            {
+                return GetEmployee(guids.Last());
+            }
+            return null;
+        }
+
+        private static List<Employee> GetPreviousFavorites(Guid employeeGuid, int position)
+        {
+            var guids =
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    from e in employees.DefaultIfEmpty()
+                    where fe.EmployeeId == employeeGuid && e.Position < position
+                    orderby e.Position
+                    select e.Id).ToList().ConvertAll(GetEmployee);
+            return guids;
+        }
+
+        private static List<Employee> GetNextFavorites(Guid employeeGuid, int position)
+        {
+            var guids =
+                (from fe in baseModel.Favorites
+                 join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                 from e in employees.DefaultIfEmpty()
+                 where fe.EmployeeId == employeeGuid && e.Position > position
+                 orderby e.Position
+                 select e.Id).ToList().ConvertAll(GetEmployee);
+            return guids;
+        }
+
+        /// <summary>
+        /// Смена позиции у избранного
+        /// </summary>
+        /// <param name="user">гуид пользователя</param>
+        /// <param name="favorite">гуид избранного, которому меняем позицию</param>
+        /// <param name="delta">Смещение. +1 (вниз), -1 (вверх), 0 (самый верх), int.MaxValue (самый низ) </param>
+        public static void UpdateFavoritePosition(Guid user, Guid favorite, int delta)
+        {
+            //найти избранного
+            var favoriteUser = GetEmployee(favorite);
+
+            int temp = favoriteUser.Position;
+            bool hasChanges = false;
+            switch (delta)
+            {
+                case 1:
+                    var nextUser = GetFavoriteOnNextPosition(user, favoriteUser.Position);
+                    if (nextUser != null)
+                    {
+                        favoriteUser.Position = nextUser.Position;
+                        nextUser.Position = temp;
+                        hasChanges = true;
+                    }
+                    break;
+                case -1:
+                    var previousUser = GetFavoriteOnPreviousPosition(user, favoriteUser.Position);
+                    if (previousUser != null)
+                    {
+                        favoriteUser.Position = previousUser.Position;
+                        previousUser.Position = temp;
+                        hasChanges = true;
+                    }
+                    break;
+                case 0:
+                    var list = GetPreviousFavorites(user, favoriteUser.Position);
+                    list.Insert(0, favoriteUser);
+
+                    for (int i = 0; i < list.Count - 1; i++)
+                    {
+                        int index = list[i].Position;
+                        list[i].Position = list[i + 1].Position;
+                        list[i + 1].Position = index;
+                    }
+                    if (list.Count > 1)
+                        hasChanges = true;
+                    break;
+                case int.MaxValue:
+                    var nextList = GetNextFavorites(user, favoriteUser.Position);
+                    nextList.Add(favoriteUser);
+
+                    for (int i = nextList.Count - 1; i > 0; i--)
+                    {
+                        int index = nextList[i].Position;
+                        nextList[i].Position = nextList[i - 1].Position;
+                        nextList[i - 1].Position = index;
+                    }
+                    if (nextList.Count > 1)
+                        hasChanges = true;
+                    break;
+            }
+
+            try
+            {
+
+                if (hasChanges)
+                    baseModel.SaveChanges();
+            }
+            catch (Exception)
+            {
+             //проблемы с сохранением из-за отсутствия ключей в базе!   
+//                throw;
+            }
+
+        }
+
+        public static bool AddToFavorites(Guid idCurrentUser, Guid idFavoriteUser)
         {
             try
             {
-                Favorite favoriteEmp =new Favorite(){EmployeeId = idCurrentUset,LinkedEmployeeId = idFavoriteUser};
+                var maxPosition = GetFavoritesMaxPosition(idCurrentUser);
+
+                //add favorites
+                var favoriteEmp = new Favorite {EmployeeId = idCurrentUser, LinkedEmployeeId = idFavoriteUser};
                 baseModel.Favorites.Add(favoriteEmp);
+
+                //set position
+                var favoritePerson = baseModel.Employees.First(e => e.Id == idFavoriteUser);
+                favoritePerson.Position = maxPosition + 1;
+
                 baseModel.SaveChanges();
                 return true;
             }

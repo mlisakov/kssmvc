@@ -33,5 +33,6 @@ namespace KSS.Server.Entities
         public bool PhotoManualInput { get; set; }
         public Nullable<int> AdState { get; set; }
         public Nullable<bool> isAdministrator { get; set; }
+        public int Position { get; set; }
     }
 }

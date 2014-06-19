@@ -1,22 +1,16 @@
-﻿@model dynamic
-
-@section Header
-{
-    <nav class="mainMenuLayout">
-        <img class="logo" src="~/Images/logo.png"/>
-        
-        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
-
-        <ul class="mainMenu">
-            <li>@Html.ActionLink("Главная", "Index", "Home")</li>
-            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>
-            <li class="selectedPage">
-                <div>
-                    @Html.ActionLink("Помощь", "Help", "Home")
-                </div>
-            </li>
-        </ul>
-    </nav>
+﻿@{
+    Layout = "";
 }
 
-<h2>Помощь</h2>
+
+
+<h2 class="departmentHeader">Поддержка</h2>
+
+<p class="helpInnerHeader firstHelpInnerHeader">Телефон</p>
+<p class="helpText">33-24; (Для филиала "Кальэнерго" 5-77)</p>
+
+<p class="helpInnerHeader">e-mail</p>
+<a class="paginationNavigationLink helpLink" href="mailto:sd@mrsk-yuga.ru">sd@mrsk-yuga.ru</a>
+
+<p class="helpInnerHeader">заявка в ServiceDesk</p>
+<a class="paginationNavigationLink helpLink" href="http://sd.mrsk-yuga.local:8080">http://sd.mrsk-yuga.local:8080</a>

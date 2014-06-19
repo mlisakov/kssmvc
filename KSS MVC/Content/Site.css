@@ -128,15 +128,15 @@ ul {
 	}
 
 
-	#centralPart {
-		overflow: auto;
-		background: white;
-		position: absolute;
-		left: 33%;
-		right: 0;
-		top: 80px;
-		bottom: 0;
-	}
+#centralPart {
+	overflow: auto;
+	background: white;
+	position: absolute;
+	left: 33%;
+	right: 0;
+	top: 80px;
+	bottom: 0;
+}
 
 #divTree {
 	width: 33%;
@@ -170,61 +170,61 @@ ul {
 			cursor: pointer;
 		}
 
-		.selectedTreeNode {
-			background: white;
-		}
+.selectedTreeNode {
+	background: white;
+}
 
-		.innerUL li span {
-			padding: 0 15px;
-			vertical-align: middle;
-			width: inherit;
-			display: block;
-			-moz-text-overflow: ellipsis;
-			text-overflow: ellipsis;
-			overflow: hidden;
-			float: left;
-			white-space: nowrap;
-		}
+.innerUL li span {
+	padding: 0 15px;
+	vertical-align: middle;
+	width: inherit;
+	display: block;
+	-moz-text-overflow: ellipsis;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	float: left;
+	white-space: nowrap;
+}
 
-		.innerUL li:hover span.tooltip {
-			display: initial;
-		}
+.innerUL li:hover span.tooltip {
+	display: initial;
+}
 
-		.innerUL li span.folder:hover, .innerUL li span.leaf:hover {
-			text-decoration: underline;
-		}
+.innerUL li span.folder:hover, .innerUL li span.leaf:hover {
+	text-decoration: underline;
+}
 
 
-		.innerUL li span.tooltip {
-			pointer-events: none;
-			display: none;
-			position: absolute;
-			height: 20px;
-			line-height: 20px;
-			padding: 10px;
-			font-size: 14px;
-			text-align: center;
-			color: rgb(113, 157, 171);
-			background: rgb(255, 255, 255);
-			border: 4px solid rgb(255, 255, 255);
-			border-radius: 5px;
-			text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
-			box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
-			left: 0;
-			margin-top: -45px;
-		}
+.innerUL li span.tooltip {
+	pointer-events: none;
+	display: none;
+	position: absolute;
+	height: 20px;
+	line-height: 20px;
+	padding: 10px;
+	font-size: 14px;
+	text-align: center;
+	color: rgb(113, 157, 171);
+	background: rgb(255, 255, 255);
+	border: 4px solid rgb(255, 255, 255);
+	border-radius: 5px;
+	text-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 1px;
+	box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 2px 0px;
+	left: 0;
+	margin-top: -45px;
+}
 
-			.innerUL li span.tooltip:after {
-				content: "";
-				position: absolute;
-				width: 0;
-				height: 0;
-				border-width: 10px;
-				border-style: solid;
-				border-color: #FFFFFF transparent transparent transparent;
-				top: 44px;
-				left: 50px;
-			}
+	.innerUL li span.tooltip:after {
+		content: "";
+		position: absolute;
+		width: 0;
+		height: 0;
+		border-width: 10px;
+		border-style: solid;
+		border-color: #FFFFFF transparent transparent transparent;
+		top: 44px;
+		left: 50px;
+	}
 
 .folder-border {
 }
@@ -242,19 +242,19 @@ ul {
 		display: inherit;
 	}
 
-	.treeProgress {
-		width: 16px;
-		height: 16px;
-		-moz-min-width: 16px;
-		-ms-min-width: 16px;
-		-o-min-width: 16px;
-		-webkit-min-width: 16px;
-		min-width: 16px;
-		min-height: 16px;
-		margin: 7px 0 0 0;
-		position: absolute;
-		left: 5px;
-	}
+.treeProgress {
+	width: 16px;
+	height: 16px;
+	-moz-min-width: 16px;
+	-ms-min-width: 16px;
+	-o-min-width: 16px;
+	-webkit-min-width: 16px;
+	min-width: 16px;
+	min-height: 16px;
+	margin: 7px 0 0 0;
+	position: absolute;
+	left: 5px;
+}
 
 
 
@@ -306,9 +306,9 @@ ul {
 		text-decoration: none;
 	}
 
-	.mainMenu li:hover {
-		cursor: pointer;
-	}
+		.mainMenu li:hover {
+			cursor: pointer;
+		}
 
 .selectedPage {
 	background: rgba(255, 255, 255, 0.2);
@@ -336,6 +336,7 @@ ul {
 	-ms-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 	box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 }
+
 	.birthDayComboBox p {
 		margin: 0;
 		margin-left: 20px;
@@ -359,13 +360,13 @@ ul {
 		background: linear-gradient(to bottom, #127fbf 0%,#0f5c9e 100%); /* W3C */
 	}
 
-	.activeBirthDayComboBox {
-		background: #dadada;
-		border: 1px solid #9b9b9b;
-	}
+.activeBirthDayComboBox {
+	background: #dadada;
+	border: 1px solid #9b9b9b;
+}
 
 	.activeBirthDayComboBox:hover {
-				background: #dadada;
+		background: #dadada;
 		border: 1px solid #9b9b9b;
 	}
 
@@ -383,16 +384,16 @@ ul {
 }
 
 .birthDayComboBox .plus {
-		float: right;
-		margin: 25px 20px 25px 0;
-		border-top-color: #1179c2;
-		border-left-width: 6px;
-		border-right-width: 6px;
-		border-top-width: 6px;
-		
-	}
+	float: right;
+	margin: 25px 20px 25px 0;
+	border-top-color: #1179c2;
+	border-left-width: 6px;
+	border-right-width: 6px;
+	border-top-width: 6px;
+}
+
 .birthDayComboBox .activePlus {
-		border-top-color: #a1a5a8;
+	border-top-color: #a1a5a8;
 }
 
 .birthDayLayout {
@@ -407,7 +408,6 @@ ul {
 	margin-right: 60px;
 	margin-top: 67px;
 	z-index: 100;
-
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 	-ms-box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
 	box-shadow: 0 2px 3px rgba(0, 0, 0, .75);
@@ -415,8 +415,9 @@ ul {
 
 .tabHeadersPanel {
 	line-height: initial;
-	width: inherit;	
+	width: inherit;
 }
+
 .tabHeader {
 	margin: 0;
 	font-size: 18px;
@@ -428,18 +429,18 @@ ul {
 	display: inline-block;
 }
 
-.tabHeader:hover {
-	cursor: pointer;
-}
+	.tabHeader:hover {
+		cursor: pointer;
+	}
 
 .selectedTabHeader {
 	color: #191919;
 	text-decoration: none;
 }
 
-.selectedTabHeader:hover {
-	cursor: default;
-}
+	.selectedTabHeader:hover {
+		cursor: default;
+	}
 
 .tabItemContainer {
 	width: inherit;
@@ -487,12 +488,12 @@ ul {
 .birthDayDepartment {
 	font-size: 11px;
 	color: #9a9a9a;
-	margin: 0;	
+	margin: 0;
 }
 
 .birthDayJob {
 	font-size: 11px;
-	color: #9a9a9a;		
+	color: #9a9a9a;
 	margin: 0;
 }
 
@@ -532,7 +533,7 @@ ul {
 }
 
 .departmentSearchText {
-	width: inherit;	
+	width: inherit;
 	padding-left: 15px;
 	height: 32px;
 	margin: 0;
@@ -564,10 +565,10 @@ ul {
 	.departmentSearchText:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
 		color: #c8c8c8;
 	}
-	
+
 	.departmentSearchText::-moz-placeholder { /* Mozilla Firefox 19+ */
 		color: #c8c8c8;
-}
+	}
 
 	.departmentSearchText:-ms-input-placeholder { /* Internet Explorer 10+ */
 		color: #c8c8c8;
@@ -585,12 +586,12 @@ ul {
 	font-size: 18px;
 	background: #d2ac67; /* Old browsers */
 	background: -moz-linear-gradient(top, #d2ac67 0%, #c18d40 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2ac67), color-stop(100%,#c18d40)); /* Chrome,Safari4+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d2ac67), color-stop(100%,#c18d40)); /* Chrome,Safari4+ */
 	background: -webkit-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* Chrome10+,Safari5.1+ */
 	background: -o-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* Opera 11.10+ */
 	background: -ms-linear-gradient(top, #d2ac67 0%,#c18d40 100%); /* IE10+ */
 	background: linear-gradient(to bottom, #d2ac67 0%,#c18d40 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', endColorstr='#c18d40',GradientType=0 ); /* IE6-9 */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', endColorstr='#c18d40',GradientType=0 ); /* IE6-9 */
 }
 
 	.departmentSearchButton:hover {
@@ -600,7 +601,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 		background: -o-linear-gradient(top, #e8cb97 0%,#cfa261 100%); /* Opera 11.10+ */
 		background: -ms-linear-gradient(top, #e8cb97 0%,#cfa261 100%); /* IE10+ */
 		background: linear-gradient(to bottom, #e8cb97 0%,#cfa261 100%); /* W3C */
-}
+	}
 
 	.departmentSearchButton:active {
 		background: -moz-linear-gradient(top, #cfa65f 0%, #c39044 100%); /* FF3.6+ */
@@ -609,20 +610,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 		background: -o-linear-gradient(top, #cfa65f 0%,#c39044 100%); /* Opera 11.10+ */
 		background: -ms-linear-gradient(top, #cfa65f 0%,#c39044 100%); /* IE10+ */
 		background: linear-gradient(to bottom, #cfa65f 0%,#c39044 100%); /* W3C */
-		
 		-webkit-box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
 		-ms-box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
 		box-shadow: inset 0 1px 2px rgba(36, 42, 43, 0.25);
 	}
 
-	.editListButton {
-		position: static;
-		padding: 0 30px;
-		float: none;
-		width: auto;
-		margin-top: 40px;
-		margin-left: 30px;
-	}
+.editListButton {
+	position: static;
+	padding: 0 30px;
+	float: none;
+	width: auto;
+	margin-top: 40px;
+	margin-left: 30px;
+}
 
 
 .advancedSearch {
@@ -633,15 +633,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	width: 140px;
 }
 
-.advancedSearch span {
-	font-family: Arial;
-	font-size: 16px;	
-}
+	.advancedSearch span {
+		font-family: Arial;
+		font-size: 16px;
+	}
 
-.advancedSearch:hover {
-	cursor: pointer;
-	text-decoration: underline;
-}
+	.advancedSearch:hover {
+		cursor: pointer;
+		text-decoration: underline;
+	}
 
 .additionalSearchPanel {
 	width: 776px;
@@ -658,16 +658,15 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 
 .additionalSearchRow {
 	display: inline-block;
-	width: inherit;	
+	width: inherit;
 }
 
 .additionalSearchRowFirst {
-	
 }
 
-.additionalSearchRowFirst .fieldLabel {
-	margin-top: 0px;
-}
+	.additionalSearchRowFirst .fieldLabel {
+		margin-top: 0px;
+	}
 
 .fieldLabel {
 	margin: 6px 0 3px 0;
@@ -685,7 +684,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2ac67', end
 	border: 1px solid #dadada;
 	color: #313131;
 	font-size: 14px;
-		outline: none;
+	outline: none;
 }
 
 input.field:hover, select.field:hover {
@@ -694,27 +693,25 @@ input.field:hover, select.field:hover {
 
 input.field:active, select.field:active {
 	border-color: #9d9d9d;
-
 }
 
 .dataPicker {
-	width: 100px;	
+	width: 100px;
 	display: inline-block;
 	outline: none;
 	border: 1px solid #dadada;
 }
 
-.dataPicker:hover{
-	border-color: #9d9d9d;
-}
+	.dataPicker:hover {
+		border-color: #9d9d9d;
+	}
 
-.dataPicker:active{
-	border-color: #9d9d9d;
-
-}
+	.dataPicker:active {
+		border-color: #9d9d9d;
+	}
 
 div.rightItem p {
-		display: inline-block;
+	display: inline-block;
 	margin: 0 -4px;
 	width: 18px;
 	text-align: center;
@@ -741,14 +738,14 @@ div.rightItem p {
 	padding: 0;
 }
 
-.personUL li {
-	min-height: 130px;
-	position: relative;
-	margin: 15px 0;
-}
+	.personUL li {
+		min-height: 130px;
+		position: relative;
+		margin: 15px 0;
+	}
 
 .personIMG {
-	width: 120px;		
+	width: 120px;
 	/*vertical-align: middle;*/
 }
 
@@ -773,6 +770,15 @@ div.rightItem p {
 	margin-top: -4px;
 	display: inline-block;
 	line-height: 25px;
+}
+
+.personName:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.personName:visited {
+	color: #4988b9;
 }
 
 .personDepartment {
@@ -831,14 +837,14 @@ div.rightItem p {
 
 .phonesLine {
 	max-width: 450px;
-	margin-top: 12px;	
+	margin-top: 12px;
 }
 
-.phonesLine:last-of-type {
-	padding-bottom: 14px;
-}
+	.phonesLine:last-of-type {
+		padding-bottom: 14px;
+	}
 
-.searchProgress {	
+.searchProgress {
 	display: none;
 }
 
@@ -849,8 +855,10 @@ div.rightItem p {
 
 /*pagination begin*/
 .pagesContainer {
-	margin-left: 30px;	
+	margin-left: 30px;
+	margin-bottom: 15px;
 }
+
 .pageNmbr {
 	width: 30px;
 	height: 30px;
@@ -861,9 +869,9 @@ div.rightItem p {
 	line-height: 30px;
 }
 
-.pageNmbr:hover {
-	cursor: pointer;
-}
+	.pageNmbr:hover {
+		cursor: pointer;
+	}
 
 .selectedPageNmbr {
 	background: #C6ECFF;
@@ -872,26 +880,35 @@ div.rightItem p {
 .paginationArrow {
 	font-family: Arial;
 	font-size: 16px;
-		color: #4988b9;	
+	color: #4988b9;
 	display: inline-block;
-}
-
-.paginationNavigationLink {
-	font-size: 14px;
-	margin: 0 3px;
-	color: #4988b9;	
-	display: inline-block;	
+	vertical-align: middle;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
+	margin: 0;
 }
 
-.paginationNavigationLink:hover {
-	text-decoration: underline;
-	cursor: pointer;
+.paginationNavigationLink {
+	font-size: 14px;
+	margin: 0 3px;
+	color: #4988b9;
+	display: inline-block;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+	vertical-align: middle;
 }
+
+	.paginationNavigationLink:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
 .forwardLink {
 	margin-left: 20px;
 }
@@ -902,14 +919,82 @@ div.rightItem p {
 
 .editListItem {
 	min-height: 200px;
+	-webkit-box-shadow: inset #eeeeee 0 -1px 0 0;
+	-ms-box-shadow: inset #eeeeee 0 -1px 0 0;
+	box-shadow: inset #eeeeee 0 -1px 0 0;
 }
+
+	.editListItem:hover {
+		background: #f4f4f4;
+	}
+
+		.editListItem:hover > .editPositionPanel div .unhoveredLink {
+			color: #4988b9;
+		}
+
+		.editListItem:hover > .editPositionPanel div .moveToOneSideLink {
+			color: #aaaaaa;
+		}
 
 .editPositionPanel {
 	height: 100%;
+	line-height: 100%;
 	width: 140px;
 	position: absolute;
 	right: 0;
 	top: 0;
-	background: lightcoral;
+}
+
+	.editPositionPanel div {
+		padding: 43% 0;
+		
+	}
+
+		.editPositionPanel div:first-child {
+			padding: 0;
+			position: absolute;
+			top: 10px;
+		}
+
+		.editPositionPanel div:last-child {
+			padding: 0;
+			position: absolute;
+			bottom: 10px;
+			left: 4%;
+		}
+
+.unhoveredLink {
+	color: transparent;
+}
+
+.moveToOneSideLink {
+	color: transparent;
 }
 /*pagination end*/
+
+
+/*help page start*/
+
+.helpInnerHeader {
+	font-size: 18px;
+	margin: 15px 0 0 30px;
+}
+
+.firstHelpInnerHeader {
+	margin-top: 20px;
+}
+
+.helpLink {
+	text-decoration: none;
+	margin-left: 30px;
+	margin-top: 0;
+	font-size: 13px;
+}
+
+.helpText {
+	margin: 0 0 0 30px;
+	font-weight: bolder;
+	font-size: 13px;
+}
+
+/*help page end*/

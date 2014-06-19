@@ -42,7 +42,7 @@ namespace KSS.Controllers
 
         public ActionResult Favorites(int startIndex)
         {
-            Guid guid = new Guid(Session["CurrentUser"].ToString());
+            var guid = new Guid(Session["CurrentUser"].ToString());
 
             var employees = DBHelper.GetFavorites(guid, _pageSize, startIndex);
             ViewResult view = View("FavoritesPage", employees);
@@ -50,14 +50,18 @@ namespace KSS.Controllers
             int count = DBHelper.GetFavoritesCount(guid) / _pageSize;
             if ((employees.Count % _pageSize) != 0)
                 count++;
-//            int step = _pageSize / 2;
-//            if (startIndex - step > 0)
-//                startIndex = startIndex - step;
 
             view.ViewBag.StartIndex = startIndex;
             view.ViewBag.PageCount = count;
             return view;
+        }
 
+        public ActionResult FavoritesWithReplace(int startIndex, Guid userGuid, int delta)
+        {
+            var guid = new Guid(Session["CurrentUser"].ToString());
+            DBHelper.UpdateFavoritePosition(guid, userGuid, delta);
+
+            return Favorites(startIndex);
         }
 
         public bool RemoveFavorite(Guid id)
@@ -74,7 +78,8 @@ namespace KSS.Controllers
 
         public ActionResult Help()
         {
-            return View();
+            ViewResult view = View("Help");
+            return view;
         }
 
 

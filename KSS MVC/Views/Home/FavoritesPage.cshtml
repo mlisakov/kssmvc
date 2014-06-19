@@ -5,58 +5,63 @@
 @using KSS.Models
 @using KSS.Server.Entities
 @model List<EmployeeModel>
-<input id="editListBtn" type="button" class="departmentSearchButton editListButton" value="редактировать порядок" data-edit="1"/>        
-<div class="centralResultPanel">
+@*<input id="editListBtn" type="button" class="departmentSearchButton editListButton" value="редактировать порядок" data-edit="1"/>        *@
+<div class="centralResultPanel" style="margin-top: 30px">
     <ul class="personUL">
         @foreach (EmployeeModel employee in Model)
-        {
-            <li class="listItem" data-id="@employee.Employee.Id" data-position="@employee.Employee.Code">
-                <div class="lyncStatusDiv"></div>
-                <div class="personIMGLayout">
-                    <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />
-                </div>
-                <div class="innerPersonLayout">
-                    <h5 class="personName">
-                        <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
-                    </h5>
+{
+    <li class="listItem editListItem" data-id="@employee.Employee.Id" data-position="@employee.Employee.Code">
+        <div class="lyncStatusDiv"></div>
+        <div class="personIMGLayout">
+            <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />
+        </div>
+        <div class="innerPersonLayout" style="margin-right: 140px">
+            <h5 class="personName">
+                <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
+            </h5>
 
-                    <p class="personDepartment"> @employee.DepartmentState.Department</p>
-                    <p class="personJob">@employee.PositionState.Title</p>
-                    <div class="phonesLine">
-                        @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
-                        {
-                            <p class="personCityPhone">33-24;</p>
-                            <p class="personMobilePhone">@empPlace.PhoneNumber;</p>
-                        }
-                    </div>
-                    <div class="phonesLine">
-                        @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
-                        {
-                            <p class="personCityPhone">33-24;</p>
-                            <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p>
-                        }
-                    </div>
-                </div>
-                
-                <div class="editPositionPanel">
-                    <div>
-                        <a class="paginationNavigationLink">на самый верх</a><p>↑</p>
-                    </div>
-                    <div>
-                        <a class="paginationNavigationLink">выше</a>
-                        <p>↑</p>
-                        <a class="paginationNavigationLink">ниже</a>
-                        <p>↓</p>
-                    </div>
-                    <div>
-                        <a class="paginationNavigationLink">в самый низ</a>
-                        <p>↓</p>
-                    </div>
-                </div>
+            <p class="personDepartment"> @employee.DepartmentState.Department</p>
+            <p class="personJob">@employee.PositionState.Title</p>
+            <div class="phonesLine">
+                @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
+                {
+                    <p class="personCityPhone">33-24;</p>
+                    <p class="personMobilePhone">@empPlace.PhoneNumber;</p>
+                }
+            </div>
+            <div class="phonesLine">
+                @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
+                {
+                    <p class="personCityPhone">33-24;</p>
+                    <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p>
+                }
+            </div>
+        </div>
 
-                @*                <img class="favorite" data-url="@Url.Action("RemoveFavorite", "Home", new {id = employee.Employee.Id})" title="Убрать" />*@
-            </li>
-        }
+        <div class="editPositionPanel">
+            <div>
+                <a class="paginationNavigationLink moveToOneSideLink" 
+                   data-url="@Url.Action("FavoritesWithReplace", "Home", new { startIndex = ViewBag.StartIndex, userGuid = employee.Employee.Id, delta = 0})">на самый верх</a>
+                <p class="paginationArrow moveToOneSideLink">↑</p>
+            </div>
+            <div>
+                <a class="paginationNavigationLink unhoveredLink" 
+                   data-url="@Url.Action("FavoritesWithReplace", "Home", new { startIndex = ViewBag.StartIndex, userGuid = employee.Employee.Id, delta = 1})">ниже</a>
+                <p class="paginationArrow unhoveredLink">↓</p>
+                <a class="paginationNavigationLink unhoveredLink" 
+                   data-url="@Url.Action("FavoritesWithReplace", "Home", new { startIndex = ViewBag.StartIndex, userGuid = employee.Employee.Id, delta = -1})">выше</a>
+                <p class="paginationArrow unhoveredLink">↑</p>
+            </div>
+            <div>
+                <a class="paginationNavigationLink moveToOneSideLink"
+                   data-url="@Url.Action("FavoritesWithReplace", "Home", new { startIndex = ViewBag.StartIndex, userGuid = employee.Employee.Id, delta = int.MaxValue})">в самый низ</a>
+                <p class="paginationArrow moveToOneSideLink">↓</p>
+            </div>
+        </div>
+
+        @*                <img class="favorite" data-url="@Url.Action("RemoveFavorite", "Home", new {id = employee.Employee.Id})" title="Убрать" />*@
+    </li>
+}
     </ul>
 </div>
 
@@ -153,34 +158,41 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
-        $('#editListBtn').on('click', function(e) {
-            var target = $('#editListBtn');
+//        $('#editListBtn').on('click', function(e) {
+//            var target = $('#editListBtn');
+//
+//            if (target.data('edit') == "1") {
+//                //меняем кнопку
+//                target.data('edit', '0');
+//                target.attr('value', 'сохранить');
+//
+//                //меняем стили у лист-айтемов
+//                $('.listItem').addClass('editListItem');
+//                //освобождаем у лист-айтемов правый край
+//                $('.listItem .innerPersonLayout').css('margin-right', '140px');
+//
+//                //показываем панель редактирования
+//                $('.editPositionPanel').toggle();
+//
+//            } else {
+//                target.data('edit', '1');
+//                target.attr('value', 'редактировать порядок');
+//                $('.listItem').removeClass('editListItem');
+//
+//                $('.listItem .innerPersonLayout').css('margin-right', '0');
+//
+//                $('.editPositionPanel').toggle();
+//            }
+//        });
 
-            if (target.data('edit') == "1") {
-                //меняем кнопку
-                target.data('edit', '0');
-                target.attr('value', 'сохранить');
-
-                //меняем стили у лист-айтемов
-                $('.listItem').addClass('editListItem');
-                //освобождаем у лист-айтемов правый край
-                $('.listItem .innerPersonLayout').css('margin-right', '140px');
-
-                //показываем панель редактирования
-
-            } else {
-                target.data('edit', '1');
-                target.attr('value', 'редактировать порядок');
-                $('.listItem').removeClass('editListItem');
-
-                $('.listItem .innerPersonLayout').css('margin-right', '0');
-            }
-        });
-
-        $('.pageNmbr, .paginationNavigationLink').on('click', function (e) {
+        $('.pageNmbr, .paginationNavigationLink, .emploeeLink').on('click', function (e) {
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
             $('.progress').show();
+
+            if (currentPageItem.hasClass('emploeeLink')) {
+                ChangeSelectedPage(0);
+            }
 
             loadSearchPage(url);
         });
