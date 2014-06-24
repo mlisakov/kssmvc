@@ -7,12 +7,16 @@ namespace KSS.Models
 {
     public class EmployeeModel
     {
+        private readonly Guid _currentUser = Guid.Empty;
+
         public Employee Employee { get; set; }
         public DepartmentState DepartmentState { get; set; }
         public DivisionState DivisionState { get; set; }
         public PositionState PositionState { get; set; }
         public List<SpecificStaffPlace> SpecificStaffPlaces { get; set; }
         public List<EmployeePlace> EmployeePlaces { get; set; }
+
+        public bool IsFavorite { get; private set; }
 
         public EmployeeModel(Guid employeeGuid)
         {
@@ -22,7 +26,16 @@ namespace KSS.Models
             PositionState = DBHelper.GetEmployeePositionState(employeeGuid);
             SpecificStaffPlaces = DBHelper.GetEmployeeSpecificStaffPlaces(employeeGuid);
             EmployeePlaces = DBHelper.GetEmployeePlaces(employeeGuid);
+         
         }
+
+        public EmployeeModel(Guid employeeGuid, Guid currentUser)
+            : this(employeeGuid)
+        {
+            IsFavorite = DBHelper.CheckIsFavorite(currentUser, employeeGuid);
+            _currentUser = currentUser;
+        }
+
 
         public EmployeeModel(Guid employeeGuid, bool loadDepartmentInfo,
             bool loadDivision,
@@ -46,6 +59,25 @@ namespace KSS.Models
 
             if (loadEmployeePlace)
                 EmployeePlaces = DBHelper.GetEmployeePlaces(employeeGuid);
+        }
+
+        public void ChangeFavoriteStatus()
+        {
+            if (_currentUser != Guid.Empty)
+            {
+                bool result = false;
+                result = IsFavorite
+                    ? DBHelper.RemoveFromFavorites(_currentUser, Employee.Id)
+                    : DBHelper.AddToFavorites(_currentUser, Employee.Id);
+
+                if (result)
+                    IsFavorite = !IsFavorite;
+            }
+        }
+
+        public void LoadLocation()
+        {
+            
         }
     }
 }

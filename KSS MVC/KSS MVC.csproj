@@ -216,6 +216,8 @@
     <Content Include="Fonts\PTS75F_W.TTF" />
     <Content Include="Fonts\PTS76F_W.TTF" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
+    <Content Include="Images\star.png" />
+    <Content Include="Images\selectedStar.png" />
     <Content Include="Images\headpx.png" />
     <Content Include="Images\logo.png" />
     <Content Include="Images\progress.gif" />
@@ -259,7 +261,7 @@
     <Content Include="Web.sitemap" />
     <Content Include="Views\Home\Favorites.cshtml" />
     <Content Include="Views\Home\Help.cshtml" />
-    <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Shared\PersonCard.cshtml" />
     <Content Include="Views\Shared\SearchView.cshtml" />
     <Content Include="Views\Shared\SearchEmployeeResult.cshtml" />
     <Content Include="Views\Shared\BirthDayResult.cshtml" />
@@ -267,6 +269,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Employee\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

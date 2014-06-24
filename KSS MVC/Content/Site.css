@@ -998,3 +998,108 @@ div.rightItem p {
 }
 
 /*help page end*/
+
+
+
+/*person card start*/
+
+.personCardLayout {
+	margin: 30px;
+	-moz-min-width: 500px;
+	-ms-min-width: 500px;
+	-o-min-width: 500px;
+	-webkit-min-width: 500px;
+	min-width: 500px;
+}
+
+.aroundPhotoPersonContainer {
+	margin-left: 140px;
+}
+
+.personCardName {
+	font-size: 26px;
+	margin: 0;
+	margin-top: -4px;
+	display: inline-block;
+	color: #4d4d4d;
+}
+
+.personCardBirthDay {
+	margin: 0;
+	margin-top: 5px;
+	font-size: 16px;
+	color: #4d4d4d;
+}
+
+.personCardEmail {
+	margin: 0;
+	margin-top: 4px;
+	display: inline-block;
+	font-size: 16px;
+	text-decoration: none;	
+	color: #4988b9;
+}
+
+.personCardEmail:hover {
+	text-decoration: underline;
+}
+
+.personCardAddToFavoriteLink {
+	color: #4988b9;
+	font-size: 12px;
+	margin: 0;
+	margin-top: 5px;
+	display: block;
+}
+.personCardAddToFavoriteLink img {
+	float: left;
+	margin-top: 1px;
+}
+
+.personCardAddToFavoriteLink p {
+	margin: 0;
+	padding-left: 15px;
+}
+
+.personCardAddToFavoriteLink:hover {
+	text-decoration: underline;
+	cursor: pointer;	
+}
+
+.personCardJobTitle {	
+	font-weight: bold;
+	margin: 0;
+	width: 140px;
+	text-align: right;
+	float: left;
+}
+
+.personCardJob {	
+	margin: 0 0 0 150px;
+}
+
+.personCardJobContainer {
+	margin-top: 15px;
+	font-size: 16px;
+}
+
+.personCardDepartmentMember {
+	margin-left: 10px;
+	margin-top: 15px;
+}
+
+.personCardJobMarginTop {
+	margin-top: 10px;
+}
+
+.personCardPlaceContainer {
+	margin-top: 60px;
+}
+
+.personCardPhonesHeader {
+		font-weight: bold;
+	margin: 0;
+	margin-bottom: 10px;
+}
+
+/*person card end*/

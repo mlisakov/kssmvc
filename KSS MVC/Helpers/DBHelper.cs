@@ -561,5 +561,14 @@ namespace KSS.Helpers
                     .ThenBy(t => t.Employee.BirthDay.Value.Day)
                     .ToList();
         }
+
+        public static bool CheckIsFavorite(Guid currentUser, Guid employeeGuid)
+        {
+            return
+                (from fe in baseModel.Favorites
+                    join emp in baseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                    where fe.EmployeeId == currentUser && fe.LinkedEmployeeId == employeeGuid
+                    select fe.Id).Any();
+        }
     }
 }

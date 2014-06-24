@@ -1,0 +1,126 @@
+﻿@{
+    Layout = "";
+}
+
+
+
+@using KSS.Server.Entities
+@model KSS.Models.EmployeeModel
+           
+@{
+    var months = new Dictionary<int, string>
+    {
+        {1, "января"},
+        {2, "февраля"},
+        {3, "марта"},
+        {4, "апреля"},
+        {5, "мая"},
+        {6, "июня"},
+        {7, "июля"},
+        {8, "августа"},
+        {9, "сентября"},
+        {10, "октября"},
+        {11, "ноября"},
+        {12, "декабря"},
+    };
+}
+
+<script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
+
+<div class="personCardLayout">
+    
+    <div class="personIMGLayout">
+        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />        
+    </div>
+    
+    <div class="aroundPhotoPersonContainer">
+        <h5 class="personCardName">
+            @Model.Employee.Name
+        </h5>
+        
+        @if (Model.Employee.BirthDay.HasValue)
+        {
+            <p class="personCardBirthDay">День Рождения: @Model.Employee.BirthDay.Value.Day @months[@Model.Employee.BirthDay.Value.Month]</p>
+        }
+            
+        <a class="personCardEmail" href="mailto:@Model.Employee.EMail">@Model.Employee.EMail</a>
+        <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>
+            @if (Model.IsFavorite)
+            {
+                <img src="~/Images/selectedStar.png" />
+                <p>в избранном</p>
+            }
+            else
+            {
+                <img src="~/Images/star.png" />
+                <p>добавить в избранное</p>
+            }
+
+        </a>
+    </div>
+    
+    <br/>
+    
+    <div class="personCardJobContainer">
+        <p class="personCardJobTitle">Должность:</p>
+        <p class="personCardJob">@Model.PositionState.Title</p>
+
+        <p class="personCardJobTitle personCardJobMarginTop">Филиал:</p>
+        <p class="personCardJob personCardJobMarginTop">@Model.DivisionState.Division</p>
+
+
+        <p class="personCardJobTitle personCardJobMarginTop">Подразделение:</p>
+        <p class="personCardJob personCardJobMarginTop">@Model.DepartmentState.Department</p>
+
+        <p class="personCardJobTitle personCardJobMarginTop">Член штаба:</p>
+        <input type="checkbox" checked disabled class="personCardDepartmentMember" />
+    </div>
+    
+    
+    <div class="personCardPlaceContainer">
+        <p class="personCardJobTitle">Местоположение:</p>
+        <!--в этой только СТРАНА, ОБЛАСТЬ, ГОРОД-->
+        <p class="personCardJob">Россия, Ростовская область, Ростов-на-Дону</p>
+        <!--в этой только УЛИЦА, ДОМ-->
+        <p class="personCardJob">ул. Большая Садовая, 49.</p>
+
+        <p class="personCardJobTitle personCardJobMarginTop">Номер офиса:</p>
+        <p class="personCardJob personCardJobMarginTop">49</p>
+    </div>
+    
+    <div class="personCardPlaceContainer">
+        <p class="personCardPhonesHeader" style="float:none">ТЕЛЕФОНЫ СОТРУДНИКА:</p>
+
+        <p class="personCardJobTitle">внутренний:</p>
+        <p class="personCardJob">49-85-78</p>
+
+        <p class="personCardJobTitle">городской:</p>
+        <p class="personCardJob">49-85-78</p>
+
+        <p class="personCardJobTitle">мобильный:</p>
+        <p class="personCardJob">49-85-78</p>
+
+        <p class="personCardJobTitle">личный:</p>
+        <p class="personCardJob">49-85-78</p>
+
+        <p class="personCardJobTitle">штабной:</p>
+        <p class="personCardJob">49-85-78</p>
+    </div>
+ 
+</div>
+
+
+<script>
+
+    $(document).ready(function() {
+
+        $('.personCardAddToFavoriteLink').on('click', function (e) {
+            var currentPageItem = $(this);
+            var url = currentPageItem.data('url');
+            
+            loadSearchPage(url);
+        });
+
+    });
+
+</script>

@@ -8,8 +8,22 @@ namespace KSS.Controllers
     {
         public ActionResult Index(Guid id)
         {
-            EmployeeModel employeeViewModel = new EmployeeModel(id);
-            return View(employeeViewModel);
+            var currentUser = new Guid(Session["CurrentUser"].ToString());
+            var employeeViewModel = new EmployeeModel(id, currentUser);
+
+            var view = View("PersonCard", employeeViewModel);
+            return view;
+        }
+
+        public ActionResult ChangeFavoriteStatus(Guid id)
+        {
+            var currentUser = new Guid(Session["CurrentUser"].ToString());
+
+            var employeeViewModel = new EmployeeModel(id, currentUser);
+            employeeViewModel.ChangeFavoriteStatus();
+
+            var view = View("PersonCard", employeeViewModel);
+            return view;
         }
     }
 }
