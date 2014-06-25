@@ -746,6 +746,7 @@ div.rightItem p {
 
 .personIMG {
 	width: 120px;
+	float: left;
 	/*vertical-align: middle;*/
 }
 
@@ -1048,6 +1049,7 @@ div.rightItem p {
 	color: #4988b9;
 	font-size: 12px;
 	margin: 0;
+	width: 140px;
 	margin-top: 5px;
 	display: block;
 }
@@ -1074,8 +1076,26 @@ div.rightItem p {
 	float: left;
 }
 
+.personCardEdit {
+	color: #4988b9;
+	font-size: 12px;
+	width: 140px;
+	display: inline;
+	margin-left: 10px;
+}
+
+.personCardEdit:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .personCardJob {	
 	margin: 0 0 0 150px;
+}
+
+.personcardJobEdit {
+	margin: 0 0 0 10px;
+	float: left;
 }
 
 .personCardJobContainer {
@@ -1094,12 +1114,125 @@ div.rightItem p {
 
 .personCardPlaceContainer {
 	margin-top: 60px;
+	font-size: 16px;
 }
 
 .personCardPhonesHeader {
 		font-weight: bold;
 	margin: 0;
 	margin-bottom: 10px;
+}
+
+
+
+.personCardEditPlace {
+	margin-top: 0;
+}
+
+.personCardEditPhoneLink {
+	margin: 0 0 0 10px;
+	display: inline;
+}
+
+.personCardLoadImage {
+	display: block;
+	width: initial;
+	margin: 0;
+	line-height: 20px;
+	text-align: left;
+}
+
+
+
+.personCardChangePlaceDialog {
+	width: 350px;
+	background: #ededed;
+	border: 1px solid #dadada;
+	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
+	-ms-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
+	box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
+	margin-left: 150px;
+	z-index: 90;
+	padding: 0px 10px 15px 10px;
+	position: absolute;
+	display: none;
+}
+
+.personCardChangePlaceDialogSimpleLabel {
+	margin: 0;
+	color: #9a9a9a;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
+.personCardChangePlaceDialogSelect {
+	width: 350px;
+}
+
+.personCardChangePlaceDialogText {	
+	margin: 2px 0 0 0;
+	border: 1px solid #dadada;
+	padding: 0 3px;
+	color: #000;
+}
+
+.personCardChangePlaceDialogText:hover {
+	border-color: #ababab;
+}
+
+	.personCardChangePlaceDialogText:focus {
+		border-color: #ababab;
+		outline: none;
+	}
+
+	.personCardChangePlaceDialogText::-webkit-input-placeholder { /* WebKit browsers */
+		color: #c8c8c8;
+	}
+
+	.personCardChangePlaceDialogText:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		color: #c8c8c8;
+	}
+
+	.personCardChangePlaceDialogText::-moz-placeholder { /* Mozilla Firefox 19+ */
+		color: #c8c8c8;
+	}
+
+	.personCardChangePlaceDialogText:-ms-input-placeholder { /* Internet Explorer 10+ */
+		color: #c8c8c8;
+	}
+
+
+.personCardStreet {
+	width: 342px;
+}
+
+.personCardChangePlaceDialogHalfLabel {
+	width: 49%;
+	display: inline-block
+}
+
+.personCardChangePlaceDialogHalfText {
+	width: 165px;	
+}
+
+.personCardOfficeNumber {
+	
+}
+
+.personCardSavePlaceDialogButton {
+	position: inherit;
+}
+
+.personCardChangePlaceDialogButtonsContainer {
+	text-align: right;
+	height: 36px;
+	margin-top: 10px;
+}
+
+.personCardCancelEditPlaceButton {
+	vertical-align: middle;
+	line-height: 36px;
+	margin-right: 10px;
 }
 
 /*person card end*/

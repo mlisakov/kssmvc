@@ -30,7 +30,8 @@
 <div class="personCardLayout">
     
     <div class="personIMGLayout">
-        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />        
+        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />   
+        <p class="personCardEdit personCardLoadImage" >загрузить фото</p>     
     </div>
     
     <div class="aroundPhotoPersonContainer">
@@ -55,9 +56,9 @@
                 <img src="~/Images/star.png" />
                 <p>добавить в избранное</p>
             }
-
         </a>
     </div>
+    
     
     <br/>
     
@@ -86,26 +87,66 @@
 
         <p class="personCardJobTitle personCardJobMarginTop">Номер офиса:</p>
         <p class="personCardJob personCardJobMarginTop">49</p>
+        
+        <p id="editPlaceLink" class="personCardJob personCardEdit ">редактировать</p>
     </div>
     
+    <div class="personCardChangePlaceDialog personCardDialog">
+        <p class="personCardChangePlaceDialogSimpleLabel">страна</p>
+        <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1"></select>
+        
+        <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
+        <select class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2"></select>
+        
+        <p class="personCardChangePlaceDialogSimpleLabel">населенный пункт</p>
+        <select class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3"></select>
+        
+        <p class="personCardChangePlaceDialogSimpleLabel">улица</p>
+        <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4"/>
+        
+        <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">дом</p>
+        <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер офиса</p>
+        
+        <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5"/>
+        <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6"/>
+        
+        <div class="personCardChangePlaceDialogButtonsContainer">
+            <p id="cancelEditPlace" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+            <input type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7"/>                    
+        </div>
+
+    </div>
+
     <div class="personCardPlaceContainer">
         <p class="personCardPhonesHeader" style="float:none">ТЕЛЕФОНЫ СОТРУДНИКА:</p>
-
-        <p class="personCardJobTitle">внутренний:</p>
-        <p class="personCardJob">49-85-78</p>
-
-        <p class="personCardJobTitle">городской:</p>
-        <p class="personCardJob">49-85-78</p>
-
-        <p class="personCardJobTitle">мобильный:</p>
-        <p class="personCardJob">49-85-78</p>
-
-        <p class="personCardJobTitle">личный:</p>
-        <p class="personCardJob">49-85-78</p>
-
-        <p class="personCardJobTitle">штабной:</p>
-        <p class="personCardJob">49-85-78</p>
+        
+        <div>
+            <p class="personCardJobTitle">внутренний:</p>
+            <p class="personcardJobEdit ">49-85-78</p>
+            <p class="personCardEdit">редактировать</p>            
+        </div>
+        <div>
+            <p class="personCardJobTitle">внутренний:</p>
+            <p class="personcardJobEdit ">49-85-78</p>
+            <p class="personCardEdit">редактировать</p>
+        </div>
+        <div>
+            <p class="personCardJobTitle">внутренний:</p>
+            <p class="personcardJobEdit ">49-85-78</p>
+            <p class="personCardEdit">редактировать</p>
+        </div>
+        <div>
+            <p class="personCardJobTitle">внутренний:</p>
+            <p class="personcardJobEdit ">49-85-78</p>
+            <p class="personCardEdit">редактировать</p>
+        </div>
+        <div>
+            <p class="personCardJobTitle">внутренний:</p>
+            <p class="personcardJobEdit ">49-85-78</p>
+            <p class="personCardEdit">редактировать</p>
+        </div>
     </div>
+    <p class="personCardJob personCardEdit " style="margin-top: 10px;display: block">добавить новый</p>
  
 </div>
 
@@ -121,6 +162,25 @@
             loadSearchPage(url);
         });
 
+
+        $('#editPlaceLink').on('click', function(e) {
+            var dialog = $(".personCardChangePlaceDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#cancelEditPlace').on('click', function() {
+            hideAllDialogs();
+        });
+
+        function hideAllDialogs() {
+            $(".personCardDialog").hide();
+        }
     });
 
 </script>
