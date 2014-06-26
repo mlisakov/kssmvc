@@ -31,8 +31,9 @@
     
     <div class="personIMGLayout">
         <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />   
-        <p class="personCardEdit personCardLoadImage" >загрузить фото</p>     
+        <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>                            
     </div>
+    
     
     <div class="aroundPhotoPersonContainer">
         <h5 class="personCardName">
@@ -45,6 +46,7 @@
         }
             
         <a class="personCardEmail" href="mailto:@Model.Employee.EMail">@Model.Employee.EMail</a>
+     
         <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>
             @if (Model.IsFavorite)
             {
@@ -121,33 +123,64 @@
         <p class="personCardPhonesHeader" style="float:none">ТЕЛЕФОНЫ СОТРУДНИКА:</p>
         
         <div>
-            <p class="personCardJobTitle">внутренний:</p>
-            <p class="personcardJobEdit ">49-85-78</p>
-            <p class="personCardEdit">редактировать</p>            
+            <p id="phoneType1" class="personCardJobTitle">внутренний:</p>
+            <p id="phoneNumber1" class="personcardJobEdit ">49-85-78</p>
+            <p id="editPhoneLink1" class="personCardEdit personCardEditPhoneLink">редактировать</p>            
         </div>
         <div>
-            <p class="personCardJobTitle">внутренний:</p>
-            <p class="personcardJobEdit ">49-85-78</p>
-            <p class="personCardEdit">редактировать</p>
+            <p id="phoneType2" class="personCardJobTitle">внутренний:</p>
+            <p id="phoneNumber2" class="personcardJobEdit ">49-85-78</p>
+            <p id="editPhoneLink2" class="personCardEdit personCardEditPhoneLink">редактировать</p>
         </div>
         <div>
-            <p class="personCardJobTitle">внутренний:</p>
-            <p class="personcardJobEdit ">49-85-78</p>
-            <p class="personCardEdit">редактировать</p>
+            <p id="phoneType3" class="personCardJobTitle">внутренний:</p>
+            <p id="phoneNumber3" class="personcardJobEdit ">49-85-78</p>
+            <p id="editPhoneLink3" class="personCardEdit personCardEditPhoneLink">редактировать</p>
         </div>
         <div>
-            <p class="personCardJobTitle">внутренний:</p>
-            <p class="personcardJobEdit ">49-85-78</p>
-            <p class="personCardEdit">редактировать</p>
+            <p id="phoneType4" class="personCardJobTitle">внутренний:</p>
+            <p id="phoneNumber4" class="personcardJobEdit ">49-85-78</p>
+            <p id="editPhoneLink4" class="personCardEdit personCardEditPhoneLink">редактировать</p>
         </div>
         <div>
-            <p class="personCardJobTitle">внутренний:</p>
-            <p class="personcardJobEdit ">49-85-78</p>
-            <p class="personCardEdit">редактировать</p>
+            <p id="phoneType5" class="personCardJobTitle">внутренний:</p>
+            <p id="phoneNumber5" class="personcardJobEdit ">49-85-78</p>
+            <p id="editPhoneLink5" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+        </div>
+        
+        <div class="personCardDialog personCardChangePhoneDialog">
+            <p id="personCardChangePhoneDialogPhoneTypeLabel" class="personCardChangePlaceDialogSimpleLabel">
+                тип_номера
+            </p>
+            <input type="text" class="personCardStreet personCardChangePlaceDialogText"/>
+
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelEditPhone" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7" />
+            </div>
         </div>
     </div>
-    <p class="personCardJob personCardEdit " style="margin-top: 10px;display: block">добавить новый</p>
- 
+
+    <p id="personCardAddPhoneLink" class="personCardJob personCardEdit " style="margin-top: 10px;display: block">добавить новый</p>
+
+    <div class="personCardDialog personCardAddPhoneDialog">
+        <p class="personCardChangePlaceDialogSimpleLabel">
+            тип номера
+        </p>
+        <select class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="10"></select>
+
+        <p class="personCardChangePlaceDialogSimpleLabel">
+            номер телефона
+        </p>
+        <input type="text" class="personCardStreet personCardChangePlaceDialogText" tabindex="11"/>
+
+        <div class="personCardChangePlaceDialogButtonsContainer">
+            <p id="cancelAddPhone" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+            <input type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="12" />
+        </div>
+    </div>
+    
+    <input type="file" id="upload" name="upload" style="visibility: collapse; width: 1px; height: 1px" />
 </div>
 
 
@@ -163,7 +196,9 @@
         });
 
 
-        $('#editPlaceLink').on('click', function(e) {
+        $('#editPlaceLink').on('click', function (e) {
+            hideAllDialogs();
+
             var dialog = $(".personCardChangePlaceDialog").first();
 
             var oldPosition = $(this).position();
@@ -174,8 +209,48 @@
             dialog.show();
         });
 
-        $('#cancelEditPlace').on('click', function() {
+        $('#cancelEditPlace, #cancelEditPhone, #cancelAddPhone').on('click', function () {
             hideAllDialogs();
+        });
+
+        $('.personCardEditPhoneLink').on('click', function (e) {
+            hideAllDialogs();
+
+            var clickedItem = $(e.target);
+
+            var idItem = clickedItem.attr('id');
+
+            idItem = idItem.substr(13);//"editPhoneLink".length == 13
+
+
+            $('#personCardChangePhoneDialogPhoneTypeLabel').text($('#phoneType' + idItem).text());
+            var dialog = $('.personCardChangePhoneDialog').first();
+            
+
+            var oldPosition = $(this).position();
+                
+                dialog.css({
+                    top: (oldPosition.top)
+                });
+
+            dialog.show();
+        });
+
+        $('#personCardAddPhoneLink').on('click', function(e) {
+            hideAllDialogs();
+
+            var dialog = $(".personCardAddPhoneDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#loadImageLink').on('click', function(e) {
+            $('#upload').click();
         });
 
         function hideAllDialogs() {

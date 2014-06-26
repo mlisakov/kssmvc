@@ -397,6 +397,7 @@ ul {
 }
 
 .birthDayLayout {
+	line-height: normal;
 	display: none;
 	width: 390px;
 	min-height: 283px;
@@ -414,7 +415,7 @@ ul {
 }
 
 .tabHeadersPanel {
-	line-height: initial;
+	line-height: normal;
 	width: inherit;
 }
 
@@ -443,6 +444,7 @@ ul {
 	}
 
 .tabItemContainer {
+	line-height: normal;
 	width: inherit;
 	overflow-y: auto;
 	margin-top: 34px;
@@ -453,6 +455,7 @@ ul {
 
 .tabItemContent {
 	display: none;
+	line-height: normal;
 }
 
 .selectedTabItemContent {
@@ -460,18 +463,19 @@ ul {
 }
 
 .birthDayPeopleList {
-	line-height: initial;
+	line-height: normal;
 	margin: 0;
 	padding: 0 34px 0 50px;
 }
 
 .birthDayPeopleItem {
-	line-height: initial;
+	line-height: normal;
 	list-style-type: disc;
 	margin-bottom: 18px;
 }
 
 .birthDayName {
+	line-height: normal;
 	margin: 0;
 	display: inline-block;
 	font-size: 16px;
@@ -479,6 +483,7 @@ ul {
 }
 
 .birthDayDate {
+	line-height: normal;
 	margin: 0;
 	display: inline-block;
 	font-size: 16px;
@@ -486,12 +491,14 @@ ul {
 }
 
 .birthDayDepartment {
+	line-height: normal;
 	font-size: 11px;
 	color: #9a9a9a;
 	margin: 0;
 }
 
 .birthDayJob {
+	line-height: normal;
 	font-size: 11px;
 	color: #9a9a9a;
 	margin: 0;
@@ -1129,10 +1136,6 @@ div.rightItem p {
 	margin-top: 0;
 }
 
-.personCardEditPhoneLink {
-	margin: 0 0 0 10px;
-	display: inline;
-}
 
 .personCardLoadImage {
 	display: block;
@@ -1144,8 +1147,8 @@ div.rightItem p {
 
 
 
-.personCardChangePlaceDialog {
-	width: 350px;
+.personCardDialog {
+	width: 300px;
 	background: #ededed;
 	border: 1px solid #dadada;
 	-webkit-box-shadow: 0 2px 3px rgba(0, 0, 0, 0.75);
@@ -1158,6 +1161,10 @@ div.rightItem p {
 	display: none;
 }
 
+.personCardChangePlaceDialog {
+	
+}
+
 .personCardChangePlaceDialogSimpleLabel {
 	margin: 0;
 	color: #9a9a9a;
@@ -1166,7 +1173,7 @@ div.rightItem p {
 }
 
 .personCardChangePlaceDialogSelect {
-	width: 350px;
+	width: 300px;
 }
 
 .personCardChangePlaceDialogText {	
@@ -1203,7 +1210,7 @@ div.rightItem p {
 
 
 .personCardStreet {
-	width: 342px;
+	width: 292px;
 }
 
 .personCardChangePlaceDialogHalfLabel {
@@ -1212,7 +1219,7 @@ div.rightItem p {
 }
 
 .personCardChangePlaceDialogHalfText {
-	width: 165px;	
+	width: 140px;	
 }
 
 .personCardOfficeNumber {
@@ -1233,6 +1240,10 @@ div.rightItem p {
 	vertical-align: middle;
 	line-height: 36px;
 	margin-right: 10px;
+}
+
+.personCardChangePhoneDialog {
+	
 }
 
 /*person card end*/
