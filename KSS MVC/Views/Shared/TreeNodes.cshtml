@@ -20,7 +20,7 @@
             {
                 <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
                     
-                    <div class="plus"></div>
+                    <div class="plus rootArrow"></div>
                     <span class="folder hasChilds @node.Type" id="@node.Id">@node.Name</span>
                     <span class="tooltip">@node.Name</span>
                 </li>

@@ -93,9 +93,6 @@
         $('.innerUL').on('click', function (e) {
             var currentListItem = $(e.target);
 
-
-
-
             var url = currentListItem.data('url');
 
             if (url != null) {
@@ -126,7 +123,9 @@
 
                     e.stopPropagation();
                 } else {
-                    $.get(url);
+
+                    $.get(url, function () { });
+                   
                     var next = currentListItem.next();
 
                     //add background to parent UL
