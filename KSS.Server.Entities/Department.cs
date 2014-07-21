@@ -14,10 +14,26 @@ namespace KSS.Server.Entities
     
     public partial class Department
     {
+        public Department()
+        {
+            this.DepartmentStates = new HashSet<DepartmentState>();
+            this.DepartmentStates1 = new HashSet<DepartmentState>();
+            this.Positions = new HashSet<Position>();
+            this.SpecificStaffs = new HashSet<SpecificStaff>();
+            this.Staffs = new HashSet<Staff>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Code { get; set; }
         public string Ranking { get; set; }
         public string Number { get; set; }
         public bool ManualInput { get; set; }
+        public string RossetiCode { get; set; }
+    
+        public virtual ICollection<DepartmentState> DepartmentStates { get; set; }
+        public virtual ICollection<DepartmentState> DepartmentStates1 { get; set; }
+        public virtual ICollection<Position> Positions { get; set; }
+        public virtual ICollection<SpecificStaff> SpecificStaffs { get; set; }
+        public virtual ICollection<Staff> Staffs { get; set; }
     }
 }

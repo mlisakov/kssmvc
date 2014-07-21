@@ -535,9 +535,6 @@ namespace KSS.Helpers
                 var favoriteEmp = new Favorite {EmployeeId = idCurrentUser, LinkedEmployeeId = idFavoriteUser};
                 BaseModel.Favorites.Add(favoriteEmp);
 
-                BaseModel.
-
-                
 
                 //set position
                 var favoritePerson = BaseModel.Employees.First(e => e.Id == idFavoriteUser);
