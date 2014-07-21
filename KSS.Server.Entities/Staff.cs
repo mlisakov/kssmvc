@@ -17,7 +17,13 @@ namespace KSS.Server.Entities
         public System.Guid Id { get; set; }
         public System.Guid DepartmentId { get; set; }
         public Nullable<System.Guid> PositionId { get; set; }
+        public Nullable<System.DateTime> HolidayStartDate { get; set; }
+        public Nullable<System.DateTime> HolidayEndDate { get; set; }
         public System.DateTime ValidationDate { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual Department Department { get; set; }
+        public virtual Employee Employee { get; set; }
+        public virtual Position Position { get; set; }
     }
 }

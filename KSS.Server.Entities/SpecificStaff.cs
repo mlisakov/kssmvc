@@ -14,10 +14,19 @@ namespace KSS.Server.Entities
     
     public partial class SpecificStaff
     {
+        public SpecificStaff()
+        {
+            this.SpecificStaffPlaces = new HashSet<SpecificStaffPlace>();
+        }
+    
         public System.Guid Id { get; set; }
         public System.Guid DepartmentId { get; set; }
         public Nullable<System.Guid> EmployeeId { get; set; }
         public string Position { get; set; }
         public string Ranking { get; set; }
+    
+        public virtual Department Department { get; set; }
+        public virtual Employee Employee { get; set; }
+        public virtual ICollection<SpecificStaffPlace> SpecificStaffPlaces { get; set; }
     }
 }

@@ -19,5 +19,8 @@ namespace KSS.Server.Entities
         public string Territory { get; set; }
         public System.DateTime ValidationDate { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual Division Division { get; set; }
+        public virtual Territory Territory1 { get; set; }
     }
 }

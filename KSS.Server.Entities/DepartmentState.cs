@@ -21,5 +21,10 @@ namespace KSS.Server.Entities
         public string Department { get; set; }
         public System.DateTime ValidationDate { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual Department Department1 { get; set; }
+        public virtual Department Department2 { get; set; }
+        public virtual Division Division { get; set; }
+        public virtual Employee Employee { get; set; }
     }
 }

@@ -10,7 +10,9 @@ namespace KSS.Models
     public class SearchViewModel
     {
         private Guid _id;
-        private HttpSessionStateBase _session;
+        private DepartmentState _department;
+        private DivisionState _division = null;
+        private HttpSessionStateBase _session = null;
         private int _pageCount;
 
         public int PageCount
@@ -18,13 +20,8 @@ namespace KSS.Models
             get { return _pageCount; }
         }
 
-
-        //private static CompanyBaseModel _baseModel;
-
         public SearchViewModel(HttpSessionStateBase session, Guid? id = null)
         {
-            //if (_baseModel == null)
-            //    _baseModel = new CompanyBaseModel();
             _session = session;
             if (id.HasValue)
                 _id = id.Value;
@@ -33,19 +30,17 @@ namespace KSS.Models
         public string GetDepartmentName()
         {
             var result = "Без наименования";
-            // var item = _baseModel.DepartmentStates.FirstOrDefault(t => t.Id == _id);
-            var item = DBHelper.GetDepartmentState(_id);
-            if (item == null)
+
+            _department = DBHelper.GetDepartmentState(_id);
+            if (_department == null)
             {
-                //var innerItem = _baseModel.DivisionStates.FirstOrDefault(t => t.Id ==_id);
-                var innerItem = DBHelper.GetDivisionState(_id);
-                if (innerItem != null)
-                    result = innerItem.Division;
+                _division = DBHelper.GetDivisionState(_id);
+                if (_division != null)
+                    result = _division.Division;
             }
             else
-            {
-                result = item.Department;
-            }
+                result = _department.Department;
+
             return result;
         }
 
@@ -64,13 +59,16 @@ namespace KSS.Models
             return DBHelper.GetCustomLocality();
         }
 
-        public List<EmployeeModel> Search(string employeeName, int page = 0)
+        public List<PositionState> GetPositionStates()
         {
-            List<EmployeeModel> employees=DBHelper.Search(employeeName,5, page).ToList();
-            int _pageCount = employees.Count() / 5;
-                if ((employees.Count() % 5) != 0)
-                    _pageCount++;
-            return employees;
+            return DBHelper.GetPositionStates();
+        }
+
+        public List<EmployeeModel> GetEmployers()
+        {
+
+            return DBHelper.SearchAdvanced(_division == null ? new Guid?() : _division.Id,
+                _department == null ? new Guid?() : _department.Id, 5, 0);
         }
     }
 }

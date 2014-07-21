@@ -9,9 +9,12 @@ namespace KSS.Controllers
         public ActionResult Index(Guid id)
         {
             var currentUser = new Guid(Session["CurrentUser"].ToString());
+
+            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);
             var employeeViewModel = new EmployeeModel(id, currentUser);
 
             var view = View("PersonCard", employeeViewModel);
+            view.ViewBag.IsAdmin = isAdmin;
             return view;
         }
 
@@ -23,6 +26,10 @@ namespace KSS.Controllers
             employeeViewModel.ChangeFavoriteStatus();
 
             var view = View("PersonCard", employeeViewModel);
+            
+            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);
+            view.ViewBag.IsAdmin = isAdmin;
+
             return view;
         }
     }

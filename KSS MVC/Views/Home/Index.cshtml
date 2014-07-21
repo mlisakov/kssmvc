@@ -40,8 +40,8 @@
     @Html.Partial("Tree", Model.TreeViewModel)
 </div>
 
-<div id="centralPart">
-    
+<div id="centralPart" class="">
+@*    <div class="centralPartWithProgressBar" />*@
 </div>
 
 
@@ -98,7 +98,7 @@
 
                     ChangeSelectedPage(0);
 
-                    loadSearchPage(url);
+                    loadSearchPageAndLoadData(url);
 
                     _lastId = ids;
                     _lastObject = target.parent();
@@ -136,13 +136,35 @@
         }
     }
 
+    function loadSearchPageAndLoadData(url) {
+        var parent = $('#centralPart');
+        if (parent != null) {
+            parent.append('<div class="centralPartWithProgressBar"/>');
+        }
+
+        $.get(url, function (data) {            
+            if (parent != null) {
+                parent.empty();
+                parent.append(data);
+
+                //вызываем загрузку сотрудников
+//                $('#searchBtn').css('background', 'red');                
+            }
+        });
+    }
+
     //загрузка центральной части для главной страницы
     function loadSearchPage(url) {
+        var parent = $('#centralPart');
+        if (parent != null) {
+            parent.append('<div class="centralPartWithProgressBar"/>');
+        }
+
         $.get(url, function (data) {
-            var parent = $('#centralPart');
+//            var parent = $('#centralPart');
             if (parent != null) {
                     parent.empty();
-                parent.append(data);
+                    parent.append(data);                    
             }
         });
     }

@@ -14,6 +14,15 @@ namespace KSS.Server.Entities
     
     public partial class Territory
     {
+        public Territory()
+        {
+            this.Locations = new HashSet<Location>();
+            this.TerritoryStates = new HashSet<TerritoryState>();
+        }
+    
         public System.Guid Id { get; set; }
+    
+        public virtual ICollection<Location> Locations { get; set; }
+        public virtual ICollection<TerritoryState> TerritoryStates { get; set; }
     }
 }

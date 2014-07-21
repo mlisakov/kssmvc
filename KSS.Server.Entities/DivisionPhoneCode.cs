@@ -18,5 +18,8 @@ namespace KSS.Server.Entities
         public System.Guid DivisionFromId { get; set; }
         public System.Guid DivisionToId { get; set; }
         public string IntPhoneCode { get; set; }
+    
+        public virtual Division Division { get; set; }
+        public virtual Division Division1 { get; set; }
     }
 }

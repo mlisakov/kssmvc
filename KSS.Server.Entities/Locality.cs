@@ -14,10 +14,17 @@ namespace KSS.Server.Entities
     
     public partial class Locality
     {
+        public Locality()
+        {
+            this.Locations = new HashSet<Location>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Locality1 { get; set; }
         public string Region { get; set; }
         public string Country { get; set; }
         public string CityPhoneCode { get; set; }
+    
+        public virtual ICollection<Location> Locations { get; set; }
     }
 }

@@ -35,8 +35,7 @@ namespace KSS.Controllers
         public ActionResult SearchView(Guid id)
         {
             SearchViewModel model = new SearchViewModel(Session,id);
-            ViewResult view= View(model);
-            view.ViewBag.Divisions = new SelectList(DBHelper.GetDivisionStates(),"Id","Division");
+            ViewResult view= View(model);                        
             return view;
         }
 
@@ -44,15 +43,25 @@ namespace KSS.Controllers
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
 
-            var employees = DBHelper.GetFavorites(guid, _pageSize, startIndex);
-            ViewResult view = View("FavoritesPage", employees);
-            
-            int count = DBHelper.GetFavoritesCount(guid) / _pageSize;
-            if ((employees.Count % _pageSize) != 0)
-                count++;
 
+            var favoritesCount = DBHelper.GetFavoritesCount(guid);
+
+            var employees = new List<EmployeeModel>();
+            int pagesCount = 0;
+            if (favoritesCount > 0)
+            {
+                DBHelper.CheckAndOrderFavorites(guid);
+
+                employees = DBHelper.GetFavorites(guid, _pageSize, startIndex);
+
+                pagesCount = favoritesCount / _pageSize;
+                if ((favoritesCount % _pageSize) != 0)
+                    pagesCount++;
+            }
+
+            ViewResult view = View("FavoritesPage", employees);
             view.ViewBag.StartIndex = startIndex;
-            view.ViewBag.PageCount = count;
+            view.ViewBag.PageCount = pagesCount;
             return view;
         }
 
@@ -83,23 +92,43 @@ namespace KSS.Controllers
         }
 
 
-        public ActionResult SearchEmployees(string employeeName,int startIndex=0)
+        public ActionResult SearchEmployees(string employeeName, int startIndex = 0)
         {
-            var employees = DBHelper.Search(employeeName,_pageSize,startIndex);
-            ViewResult view=View("SearchEmployeeResult", employees);
+            var employees = DBHelper.Search(employeeName, _pageSize, startIndex);
+            ViewResult view = View("SearchEmployeeResult", employees);
 
-            int count = employees.Count / _pageSize;
-            if ((employees.Count % _pageSize) != 0)
+            var count = DBHelper.GetSearchResultCount(employeeName)/_pageSize;
+
+//            int count = employees.Count / _pageSize;
+            if ((employees.Count%_pageSize) != 0)
                 count++;
-            int step = _pageSize/2;
-            if (startIndex - step > 0)
-                startIndex = startIndex - step;
+
             view.ViewBag.StartIndex = startIndex;
             view.ViewBag.PageCount = count;
+            view.ViewBag.IsAdvanced = false;
             view.ViewBag.Search = employeeName;
             return view;
         }
-        
+
+        public ActionResult SearchEmployeesAdvanced(Guid? divisionId, Guid? departmentId, int startIndex = 0)
+        {
+            var employees = DBHelper.SearchAdvanced(divisionId, null ,_pageSize, startIndex);
+            ViewResult view = View("SearchEmployeeResult", employees);
+
+//            var count = DBHelper.GetSearchResultAdvancedCount(employeeName) / _pageSize;
+            var count = 5;
+
+            //            int count = employees.Count / _pageSize;
+            if ((employees.Count % _pageSize) != 0)
+                count++;
+
+            view.ViewBag.StartIndex = startIndex;
+            view.ViewBag.PageCount = count;
+            view.ViewBag.IsAdvanced = true;
+            view.ViewBag.Search = "";
+            return view;
+        }
+
         public async Task<ActionResult> GetBirthdays()
         {
             List<EmployeeModel> people =

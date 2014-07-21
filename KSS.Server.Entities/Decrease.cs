@@ -12,13 +12,11 @@ namespace KSS.Server.Entities
     using System;
     using System.Collections.Generic;
     
-    public partial class ModuleInfo
+    public partial class Decrease
     {
-        public int ID { get; set; }
-        public string Version { get; set; }
-        public string Name { get; set; }
-        public string AssemblyFileName { get; set; }
-        public Nullable<bool> IsMain { get; set; }
-        public Nullable<int> OptimisticLockField { get; set; }
+        public System.Guid Id { get; set; }
+        public string Original { get; set; }
+        public string Brief { get; set; }
+        public int Priority { get; set; }
     }
 }

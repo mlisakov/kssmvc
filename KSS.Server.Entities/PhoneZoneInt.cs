@@ -14,7 +14,18 @@ namespace KSS.Server.Entities
     
     public partial class PhoneZoneInt
     {
+        public PhoneZoneInt()
+        {
+            this.Locations = new HashSet<Location>();
+            this.PhoneMatrixInts = new HashSet<PhoneMatrixInt>();
+            this.PhoneMatrixInts1 = new HashSet<PhoneMatrixInt>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Zone { get; set; }
+    
+        public virtual ICollection<Location> Locations { get; set; }
+        public virtual ICollection<PhoneMatrixInt> PhoneMatrixInts { get; set; }
+        public virtual ICollection<PhoneMatrixInt> PhoneMatrixInts1 { get; set; }
     }
 }

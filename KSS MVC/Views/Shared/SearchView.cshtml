@@ -1,11 +1,13 @@
 ﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
-@{
-    Layout = "";
-}
+<script src="~/Scripts/jquery-ui.min.js"></script>
+<link href="~/Content/jquery-ui/jquery-ui.min.css"/>
 
 @using KSS.Models
 @using KSS.Server.Entities
 @model SearchViewModel
+@{
+    Layout = "";
+}
 
 <div class="searchLayout">
     <h3 class="departmentHeader">@Model.GetDepartmentName()
@@ -27,11 +29,10 @@
         <div class=" additionalSearchRowFirst additionalSearchRow ">
             <p class="fieldLabel">филиал</p>
 
-            <p class="fieldLabel  rightItem">местоположение</p>
-            @*@Html.DropDownList("Divisions", ViewBag.Divisions as SelectList,"Выберите филиал", new { id = "DivisionsID" })*@
+            <p class="fieldLabel  rightItem">местоположение</p>            
             <select class="field " id="Divisions">
                  
-                <option class="comboBoxItem">Выберите филиал</option>
+                <option class="comboBoxItem">выберите филиал</option>
                 @foreach (DivisionState divState in Model.GetDivisionStates())
                 {
                     <option class="comboBoxItem" value='@divState.Id'>@divState.Division</option>
@@ -39,7 +40,7 @@
             </select>
 
             <select class="field rightItem">
-                 <option class="comboBoxItem">Выберите местоположение</option>
+                 <option class="comboBoxItem">выберите местоположение</option>
                 @foreach (KeyValuePair<Guid,String> locality in Model.GetCustomLocality())
                 {
                     <option class="comboBoxItem" value='@locality.Key'>@locality.Value</option>
@@ -67,11 +68,11 @@
             <p class="fieldLabel rightItem">дни рождения</p>
 
             <select class="field" id="Departments">
-                @*<option class="comboBoxItem" value='@Guid.Empty'>Не задано</option>*@
-                @*                @foreach (DepartmentState depState in Model.GetDepartmentStates())
+                <option class="comboBoxItem" value='@Guid.Empty'>выберите подразделение</option>
+                @foreach (DepartmentState depState in Model.GetDepartmentStates())
                 {
                     <option class="comboBoxItem" value='@depState.Id'>@depState.Department</option>
-                }*@
+                }
             </select>
             
             <div class="rightItem">
@@ -84,7 +85,14 @@
         <div class="additionalSearchRow">
             <p class="fieldLabel noFloatItem">должность</p>
             <select class="field " id="Positions">
+                <option class="comboBoxItem" value='@Guid.Empty'>выберите должность</option>
+                @foreach (PositionState positionState in Model.GetPositionStates())
+                {
+                    <option class="comboBoxItem" value='@positionState.Id'>@positionState.Title</option>
+                }
             </select>
+            
+@*            <input type="text" id="firstDatepicker" />*@
         </div>
     </div>
     
@@ -94,20 +102,87 @@
     
     
     <div id="searchResult" class="centralResultPanel">
+        <ul class="personUL">
 
-    </div>
+            @foreach (EmployeeModel employee in Model.GetEmployers())
+            {
+                <li>
+                    <div class="lyncStatusDiv"></div>
+                    <div class="personIMGLayout">
+                        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />
+                    </div>
+                    <div class="innerPersonLayout">
+                        <h5 class="personName">
+                            @*                    <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>*@
+                            <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
+                        </h5>
+                        <p class="personDepartment"> @employee.DepartmentState.Department</p>
+                        <p class="personJob">@employee.PositionState.Title</p>
+                        <div class="phonesLine">
+                            @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
+                            {
+                                <p class="personCityPhone">33-24;</p>
+                                <p class="personMobilePhone">@empPlace.PhoneNumber;</p> @*
+                                <p class="personMail">titov.german@rossety.com</p>*@
+                            }
+                        </div>
+                        <div class="phonesLine">
+                            @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
+                            {
+                                <p class="personCityPhone">33-24;</p>
+                                <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p>
+                                @*<p class="personMail">titov.german@rossety.com</p>*@
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+        
+@*        <div class="pagesContainer">*@
+@*            @{*@
+@*                if (ViewBag.StartIndex > 0)*@
+@*                {*@
+@*                    <p class="paginationArrow">←</p>*@
+@*//                Guid? divisionId, Guid? departmentId, int startIndex = 0*@
+@*                    <a class="paginationNavigationLink" data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new { divisionId = ViewBag.DivisionId,departmentId = ViewBag.DepartmentId, startIndex = ViewBag.StartIndex - 1 })'>Назад</a>*@
+@*                }*@
+@*                else*@
+@*                {*@
+@*                    <p class="paginationArrow" style="visibility: collapse">←</p>*@
+@*                    <a class="paginationNavigationLink" style="visibility: collapse">Назад</a>*@
+@*                }*@
+@**@
+@*                if (ViewBag.StartIndex + 1 < ViewBag.PageCount)*@
+@*                {*@
+@*                    <a class="paginationNavigationLink forwardLink" data-url='@Url.Action("SearchEmployees", "Home", new { divisionId = ViewBag.DivisionId, departmentId = ViewBag.DepartmentId, startIndex = ViewBag.StartIndex + 1 })'>Вперед</a>*@
+@*                    <p class="paginationArrow">→</p>*@
+@*                }*@
+@*            }*@
+@*        </div>*@
+@*    </div>*@
 
 </div>
 
 
 <script type="text/javascript">
 
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        $('#firstDatepicker').datepicker();
 
         $('#searchBtn').on('click', function(e) {
             var value = $('#searchText').val();
-            var url = '@Url.Action("SearchEmployees", "Home", new {employeeName = "-1"})';
+            var url = '@Url.Action("SearchEmployees", "Home", new { employeeName = "-1", startIndex = 0})';
             url = url.replace('-1', value);
+
+            if ($('#advancedSearch').hasClass('advancedSearchOpened')) {
+
+                var divValue = $('#Divisions :selected').val();
+                var url = '@Url.Action("SearchEmployees", "Home", new { divisionId = "-5",startIndex = 0 })';
+                url = url.replace('-5', divValue);
+            }
+
             $('.searchProgress').show();
 
             loadSearchPageResult(url);
@@ -117,6 +192,8 @@
         $('.advancedSearch').on('click', function(e) {
             //toggle visibility of additional search panel
             $('.additionalSearchPanel').slideToggle('slow');
+
+            $(e.target).toggleClass('advancedSearchOpened');
 
             var arrow = $(e.target).children('span');
             if (arrow.length > 0) {

@@ -18,5 +18,8 @@ namespace KSS.Server.Entities
         public System.Guid FromId { get; set; }
         public System.Guid ToId { get; set; }
         public string PhoneCode { get; set; }
+    
+        public virtual PhoneZoneInt PhoneZoneInt { get; set; }
+        public virtual PhoneZoneInt PhoneZoneInt1 { get; set; }
     }
 }

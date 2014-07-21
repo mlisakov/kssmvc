@@ -20,5 +20,8 @@ namespace KSS.Server.Entities
         public string DivisionBrief { get; set; }
         public System.DateTime ValidationDate { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual Division Division1 { get; set; }
+        public virtual Division Division2 { get; set; }
     }
 }

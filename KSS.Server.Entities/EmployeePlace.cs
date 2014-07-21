@@ -20,5 +20,9 @@ namespace KSS.Server.Entities
         public System.Guid PhoneTypeId { get; set; }
         public string PhoneNumber { get; set; }
         public string Office { get; set; }
+    
+        public virtual Employee Employee { get; set; }
+        public virtual Location Location { get; set; }
+        public virtual PhoneType PhoneType { get; set; }
     }
 }

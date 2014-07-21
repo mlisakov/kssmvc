@@ -4,6 +4,7 @@
 
 
 
+@using KSS.Helpers
 @using KSS.Server.Entities
 @model KSS.Models.EmployeeModel
            
@@ -30,8 +31,11 @@
 <div class="personCardLayout">
     
     <div class="personIMGLayout">
-        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />   
-        <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>                            
+        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" /> 
+            @if (ViewBag.IsAdmin)
+            {
+                <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>
+            }
     </div>
     
     
@@ -74,50 +78,136 @@
 
         <p class="personCardJobTitle personCardJobMarginTop">Подразделение:</p>
         <p class="personCardJob personCardJobMarginTop">@Model.DepartmentState.Department</p>
-
+        
+        
         <p class="personCardJobTitle personCardJobMarginTop">Член штаба:</p>
-        <input type="checkbox" checked disabled class="personCardDepartmentMember" />
+        @if (ViewBag.IsAdmin)
+        {
+            <input type="checkbox" checked class="personCardDepartmentMember" />
+        }
+        else
+        {
+            <input type="checkbox" checked disabled="" class="personCardDepartmentMember" />
+        }
+        
     </div>
     
     
     <div class="personCardPlaceContainer">
         <p class="personCardJobTitle">Местоположение:</p>
-        <!--в этой только СТРАНА, ОБЛАСТЬ, ГОРОД-->
-        <p class="personCardJob">Россия, Ростовская область, Ростов-на-Дону</p>
-        <!--в этой только УЛИЦА, ДОМ-->
-        <p class="personCardJob">ул. Большая Садовая, 49.</p>
+
+@*        <p class="personCardJob">Россия, Ростовская область, Ростов-на-Дону</p>*@
+        
+            @if (Model.Location != null)
+            {
+                <!--в этой только СТРАНА, ОБЛАСТЬ, ГОРОД-->
+                <p class="personCardJob">
+                    @Model.EmployeePlaces[0].Location.Locality.Country, @Model.EmployeePlaces[0].Location.Locality.Region, @Model.EmployeePlaces[0].Location.Locality.Locality1
+                </p>
+
+                <!--в этой только УЛИЦА, ДОМ-->
+@*                <p class="personCardJob">ул. Большая Садовая, 49.</p>*@
+                <p class="personCardJob">
+                </p>
+            }
+            else
+            {
+                <p class="personCardJob"></p>
+                <p class="personCardJob"></p>
+            }
+
 
         <p class="personCardJobTitle personCardJobMarginTop">Номер офиса:</p>
-        <p class="personCardJob personCardJobMarginTop">49</p>
+       
+            @foreach (var place in Model.EmployeePlaces)
+            {
+                if (!string.IsNullOrEmpty(place.Office))
+                {
+                    <p class="personCardJob personCardJobMarginTop">
+                        @place.Office
+                    </p>
+                    break;
+                }
+            }
+      
         
-        <p id="editPlaceLink" class="personCardJob personCardEdit ">редактировать</p>
+        @if (ViewBag.IsAdmin)
+        {
+            <p id="editPlaceLink" class="personCardJob personCardEdit ">редактировать</p>
+        }
     </div>
     
-    <div class="personCardChangePlaceDialog personCardDialog">
-        <p class="personCardChangePlaceDialogSimpleLabel">страна</p>
-        <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1"></select>
+    @if (ViewBag.IsAdmin)
+    {
+        <div class="personCardChangePlaceDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">страна</p>
+            <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1">
+                <option selected="selected">Россия</option>
+            </select>
         
-        <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
-        <select class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2"></select>
+            <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
+            <select class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">                
+                @foreach (var reg in DBHelper.GetRegions("Россия"))
+                {
+                    if (Model.Location != null && string.Equals(Model.Location.Locality.Region, reg))
+                    {
+                        <option value="@reg" selected="selected">@reg</option>
+                        continue;
+                    }
+                    <option value="@reg">@reg</option>
+                }
+            </select>
         
-        <p class="personCardChangePlaceDialogSimpleLabel">населенный пункт</p>
-        <select class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3"></select>
+            <p class="personCardChangePlaceDialogSimpleLabel">населенный пункт</p>
+            <select class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                @if (Model.Location != null)
+                {
+                    foreach (var reg in DBHelper.GetLocalities(Model.Location.Locality.Country,Model.Location.Locality.Region))
+                    {
+                        if (Model.Location != null && string.Equals(Model.Location.Locality.Locality1, reg.Value))
+                        {
+                            <option value="@reg.Key" selected="selected">@reg.Value</option>
+                            continue;
+                        }
+                        <option value="@reg.Key">@reg.Value</option>
+                    }
+                }
+            </select>
         
-        <p class="personCardChangePlaceDialogSimpleLabel">улица</p>
-        <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4"/>
+            <p class="personCardChangePlaceDialogSimpleLabel">улица</p>
+            @if (Model.Location != null)
+            {
+                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" value="@Model.Location.Street" />
+            }
+            else
+            {
+                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" />
+            }
+           
+            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">дом</p>
+            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер офиса</p>
         
-        <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">дом</p>
-        <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер офиса</p>
-        
-        <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5"/>
-        <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6"/>
-        
-        <div class="personCardChangePlaceDialogButtonsContainer">
-            <p id="cancelEditPlace" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
-            <input type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7"/>                    
-        </div>
+            
+            @if (Model.Location != null)
+            {
+                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5" value="@Model.Location.Edifice"/>
+                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6" value="@Model.Place.Office"/>
+            }
+            else
+            {
+                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5"/>
+                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6"/>
+            }
 
-    </div>
+        
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelEditPlace" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7"/>                    
+            </div>
+
+        </div>
+    }
+
 
     <div class="personCardPlaceContainer">
         <p class="personCardPhonesHeader" style="float:none">ТЕЛЕФОНЫ СОТРУДНИКА:</p>
@@ -125,27 +215,67 @@
         <div>
             <p id="phoneType1" class="personCardJobTitle">внутренний:</p>
             <p id="phoneNumber1" class="personcardJobEdit ">49-85-78</p>
-            <p id="editPhoneLink1" class="personCardEdit personCardEditPhoneLink">редактировать</p>            
+            
+            @if (ViewBag.IsAdmin)
+{
+                <p id="editPhoneLink1" class="personCardEdit personCardEditPhoneLink">редактировать</p>            
+            }
+            else
+            {
+                <p id="editPhoneLink1" class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>            
+            }            
         </div>
         <div>
             <p id="phoneType2" class="personCardJobTitle">внутренний:</p>
             <p id="phoneNumber2" class="personcardJobEdit ">49-85-78</p>
-            <p id="editPhoneLink2" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            
+            
+            @if (ViewBag.IsAdmin)
+{
+                <p id="editPhoneLink2" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            }
+            else
+            {
+                <p id="editPhoneLink2" class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>
+            }    
         </div>
         <div>
             <p id="phoneType3" class="personCardJobTitle">внутренний:</p>
             <p id="phoneNumber3" class="personcardJobEdit ">49-85-78</p>
-            <p id="editPhoneLink3" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            
+            @if (ViewBag.IsAdmin)
+{
+                <p id="editPhoneLink3" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            }
+            else
+            {
+                <p id="editPhoneLink3" class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>
+            }    
         </div>
         <div>
             <p id="phoneType4" class="personCardJobTitle">внутренний:</p>
             <p id="phoneNumber4" class="personcardJobEdit ">49-85-78</p>
-            <p id="editPhoneLink4" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+
+            @if (ViewBag.IsAdmin)
+{
+                <p id="editPhoneLink4" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            }
+            else
+            {
+                <p id="editPhoneLink4" class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>
+            } 
         </div>
         <div>
             <p id="phoneType5" class="personCardJobTitle">внутренний:</p>
             <p id="phoneNumber5" class="personcardJobEdit ">49-85-78</p>
-            <p id="editPhoneLink5" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            @if (ViewBag.IsAdmin)
+{
+                <p id="editPhoneLink5" class="personCardEdit personCardEditPhoneLink">редактировать</p>
+            }
+            else
+            {
+                <p id="editPhoneLink5" class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>
+            } 
         </div>
         
         <div class="personCardDialog personCardChangePhoneDialog">
@@ -160,8 +290,11 @@
             </div>
         </div>
     </div>
-
-    <p id="personCardAddPhoneLink" class="personCardJob personCardEdit " style="margin-top: 10px;display: block">добавить новый</p>
+    
+    @if (ViewBag.IsAdmin)
+{
+        <p id="personCardAddPhoneLink" class="personCardJob personCardEdit " style="margin-top: 10px;display: block">добавить новый</p>
+    }
 
     <div class="personCardDialog personCardAddPhoneDialog">
         <p class="personCardChangePlaceDialogSimpleLabel">

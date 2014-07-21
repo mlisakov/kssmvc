@@ -17,5 +17,8 @@ namespace KSS.Server.Entities
         public System.Guid Id { get; set; }
         public System.Guid EmployeeId { get; set; }
         public System.Guid LinkedEmployeeId { get; set; }
+    
+        public virtual Employee Employee { get; set; }
+        public virtual Employee Employee1 { get; set; }
     }
 }

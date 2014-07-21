@@ -14,6 +14,12 @@ namespace KSS.Server.Entities
     
     public partial class Location
     {
+        public Location()
+        {
+            this.EmployeePlaces = new HashSet<EmployeePlace>();
+            this.SpecificStaffPlaces = new HashSet<SpecificStaffPlace>();
+        }
+    
         public System.Guid Id { get; set; }
         public System.Guid DivisionId { get; set; }
         public System.Guid LocalityId { get; set; }
@@ -22,5 +28,12 @@ namespace KSS.Server.Entities
         public string Edifice { get; set; }
         public string Building { get; set; }
         public Nullable<System.Guid> PhoneZoneId { get; set; }
+    
+        public virtual Division Division { get; set; }
+        public virtual ICollection<EmployeePlace> EmployeePlaces { get; set; }
+        public virtual Locality Locality { get; set; }
+        public virtual PhoneZoneInt PhoneZoneInt { get; set; }
+        public virtual Territory Territory { get; set; }
+        public virtual ICollection<SpecificStaffPlace> SpecificStaffPlaces { get; set; }
     }
 }

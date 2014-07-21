@@ -33,15 +33,16 @@ namespace KSS
                 if (Context.User.Identity.IsAuthenticated)
                 {
                     string userLogin = Context.User.Identity.Name;
-                    Tuple<Guid,string> userInfo = DBHelper.GetUserFullName(userLogin);
-                    Guid userDivision = DBHelper.GetUserDivision(userInfo.Item1).Item1;
-                    Guid userDepartment = DBHelper.GetUserDepartment(userInfo.Item1);
+                    Tuple<Guid, string, bool> userInfo = DBHelper.GetLoginingUser(userLogin);
+                    Guid userDivision = DBHelper.GetEmployeeDivision(userInfo.Item1).Id;
+                    Guid userDepartment = DBHelper.GetEmployeeDepartment(userInfo.Item1).Id;
                     if (!string.IsNullOrEmpty(userInfo.Item2))
                     {
                         Session["UserName"] = userInfo.Item2;
                         Session["CurrentUser"] = userInfo.Item1;
                         Session["CurrentUserDepartment"] = userDepartment;
                         Session["CurrentUserDivision"] = userDivision;
+                        Session["IsAdministrator"] = userInfo.Item3;
                     }
                     else
                     {
@@ -50,6 +51,7 @@ namespace KSS
                         Session["CurrentUserDepartment"] = Guid.Empty;
                         Session["CurrentUserDivision"] = Guid.Empty;
                         Session["UserName"] += "Пустой департамент:";
+                        Session["IsAdministrator"] = false;
                     }
                 }
                 else
@@ -58,6 +60,7 @@ namespace KSS
                     Session["CurrentUserDepartment"] = Guid.Empty;
                     Session["CurrentUserDivision"] = Guid.Empty;
                     Session["UserName"] = "Неавторизованный пользователь:" + Context.User.Identity.Name;
+                    Session["IsAdministrator"] = false;
                 }
 #else
             Session["CurrentUser"] = "B88F6C02-77F2-41B7-9C66-098A7262EE12";
@@ -66,8 +69,7 @@ namespace KSS
             Session["CurrentUserDivision"] =
                 DBHelper.GetEmployeeDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
             Session["UserName"] = "Петрович Василий Пупкин";
-   
-
+            Session["IsAdministrator"] = true;
 #endif
         }
     }

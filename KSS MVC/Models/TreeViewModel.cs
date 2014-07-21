@@ -53,8 +53,12 @@ namespace KSS.Models
                 return _dictionaryTree[id.Value].Children;
             }
             var divisions =
-                _baseModel.DivisionStates.Where(t => t.ParentId == id.Value);
-            var departments = _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId == null);
+                _baseModel.DivisionStates.Where(t => t.ParentId == id.Value).OrderBy(t => t.Division);
+
+            var departments =
+                _baseModel.DepartmentStates.Where(t => t.DivisionId == id.Value && t.ParentId == null)
+                    .OrderBy(t => t.Department);
+
             List<TreeViewNode> children = new List<TreeViewNode>();
             if (departments.Any())
             {

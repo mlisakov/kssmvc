@@ -14,6 +14,12 @@ namespace KSS.Server.Entities
     
     public partial class Position
     {
+        public Position()
+        {
+            this.PositionStates = new HashSet<PositionState>();
+            this.Staffs = new HashSet<Staff>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Code { get; set; }
         public System.Guid TitleId { get; set; }
@@ -22,5 +28,9 @@ namespace KSS.Server.Entities
         public string DepartmentCode { get; set; }
         public string Ranking { get; set; }
         public bool ManualInput { get; set; }
+    
+        public virtual Department Department { get; set; }
+        public virtual ICollection<PositionState> PositionStates { get; set; }
+        public virtual ICollection<Staff> Staffs { get; set; }
     }
 }

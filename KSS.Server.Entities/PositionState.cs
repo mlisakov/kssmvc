@@ -18,5 +18,7 @@ namespace KSS.Server.Entities
         public string Title { get; set; }
         public System.DateTime ValidationDate { get; set; }
         public Nullable<System.DateTime> ExpirationDate { get; set; }
+    
+        public virtual Position Position { get; set; }
     }
 }

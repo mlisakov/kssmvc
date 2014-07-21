@@ -64,22 +64,16 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Company.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Department.cs">
+    <Compile Include="Decrease.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
-    <Compile Include="Department1S.cs">
+    <Compile Include="Department.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="DepartmentState.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
-    <Compile Include="DepartmentTemp.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
     <Compile Include="Division.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Division1S.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="DivisionPhoneCode.cs">
@@ -88,19 +82,10 @@
     <Compile Include="DivisionState.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
-    <Compile Include="DivisionTemp.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
     <Compile Include="Employee.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="EmployeePlace.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ExecutionLog.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ExecutionMsg.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Favorite.cs">
@@ -113,9 +98,6 @@
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Location.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ModuleInfo.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Operator.cs">
@@ -139,13 +121,7 @@
     <Compile Include="Position.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
-    <Compile Include="Position1S.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
     <Compile Include="PositionState.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PositionTemp.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -156,12 +132,6 @@
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Staff.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Staff1S.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="StaffTemp.cs">
       <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="sysdiagram.cs">

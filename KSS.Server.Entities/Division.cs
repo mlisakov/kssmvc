@@ -14,9 +14,28 @@ namespace KSS.Server.Entities
     
     public partial class Division
     {
+        public Division()
+        {
+            this.DepartmentStates = new HashSet<DepartmentState>();
+            this.DivisionPhoneCodes = new HashSet<DivisionPhoneCode>();
+            this.DivisionPhoneCodes1 = new HashSet<DivisionPhoneCode>();
+            this.DivisionStates = new HashSet<DivisionState>();
+            this.DivisionStates1 = new HashSet<DivisionState>();
+            this.Locations = new HashSet<Location>();
+            this.TerritoryStates = new HashSet<TerritoryState>();
+        }
+    
         public System.Guid Id { get; set; }
         public string Code { get; set; }
         public string Ranking { get; set; }
         public bool Essential { get; set; }
+    
+        public virtual ICollection<DepartmentState> DepartmentStates { get; set; }
+        public virtual ICollection<DivisionPhoneCode> DivisionPhoneCodes { get; set; }
+        public virtual ICollection<DivisionPhoneCode> DivisionPhoneCodes1 { get; set; }
+        public virtual ICollection<DivisionState> DivisionStates { get; set; }
+        public virtual ICollection<DivisionState> DivisionStates1 { get; set; }
+        public virtual ICollection<Location> Locations { get; set; }
+        public virtual ICollection<TerritoryState> TerritoryStates { get; set; }
     }
 }
