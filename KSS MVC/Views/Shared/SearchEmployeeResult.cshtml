@@ -20,26 +20,36 @@
             <div class="innerPersonLayout">
                 <h5 class="personName">
 @*                    <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>*@
-                    <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
+                    <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>                    
                 </h5>
                 <p class="personDepartment"> @employee.DepartmentState.Department</p>
                 <p class="personJob">@employee.PositionState.Title</p>
                 <div class="phonesLine">
-                    @foreach (EmployeePlace empPlace in employee.EmployeePlaces)
+                    @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
                     {
-                        <p class="personCityPhone">33-24;</p>
-                        <p class="personMobilePhone">@empPlace.PhoneNumber;</p> @*
-                        <p class="personMail">titov.german@rossety.com</p>*@
+                        if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber))
+                        {
+                            continue;
+                        }
+
+                        if (i == 0)
+                        {
+                            <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                        }
+                        else
+                        {
+                            <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                        }
                     }
                 </div>
-                <div class="phonesLine">
-                    @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)
-                    {
-                        <p class="personCityPhone">33-24;</p>
-                        <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p> 
-                            @*<p class="personMail">titov.german@rossety.com</p>*@
-                    }
-                </div>
+@*                <div class="phonesLine">*@
+@*                    @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)*@
+@*                    {*@
+@*                        <p class="personCityPhone">33-24;</p>*@
+@*                        <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p> *@
+@*                            $1$<p class="personMail">titov.german@rossety.com</p>#1#*@
+@*                    }*@
+@*                </div>*@
             </div>
         </li>
     }
@@ -140,6 +150,7 @@
     $(document).ready(function() {
         
         $('.pageNmbr, .paginationNavigationLink, .emploeeLink').on('click', function (e) {
+            
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
             $('.progress').show();

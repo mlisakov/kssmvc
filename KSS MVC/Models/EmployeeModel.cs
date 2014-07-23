@@ -97,7 +97,7 @@ namespace KSS.Models
                 if (EmployeePlaces.Any(t => t.Location != null))
                 {
                     Location = EmployeePlaces.First(t => t.Location != null).Location;
-                }
+                }                
             }
         }
 

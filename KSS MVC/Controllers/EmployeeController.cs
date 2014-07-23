@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Text;
 using System.Web.Mvc;
+using KSS.Helpers;
 using KSS.Models;
 
 namespace KSS.Controllers
@@ -31,6 +33,43 @@ namespace KSS.Controllers
             view.ViewBag.IsAdmin = isAdmin;
 
             return view;
+        }
+
+        [HttpGet]
+        public string GetCities(string country, string region)
+        {
+            var sb = new StringBuilder();
+            foreach (var locality in DBHelper.GetLocalities(country, region))
+            {
+                sb.Append("<option value=\"");
+                sb.Append(locality.Key);
+                sb.Append("\">");
+                sb.Append(locality.Value);
+                sb.Append("</option>");
+            }
+            return sb.ToString();
+        }
+
+
+        public ActionResult SaveLocation(Guid employee, Guid city, string street, string edifice, string office)
+        {
+            DBHelper.UpdateEmployeePlaces(employee, city, street, edifice, office);
+
+            return Index(employee);
+        }
+
+
+        [HttpPost]
+        public void ChangeMemberOfHeadquarter(Guid employee, bool isMember)
+        {
+            DBHelper.UpdateMemberOfHeadquarter(employee, isMember);
+        }
+
+        public ActionResult SavePhone(Guid employee, Guid? place, Guid? phoneType, string phone)
+        {
+            DBHelper.UpdateEmployeePhone(employee, place, phoneType, phone);
+
+            return Index(employee);
         }
     }
 }

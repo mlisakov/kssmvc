@@ -49,100 +49,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Company.Context.cs">
+    <Compile Include="CompanyBaseModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Company.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Company.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Company.tt</DependentUpon>
+      <DependentUpon>CompanyBaseModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Company.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Company.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Decrease.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Department.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DepartmentState.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Division.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DivisionPhoneCode.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="DivisionState.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Employee.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EmployeePlace.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Favorite.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="HistoryUser.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Locality.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Location.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Operator.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Option.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PhoneMatrixInt.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PhoneMatrixIntFull.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PhoneType.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PhoneZoneInt.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Position.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="PositionState.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SpecificStaff.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="SpecificStaffPlace.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Staff.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="sysdiagram.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Territory.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
-    <Compile Include="TerritoryState.cs">
-      <DependentUpon>Company.tt</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -152,18 +69,13 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Company.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <None Include="Company.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Company.edmx</DependentUpon>
-      <LastGenOutput>Company.Context.cs</LastGenOutput>
-    </None>
     <None Include="Company.edmx.diagram">
       <DependentUpon>Company.edmx</DependentUpon>
     </None>
-    <None Include="Company.tt">
+    <None Include="CompanyBaseModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>CompanyBaseModel.cs</LastGenOutput>
       <DependentUpon>Company.edmx</DependentUpon>
-      <LastGenOutput>Company.cs</LastGenOutput>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

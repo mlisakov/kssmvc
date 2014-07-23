@@ -7,6 +7,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace KSS.Helpers
 {
+// ReSharper disable once InconsistentNaming
     public class DBHelper
     {
         private static CompanyBaseModel _baseModel;
@@ -16,34 +17,49 @@ namespace KSS.Helpers
             get { return _baseModel ?? (_baseModel = new CompanyBaseModel()); }
         }
 
+        /// <summary>
+        /// Получение департамента по его ид
+        /// </summary>
+        /// <param name="id">Ид департамента</param>
+        /// <returns></returns>
         public static DepartmentState GetDepartmentState(Guid id)
         {
             try
             {
                 return BaseModel.DepartmentStates.FirstOrDefault(t => t.Id == id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении департамента по его ИД. GetDepartmentState.", ex);
             }
-
+            return null;
         }
 
+        /// <summary>
+        /// Получение списка департаментов по ид дивизиона
+        /// </summary>
+        /// <param name="id">Ид дивизиона</param>
+        /// <returns></returns>
         public static IEnumerable<DepartmentState> GetDepartmentStatesByDivision(Guid id)
         {
             try
             {
-                return BaseModel.DepartmentStates.Where(i => i.DivisionId == id);
+                return
+                    BaseModel.DepartmentStates.Where(i => i.DivisionId == id && i.ExpirationDate == null)
+                        .OrderBy(t => t.Department);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка департаментов по ИД дивизиона. GetDepartmentStatesByDivision.", ex);
             }
-
+            return new List<DepartmentState>();
         }
 
+        /// <summary>
+        /// Получение списка профессий, по которым работают в департаменте с указанным ИД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static IEnumerable<PositionState> GetPositionStatesByDepartment(Guid id)
         {
             try
@@ -56,69 +72,89 @@ namespace KSS.Helpers
                 return t;
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog(
+                    "Ошибка при получении списка профессий, по которым работают в департаменте с указанным ИД. GetPositionStatesByDepartment.", ex);
             }
-
+            return new List<PositionState>();
         }
 
+        /// <summary>
+        /// Получение дивизиона по его ИД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static DivisionState GetDivisionState(Guid id)
         {
             try
             {
                 return BaseModel.DivisionStates.FirstOrDefault(t => t.Id == id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                throw;
+                LogHelper.WriteLog("Ошибка при получении дивизиона по его ИД. GetDivisionState.", ex);
             }
-
+            return null;
         }
 
+        /// <summary>
+        /// Получение списка дивизионов
+        /// </summary>
+        /// <returns></returns>
         public static List<DivisionState> GetDivisionStates()
         {
             try
             {
                 return BaseModel.DivisionStates.Where(t => t.ExpirationDate == null).OrderBy(t => t.Division).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка дивизионов. GetDivisionStates.", ex);
             }
 
+            return new List<DivisionState>();
         }
 
+        /// <summary>
+        /// Получение списка всех департаментов
+        /// </summary>
+        /// <returns></returns>
         public static List<DepartmentState> GetDepartmentStates()
         {
             try
             {
                 return BaseModel.DepartmentStates.Where(t=>t.ExpirationDate == null).OrderBy(t => t.Department).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка всех департаментов. GetDepartmentStates.", ex);
             }
-
+            return new List<DepartmentState>();
         }
 
+        /// <summary>
+        /// Получение списка населенных пунктов
+        /// </summary>
+        /// <returns></returns>
         public static IEnumerable<Locality> GetLocality()
         {
             try
             {
                 return BaseModel.Localities;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка населенных пунктов. GetLocality.", ex);
             }
 
+            return new List<Locality>();
         }
 
+        /// <summary>
+        /// Получение словаря: ключ - ИД населенного пункта, значение - его наименование
+        /// </summary>
+        /// <returns></returns>
         public static Dictionary<Guid, string> GetCustomLocality()
         {
             try
@@ -128,14 +164,18 @@ namespace KSS.Helpers
                     .ThenBy(t => t.Locality1)
                     .ToDictionary(i => i.Id, j => j.Region + "," + j.Locality1);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка населенных пунктов. GetCustomLocality.", ex);
             }
 
+            return new Dictionary<Guid, string>();
         }
 
+        /// <summary>
+        /// Получение списка профессий
+        /// </summary>
+        /// <returns></returns>
         public static List<PositionState> GetPositionStates()
         {
             try
@@ -150,23 +190,21 @@ namespace KSS.Helpers
                     select pos
                     ).Distinct().OrderBy(t => t.Title).ToList();
 
-                return list.Select(t => new PositionState { Id = t.Id, Title = t.Title }).ToList();
-//
-//
-//                var f = BaseModel.PositionStates.Where(t => !string.IsNullOrEmpty(t.Title) && t.ExpirationDate == null)
-//                    .OrderBy(t => t.Title)
-//                    .ToList();
-
-//                PositionState f = f4.First();
-
+                return list.Select(t => new PositionState {Id = t.Id, Title = t.Title}).ToList();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка при получении списка профессий. GetCustomLocality.", ex);
             }
+
+            return new List<PositionState>();
         }
 
+        /// <summary>
+        /// Получение департамента, в котором работает указанный сотрудник
+        /// </summary>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
         public static DepartmentState GetEmployeeDepartment(Guid userGuid)
         {
             try
@@ -181,15 +219,21 @@ namespace KSS.Helpers
                     select ds).FirstOrDefault();
                 if (depSt != null)
                     return depSt;
-                return new DepartmentState() {Department = "-"};
+                return new DepartmentState {Department = "-"};
             }
             catch (Exception ex)
             {
-                return new DepartmentState() {Department = "Не удалось получить данные."};
+                LogHelper.WriteLog(
+                    "Ошибка при получении департамента, в котором работает указанный сотрудник. GetEmployeeDepartment.", ex);
             }
-
+            return new DepartmentState {Department = "Не удалось получить данные."};
         }
 
+        /// <summary>
+        /// Получение дивизиона, в котором работает указанный сотрудник
+        /// </summary>
+        /// <param name="userGuid"></param>
+        /// <returns></returns>
         public static DivisionState GetEmployeeDivision(Guid userGuid)
         {
             try
@@ -207,25 +251,47 @@ namespace KSS.Helpers
                     select divS).FirstOrDefault();
                 if (dState != null)
                     return dState;
-                return new DivisionState() {Division = "Не задано!"};
+                return new DivisionState {Division = "Не задано!"};
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return new DivisionState() {Division = "Не удалось получить данные!"};
-            }
+                LogHelper.WriteLog(
+                    "Ошибка при получении дивизиона, в котором работает указанный сотрудник. GetEmployeeDivision.", ex);
 
+            }
+            return new DivisionState {Division = "Не удалось получить данные!"};
         }
 
+        /// <summary>
+        /// Получение полного имени авторизующегося пользователя
+        /// </summary>
+        /// <param name="userLogin"></param>
+        /// <returns></returns>
         public static Tuple<Guid, string> GetEmployeeFullName(string userLogin)
         {
-            var t = from employee in BaseModel.Employees
-                where employee.AccountName.Equals(userLogin)
-                select new {employee.Id, employee.Name};
-            return t.Any()
-                ? new Tuple<Guid, string>(t.First().Id, t.First().Name)
-                : new Tuple<Guid, string>(Guid.Empty, string.Empty);
+            try
+            {
+                var t = from employee in BaseModel.Employees
+                    where employee.AccountName.Equals(userLogin)
+                    select new {employee.Id, employee.Name};
+                return t.Any()
+                    ? new Tuple<Guid, string>(t.First().Id, t.First().Name)
+                    : new Tuple<Guid, string>(Guid.Empty, string.Empty);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog(
+                    "Ошибка при получении полного имени авторизующегося пользователя. GetEmployeeFullName.", ex);
+            }
+
+            return new Tuple<Guid, string>(Guid.Empty, null);
         }
 
+        /// <summary>
+        /// Получение сотрудника по его ИД
+        /// </summary>
+        /// <param name="employeeGuid"></param>
+        /// <returns></returns>
         public static Employee GetEmployee(Guid employeeGuid)
         {
             try
@@ -234,11 +300,11 @@ namespace KSS.Helpers
                     where employee.Id.Equals(employeeGuid)
                     select employee).FirstOrDefault();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return null;
+                LogHelper.WriteLog("Ошибка при получении сотрудника по его ИД. GetEmployee.", ex);
             }
-
+            return null;
         }
 
         public static PositionState GetEmployeePositionState(Guid employeeGuid)
@@ -255,43 +321,59 @@ namespace KSS.Helpers
                     ).FirstOrDefault();
                 if (pState != null)
                     return pState;
-                return new PositionState() {Title = "Не задано!"};
+                return new PositionState {Title = "Не задано!"};
             }
             catch (Exception ex)
             {
-
-                return new PositionState() {Title = "Не удалось получить данные!"};
+                LogHelper.WriteLog("Ошибка при получении профессии сотрудника. GetEmployeePositionState.", ex);
             }
 
+            return new PositionState {Title = "Не удалось получить данные!"};
         }
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
         {
-            IQueryable<SpecificStaffPlace> sSP = (from employee in BaseModel.Employees
-                join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                from m in employeeStaff.DefaultIfEmpty()
-                join ss in BaseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
-                from specStaff in specificStaff.DefaultIfEmpty()
-                join ssp in BaseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
-                    specificStaffPlace
-                from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
-                where employee.Id == employeeGuid
-                select specStaffPlace
-                );
-            if (sSP != null)
-                return sSP.Where(i => i != null).ToList();
+            try
+            {
+                IQueryable<SpecificStaffPlace> sSP = (from employee in BaseModel.Employees
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                    from m in employeeStaff.DefaultIfEmpty()
+                    join ss in BaseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
+                    from specStaff in specificStaff.DefaultIfEmpty()
+                    join ssp in BaseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
+                        specificStaffPlace
+                    from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
+                    where employee.Id == employeeGuid
+                    select specStaffPlace
+                    );
+                if (sSP != null)
+                    return sSP.Where(i => i != null).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetEmployeeSpecificStaffPlaces.", ex);
+            }
+
             return new List<SpecificStaffPlace>();
         }
 
         public static List<EmployeePlace> GetEmployeePlaces(Guid employeeGuid)
         {
-            IQueryable<EmployeePlace> eP = (from employee in BaseModel.Employees
-                join ep in BaseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
-                from empPlace in employeePlase.DefaultIfEmpty()
-                where employee.Id == employeeGuid
-                select empPlace
-                );
-            return eP.Where(i => i != null).ToList();
+            try
+            {
+                IQueryable<EmployeePlace> eP = (from employee in BaseModel.Employees
+                    join ep in BaseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
+                    from empPlace in employeePlase.DefaultIfEmpty()
+                    where employee.Id == employeeGuid
+                    select empPlace
+                    );
+                return eP.Where(i => i != null).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetEmployeePlaces.", ex);
+            }
+            return new List<EmployeePlace>();
         }
 
 
@@ -302,13 +384,21 @@ namespace KSS.Helpers
         /// <returns></returns>
         public static int GetFavoritesCount(Guid employeeGuid)
         {
-            return
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid
-                    orderby e.Position
-                    select e.Id).Count();
+            try
+            {
+                return
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid
+                        orderby e.Position
+                        select e.Id).Count();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetFavoritesCount.", ex);
+            }
+            return 0;
         }
 
         /// <summary>
@@ -320,15 +410,23 @@ namespace KSS.Helpers
         /// <returns></returns>
         public static List<EmployeeModel> GetFavorites(Guid employeeGuid, int pageSize, int startIndex)
         {
-            List<Guid> favorites =
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid
-                    orderby e.Position
-                    select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
+            try
+            {
+                List<Guid> favorites =
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid
+                        orderby e.Position
+                        select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
 
-            return favorites.Select(i => new EmployeeModel(i)).ToList();
+                return favorites.Select(i => new EmployeeModel(i)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetFavorites.", ex);
+            }
+            return new List<EmployeeModel>();
         }
 
         /// <summary>
@@ -371,12 +469,10 @@ namespace KSS.Helpers
                     BaseModel.SaveChanges();
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-
-                throw;
+                LogHelper.WriteLog("Ошибка. CheckAndOrderFavorites.", ex);
             }
-
         }
 
         /// <summary>
@@ -386,68 +482,105 @@ namespace KSS.Helpers
         /// <returns></returns>
         public static int GetFavoritesMaxPosition(Guid employeeGuid)
         {
-            return
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid
-                    select e.Position).Max();
+            try
+            {
+                return
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid
+                        select e.Position).Max();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetFavoritesMaxPosition.", ex);
+                throw;
+            }            
         }
 
         private static Employee GetFavoriteOnNextPosition(Guid employeeGuid, int position)
         {
-            var guids =
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid && e.Position > position
-                    orderby e.Position
-                    select e.Id);
-            if (guids.Any())
+            try
             {
-                return GetEmployee(guids.First());
+                var guids =
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid && e.Position > position
+                        orderby e.Position
+                        select e.Id);
+                if (guids.Any())
+                    return GetEmployee(guids.First());
             }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetFavoriteOnNextPosition.", ex);
+            }
+
             return null;
         }
 
         private static Employee GetFavoriteOnPreviousPosition(Guid employeeGuid, int position)
         {
-            var guids =
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid && e.Position < position
-                    orderby e.Position
-                    select e.Id).ToList();
-            if (guids.Any())
+            try
             {
-                return GetEmployee(guids.Last());
+                var guids =
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid && e.Position < position
+                        orderby e.Position
+                        select e.Id).ToList();
+                if (guids.Any())
+                    return GetEmployee(guids.Last());
             }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetFavoriteOnPreviousPosition.", ex);
+            }
+
             return null;
         }
 
         private static List<Employee> GetPreviousFavorites(Guid employeeGuid, int position)
         {
-            var guids =
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid && e.Position < position
-                    orderby e.Position
-                    select e.Id).ToList().ConvertAll(GetEmployee);
-            return guids;
+            try
+            {
+                var guids =
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid && e.Position < position
+                        orderby e.Position
+                        select e.Id).ToList().ConvertAll(GetEmployee);
+                return guids;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetPreviousFavorites.", ex);
+            }
+            return new List<Employee>();
         }
 
         private static List<Employee> GetNextFavorites(Guid employeeGuid, int position)
         {
-            var guids =
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    from e in employees.DefaultIfEmpty()
-                    where fe.EmployeeId == employeeGuid && e.Position > position
-                    orderby e.Position
-                    select e.Id).ToList().ConvertAll(GetEmployee);
-            return guids;
+            try
+            {
+                var guids =
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        from e in employees.DefaultIfEmpty()
+                        where fe.EmployeeId == employeeGuid && e.Position > position
+                        orderby e.Position
+                        select e.Id).ToList().ConvertAll(GetEmployee);
+                return guids;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetNextFavorites.", ex);
+                throw;
+            }
+            return new List<Employee>();
         }
 
         /// <summary>
@@ -517,12 +650,10 @@ namespace KSS.Helpers
                 if (hasChanges)
                     BaseModel.SaveChanges();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                //проблемы с сохранением из-за отсутствия ключей в базе!   
-//                throw;
+                LogHelper.WriteLog("Ошибка. UpdateFavoritePosition.", ex);
             }
-
         }
 
         public static bool AddToFavorites(Guid idCurrentUser, Guid idFavoriteUser)
@@ -532,10 +663,14 @@ namespace KSS.Helpers
                 var maxPosition = GetFavoritesMaxPosition(idCurrentUser);
 
                 //add favorites
-                var favoriteEmp = new Favorite {EmployeeId = idCurrentUser, LinkedEmployeeId = idFavoriteUser};
-                BaseModel.Favorites.Add(favoriteEmp);
-
-
+                var favoriteEmp = new Favorite
+                {
+                    EmployeeId = idCurrentUser,
+                    LinkedEmployeeId = idFavoriteUser,
+                    Id = Guid.NewGuid()
+                };
+                BaseModel.AddToFavorites(favoriteEmp);
+                
                 //set position
                 var favoritePerson = BaseModel.Employees.First(e => e.Id == idFavoriteUser);
                 favoritePerson.Position = maxPosition + 1;
@@ -545,9 +680,9 @@ namespace KSS.Helpers
             }
             catch (Exception ex)
             {
-                return false;
+                LogHelper.WriteLog("Ошибка. AddToFavorites.", ex);
             }
-
+            return false;
         }
 
         public static bool RemoveFromFavorites(Guid idCurrentUset, Guid idFavoriteUser)
@@ -557,90 +692,188 @@ namespace KSS.Helpers
                 Favorite favoriteEmp =
                     BaseModel.Favorites.First(
                         j => j.EmployeeId == idCurrentUset && j.LinkedEmployeeId == idFavoriteUser);
-                BaseModel.Favorites.Remove(favoriteEmp);
+
+                BaseModel.Favorites.DeleteObject(favoriteEmp);
+//                BaseModel.Favorites.Remove(favoriteEmp);
                 BaseModel.SaveChanges();
                 return true;
             }
             catch (Exception ex)
             {
-                return false;
+                LogHelper.WriteLog("Ошибка. RemoveFromFavorites.", ex);
             }
-
+            return false;
         }
 
         public static List<EmployeeModel> Search(string employeeName, int pageSize, int startIndex)
         {
+            try
+            {
+                List<Employee> employees = (from employee in BaseModel.Employees
+                    where employee.Name.Contains(employeeName)
+                    select employee
+                    ).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
+                var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
+                return t;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. Search.", ex);
+            }
             if (string.IsNullOrEmpty(employeeName))
                 employeeName = "";
 
-            List<Employee> employees = (from employee in BaseModel.Employees
-                where employee.Name.Contains(employeeName)
-                select employee
-                ).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
-            var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
-            return t;
+            return new List<EmployeeModel>();
         }
 
         public static bool CheckBirthdaysAtDay(DateTime date)
         {
-            return
-                BaseModel.Employees.Any(
-                    t => t.BirthDay.HasValue && t.BirthDay.Value.Day == date.Day && t.BirthDay.Value.Month == date.Month);
+            try
+            {
+                return
+                    BaseModel.Employees.Any(
+                        t =>
+                            t.BirthDay.HasValue && t.BirthDay.Value.Day == date.Day &&
+                            t.BirthDay.Value.Month == date.Month);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. CheckBirthdaysAtDay.", ex);
+                throw;
+            }
+
         }
 
         public static List<EmployeeModel> GetBirthdayPeople(string guid)
         {
-            if (string.IsNullOrEmpty(guid))
-                return new List<EmployeeModel>();
+            try
+            {
 
-            var today = DateTime.Today;
-            var tommorow = today.AddMonths(1);
-            var division = new Guid(guid);
+                if (string.IsNullOrEmpty(guid))
+                    return new List<EmployeeModel>();
 
-            var result = (from employee in BaseModel.Employees
-                join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                where
-                    employee.BirthDay.HasValue &&
-                    ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
-                     (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
+                var today = DateTime.Today;
+                var tommorow = today.AddMonths(1);
+                var division = new Guid(guid);
 
-                from m in employeeStaff.DefaultIfEmpty()
-                join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                    depState
+                var result = (from employee in BaseModel.Employees
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                    where
+                        employee.BirthDay.HasValue &&
+                        ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
+                         (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
 
-                from ds in depState.DefaultIfEmpty()
-                where ds.DivisionId.Equals(division) && ds.ExpirationDate == null
-                select employee.Id).ToList();
+                    from m in employeeStaff.DefaultIfEmpty()
+                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                        depState
 
-            return
-                result.Select(t => new EmployeeModel(t, true, false, true, false, false))
-                    .OrderBy(t => t.Employee.BirthDay.Value.Month)
-                    .ThenBy(t => t.Employee.BirthDay.Value.Day)
-                    .ToList();
+                    from ds in depState.DefaultIfEmpty()
+                    where ds.DivisionId.Equals(division) && ds.ExpirationDate == null
+                    select employee.Id).ToList();
+
+                return
+                    result.Select(t => new EmployeeModel(t, true, false, true, false, false))
+                        .OrderBy(t => t.Employee.BirthDay.Value.Month)
+                        .ThenBy(t => t.Employee.BirthDay.Value.Day)
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetBirthdayPeople.", ex);
+            }
+            return new List<EmployeeModel>();
         }
 
         public static bool CheckIsFavorite(Guid currentUser, Guid employeeGuid)
         {
-            return
-                (from fe in BaseModel.Favorites
-                    join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                    where fe.EmployeeId == currentUser && fe.LinkedEmployeeId == employeeGuid
-                    select fe.Id).Any();
+            try
+            {
+                return
+                    (from fe in BaseModel.Favorites
+                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                        where fe.EmployeeId == currentUser && fe.LinkedEmployeeId == employeeGuid
+                        select fe.Id).Any();
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. CheckIsFavorite.", ex);
+            }
+            return false;
         }
 
         public static int GetSearchResultCount(string employeeName)
         {
-            return BaseModel.Employees.Count(e => e.Name.Contains(employeeName));
+            try
+            {
+                return BaseModel.Employees.Count(e => e.Name.Contains(employeeName));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetSearchResultCount.", ex);
+            }
+            return 0;
         }
 
         public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? departmentId,int pageSize, int startIndex)
         {
-            List<Employee> employees = new List<Employee>();
-            if (departmentId.HasValue)
+            try
             {
+                List<Employee> employees = new List<Employee>();
+                if (departmentId.HasValue)
+                {
+                    if (divisionId.HasValue)
+                    {
+                        //сотрудники из подразделения в дивизионе
+                        employees = (from employee in BaseModel.Employees
+                                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                                     from m in employeeStaff.DefaultIfEmpty()
+                                     join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                         depState
+
+                                     from ds in depState.DefaultIfEmpty()
+                                     join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                         divState
+
+                                     from divS in divState.DefaultIfEmpty()
+
+                                     where
+                                         divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
+                                         ds.ExpirationDate == null && ds.Id == departmentId
+
+                                     select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
+                    }
+                    else
+                    {
+                        //сотрудники из подраздления
+                        employees = (from employee in BaseModel.Employees
+                                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                                     from m in employeeStaff.DefaultIfEmpty()
+                                     join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                         depState
+
+                                     from ds in depState.DefaultIfEmpty()
+                                     join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                         divState
+
+                                     from divS in divState.DefaultIfEmpty()
+
+                                     where
+                                          divS.ExpirationDate == null && m.ExpirationDate == null &&
+                                         ds.ExpirationDate == null && ds.Id == departmentId
+
+                                     select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
+                    }
+
+
+
+                }
+
                 if (divisionId.HasValue)
                 {
-                    //сотрудники из подразделения в дивизионе
+                    //сотрудники из дивизиона (корневые департаменты)
                     employees = (from employee in BaseModel.Employees
                                  join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
@@ -656,143 +889,282 @@ namespace KSS.Helpers
 
                                  where
                                      divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
-                                     ds.ExpirationDate == null && ds.Id == departmentId
-
-                                 select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
-                }
-                else
-                {
-                    //сотрудники из подраздления
-                    employees = (from employee in BaseModel.Employees
-                                 join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-
-                                 from m in employeeStaff.DefaultIfEmpty()
-                                 join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                                     depState
-
-                                 from ds in depState.DefaultIfEmpty()
-                                 join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                                     divState
-
-                                 from divS in divState.DefaultIfEmpty()
-
-                                 where
-                                      divS.ExpirationDate == null && m.ExpirationDate == null &&
-                                     ds.ExpirationDate == null && ds.Id == departmentId
+                                     ds.ExpirationDate == null && ds.ParentId == null
 
                                  select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
                 }
 
 
-
-            }
-
-            if (divisionId.HasValue)
-            {
-                //сотрудники из дивизиона (корневые департаменты)
-                employees = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                        depState
-
-                    from ds in depState.DefaultIfEmpty()
-                    join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                        divState
-
-                    from divS in divState.DefaultIfEmpty()
-
-                    where
-                        divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
-                        ds.ExpirationDate == null && ds.ParentId == null
-
-                    select employee).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
-            }
-
-
-            var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
+                var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
                 return t;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. SearchAdvanced.", ex);
+            }
+
+            return new List<EmployeeModel>();
         }
 
         public int GetAdvancedSearchResultCount(Guid divisionId)
         {
-            return (from employee in BaseModel.Employees
-                join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+            try
+            {
+                return (from employee in BaseModel.Employees
+                        join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
-                from m in employeeStaff.DefaultIfEmpty()
-                join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                    depState
+                        from m in employeeStaff.DefaultIfEmpty()
+                        join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                            depState
 
-                from ds in depState.DefaultIfEmpty()
-                join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
+                        from ds in depState.DefaultIfEmpty()
+                        join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
 
-                from divS in divState.DefaultIfEmpty()
+                        from divS in divState.DefaultIfEmpty()
 
-                    where divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null
-                //                                             where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
-                select employee).Count();
+                        where divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null
+                        //                                             where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
+                        select employee).Count();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetAdvancedSearchResultCount.", ex);
+            }
+            return 0;
         }
 
         public static Tuple<Guid, string, bool> GetLoginingUser(string login)
-        {            
-            if (!string.IsNullOrEmpty(login))
+        {
+            try
             {
-                var user = BaseModel.Employees.FirstOrDefault(t => string.Equals(t.AccountName, login));
-                if (user != null)
-                    return new Tuple<Guid, string, bool>(user.Id, user.Name,
-                        user.isAdministrator.HasValue && user.isAdministrator.Value);
+                if (!string.IsNullOrEmpty(login))
+                {
+                    var user = BaseModel.Employees.FirstOrDefault(t => string.Equals(t.AccountName, login));
+                    if (user != null)
+                        return new Tuple<Guid, string, bool>(user.Id, user.Name,
+                            user.isAdministrator.HasValue && user.isAdministrator.Value);
+                }
             }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetLoginingUser.", ex);
+            }
+
 
             return new Tuple<Guid, string, bool>(Guid.Empty, "Неопознанный пользователь", false);
         }
 
 
+        /// <summary>
+        /// Поиск регионов по стране
+        /// </summary>
+        /// <param name="country"></param>
+        /// <returns></returns>
         public static List<string> GetRegions(string country)
         {
-            if (string.IsNullOrEmpty(country))
-                //возвращаем всех
-                return BaseModel.Localities.DistinctBy(t => t.Region).OrderBy(t=>t.Region).Select(t => t.Region).ToList();
+            try
+            {
+                if (string.IsNullOrEmpty(country))
+                    //возвращаем всех
+                    return
+                        BaseModel.Localities.DistinctBy(t => t.Region)
+                            .OrderBy(t => t.Region)
+                            .Select(t => t.Region)
+                            .ToList();
 
-            return BaseModel.Localities.Where(t => string.Equals(t.Country, country))
-                .DistinctBy(t => t.Region)
-                .OrderBy(t=>t.Region)
-                .Select(t => t.Region)
-                .ToList();
+                return BaseModel.Localities.Where(t => string.Equals(t.Country, country))
+                    .DistinctBy(t => t.Region)
+                    .OrderBy(t => t.Region)
+                    .Select(t => t.Region)
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetRegions.", ex);
+            }
+
+            return new List<string>();
         }
 
+        /// <summary>
+        /// Поиск населенных пункто по стране и региону
+        /// </summary>
+        /// <param name="country"></param>
+        /// <param name="region"></param>
+        /// <returns></returns>
         public static List<KeyValuePair<Guid, string>> GetLocalities(string country, string region)
         {
-            IQueryable<Locality> result;
-            if (string.IsNullOrEmpty(country))
+            try
             {
+                IQueryable<Locality> result;
+                if (string.IsNullOrEmpty(country))
+                {
+                    if (string.IsNullOrEmpty(region))
+                    {
+                        //все пункты, все регионы, все страны
+                        result = BaseModel.Localities;
+                    }
+                    else
+                        //все пункты, конкретный регион, все страны
+                        result = BaseModel.Localities.Where(t => string.Equals(t.Region, region));
+                }
                 if (string.IsNullOrEmpty(region))
                 {
-                    //все пункты, все регионы, все страны
-                    result = BaseModel.Localities;
+                    //все пункты, все регионы, конкретная страна
+                    result =
+                        BaseModel.Localities.Where(t => string.Equals(t.Country, country));
                 }
                 else
-                    //все пункты, конкретный регион, все страны
-                    result = BaseModel.Localities.Where(t => string.Equals(t.Region, region));
+                    //все пункты, конкретный регион, конкретная страна
+                    result =
+                        BaseModel.Localities.Where(t =>
+                            string.Equals(t.Country, country) && string.Equals(t.Region, region));
+                //                    .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Locality1))
+                //                    .ToList();
+                return
+                    result.OrderBy(t => t.Locality1)
+                        .ToList()
+                        .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Locality1))
+                        .ToList();
             }
-            if (string.IsNullOrEmpty(region))
+            catch (Exception ex)
             {
-                //все пункты, все регионы, конкретная страна
-                result =
-                    BaseModel.Localities.Where(t => string.Equals(t.Country, country));
+                LogHelper.WriteLog("Ошибка. GetLocalities.", ex);
             }
-            else
-            //все пункты, конкретный регион, конкретная страна
-            result =
-                BaseModel.Localities.Where(t =>
-                    string.Equals(t.Country, country) && string.Equals(t.Region, region));
-//                    .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Locality1))
-//                    .ToList();
-            return
-                result.OrderBy(t => t.Locality1)
-                    .ToList()
-                    .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Locality1))
-                    .ToList();
+
+            return new List<KeyValuePair<Guid, string>>();
+        }
+
+
+        /// <summary>
+        /// Изменение пункта "Член штаба"
+        /// </summary>
+        /// <param name="employee">Гуид сотрудника</param>
+        /// <param name="isMember">Является ли членом штаба</param>
+        public static void UpdateMemberOfHeadquarter(Guid employee, bool isMember )
+        {
+            try
+            {
+                var user = GetEmployee(employee);
+                if (user != null)
+                {
+                    user.IsMemberOfHeadquarter = isMember;
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateMemberOfHeadquarter.", ex);
+            }
+
+        }
+
+        /// <summary>
+        /// Изменение местоположения сотрудника
+        /// </summary>
+        /// <param name="employee">Гуид сотрудника</param>
+        /// <param name="city">гуид населенного пункта</param>
+        /// <param name="street">Улица</param>
+        /// <param name="edifice">Здание</param>
+        /// <param name="office">Номер офиса</param>
+        public static void UpdateEmployeePlaces(Guid employee, Guid city, string street, string edifice, string office)
+        {
+            try
+            {
+                var places = GetEmployeePlaces(employee);
+
+                var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
+                var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+
+                if (locality != null && placeWithLocation != null)
+                {
+                    placeWithLocation.Location.Street = street;
+                    placeWithLocation.Location.Edifice = edifice;
+                    placeWithLocation.Location.LocalityId = city;
+
+                    foreach (EmployeePlace place in places)
+                    {
+                        place.Office = office;
+                        place.LocationId = placeWithLocation.Location.Id;
+                    }
+
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateEmployeePlaces.", ex);
+            }
+
+        }
+
+        /// <summary>
+        /// Сохранение изменений номера телефона. Создание нового номера, если не существует записи с ID = place
+        /// </summary>
+        /// <param name="employee">Сотрудник</param>
+        /// <param name="place">Запись о телефоне</param>
+        /// <param name="phoneType">гуид телефона (применяется тока при создании нового)</param>
+        /// <param name="phone">Номер телефона</param>
+        public static void UpdateEmployeePhone(Guid employee, Guid? place, Guid? phoneType, string phone)
+        {
+            try
+            {
+                var places = GetEmployeePlaces(employee);
+
+                if (place != null)
+                {
+                    //update
+                    var employeePlace = places.FirstOrDefault(t => t.Id == place);
+
+                    if (employeePlace != null)
+                    {
+                        employeePlace.PhoneNumber = phone;
+                        BaseModel.SaveChanges();
+                    }
+                }
+                else
+                {
+                    //create
+
+                    var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+
+                    if (placeWithLocation != null && phoneType.HasValue)
+                    {
+                        var entity = new EmployeePlace
+                        {
+                            EmployeeId = employee,
+                            LocationId = placeWithLocation.LocationId,
+                            PhoneTypeId = phoneType.Value,
+                            PhoneNumber = phone,
+                            Office = placeWithLocation.Office,
+                            Id = Guid.NewGuid()
+                        };
+
+                        BaseModel.AddToEmployeePlaces(entity);
+                        BaseModel.SaveChanges();
+                    }
+
+                    
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateEmployeePhone.", ex);
+            }
+        }
+
+        public static List<PhoneType> GetPhoneTypes()
+        {
+            try
+            {
+                return BaseModel.PhoneTypes.OrderBy(t => t.Type).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetPhoneTypes.", ex);
+            }
+
+            return new List<PhoneType>();
         }
     }
 }

@@ -98,7 +98,7 @@
 
                     ChangeSelectedPage(0);
 
-                    loadSearchPageAndLoadData(url);
+                    loadSearchPage(url);
 
                     _lastId = ids;
                     _lastObject = target.parent();
@@ -136,23 +136,6 @@
         }
     }
 
-    function loadSearchPageAndLoadData(url) {
-        var parent = $('#centralPart');
-        if (parent != null) {
-            parent.append('<div class="centralPartWithProgressBar"/>');
-        }
-
-        $.get(url, function (data) {            
-            if (parent != null) {
-                parent.empty();
-                parent.append(data);
-
-                //вызываем загрузку сотрудников
-//                $('#searchBtn').css('background', 'red');                
-            }
-        });
-    }
-
     //загрузка центральной части для главной страницы
     function loadSearchPage(url) {
         var parent = $('#centralPart');
@@ -160,13 +143,24 @@
             parent.append('<div class="centralPartWithProgressBar"/>');
         }
 
-        $.get(url, function (data) {
-//            var parent = $('#centralPart');
-            if (parent != null) {
+//        $.get(url, function (data) {
+//            if (parent != null) {
+//                    parent.empty();
+//                    parent.append(data);                    
+//            }
+        //        });
+
+        $.ajax({
+                url: url,
+                cache: false,
+
+            })
+            .done(function(data) {
+                if (parent != null) {
                     parent.empty();
-                    parent.append(data);                    
-            }
-        });
+                    parent.append(data);
+                }
+            });
     }
 
     //Загрузка именниников

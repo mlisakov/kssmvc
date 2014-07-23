@@ -32,7 +32,7 @@
             <p class="fieldLabel  rightItem">местоположение</p>            
             <select class="field " id="Divisions">
                  
-                <option class="comboBoxItem">выберите филиал</option>
+                <option class="comboBoxItem" value="-1">выберите филиал</option>
                 @foreach (DivisionState divState in Model.GetDivisionStates())
                 {
                     <option class="comboBoxItem" value='@divState.Id'>@divState.Division</option>
@@ -40,7 +40,7 @@
             </select>
 
             <select class="field rightItem">
-                 <option class="comboBoxItem">выберите местоположение</option>
+                 <option class="comboBoxItem" value="-1">выберите местоположение</option>
                 @foreach (KeyValuePair<Guid,String> locality in Model.GetCustomLocality())
                 {
                     <option class="comboBoxItem" value='@locality.Key'>@locality.Value</option>
@@ -54,8 +54,8 @@
             <p class="fieldLabel rightItem">номер телефона</p>
 
             <select class="field">
-                <option class="comboBoxItem" value="0"></option>
-                <option class="comboBoxItem" value="1">Filial</option>
+                <option class="comboBoxItem" value="true">Да</option>
+                <option class="comboBoxItem" selected value="false">Нет</option>
             </select>
 
             <input type="text" class="field rightItem"/>            
@@ -67,12 +67,12 @@
             
             <p class="fieldLabel rightItem">дни рождения</p>
 
-            <select class="field" id="Departments">
+            <select class="field" id="Departments" disabled>
                 <option class="comboBoxItem" value='@Guid.Empty'>выберите подразделение</option>
-                @foreach (DepartmentState depState in Model.GetDepartmentStates())
-                {
-                    <option class="comboBoxItem" value='@depState.Id'>@depState.Department</option>
-                }
+@*                @foreach (DepartmentState depState in Model.GetDepartmentStates())*@
+@*                {*@
+@*                    <option class="comboBoxItem" value='@depState.Id'>@depState.Department</option>*@
+@*                }*@
             </select>
             
             <div class="rightItem">
@@ -84,12 +84,12 @@
         </div>
         <div class="additionalSearchRow">
             <p class="fieldLabel noFloatItem">должность</p>
-            <select class="field " id="Positions">
+            <select class="field " id="Positions" disabled>
                 <option class="comboBoxItem" value='@Guid.Empty'>выберите должность</option>
-                @foreach (PositionState positionState in Model.GetPositionStates())
-                {
-                    <option class="comboBoxItem" value='@positionState.Id'>@positionState.Title</option>
-                }
+@*                @foreach (PositionState positionState in Model.GetPositionStates())*@
+@*                {*@
+@*                    <option class="comboBoxItem" value='@positionState.Id'>@positionState.Title</option>*@
+@*                }*@
             </select>
             
 @*            <input type="text" id="firstDatepicker" />*@
@@ -138,6 +138,7 @@
                 </li>
             }
         </ul>
+    </div>
         
 @*        <div class="pagesContainer">*@
 @*            @{*@
@@ -171,6 +172,18 @@
 
         $('#firstDatepicker').datepicker();
 
+        $('.emploeeLink').on('click', function(e) {
+
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            ChangeSelectedPage(0);
+
+            ClearTreeSelection();
+            loadSearchPage(url);
+        });
+
         $('#searchBtn').on('click', function(e) {
             var value = $('#searchText').val();
             var url = '@Url.Action("SearchEmployees", "Home", new { employeeName = "-1", startIndex = 0})';
@@ -178,9 +191,10 @@
 
             if ($('#advancedSearch').hasClass('advancedSearchOpened')) {
 
-                var divValue = $('#Divisions :selected').val();
-                var url = '@Url.Action("SearchEmployees", "Home", new { divisionId = "-5",startIndex = 0 })';
-                url = url.replace('-5', divValue);
+                //реализация расширенного поиска
+//                var divValue = $('#Divisions :selected').val();
+//                var url = '@Url.Action("SearchEmployees", "Home", new { divisionId = "-5",startIndex = 0 })';
+//                url = url.replace('-5', divValue);
             }
 
             $('.searchProgress').show();
@@ -218,30 +232,54 @@
     };
 
     $('#Divisions').change(function() {
-        //var URL = $('#CountryStateFormID').data('stateListAction');
-        var url = '@Url.Action("GetDepartments", "Home", new {divisionId = "-1"})';
-        url = url.replace('-1', $('#Divisions').val());
-        $.getJSON(url, function(data) {
-            var items = '<option>Выберите подразделение</option>';
-            $.each(data, function(i, state) {
-                items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
-            });
-            $('#Departments').html(items);
+        var currentDivision = $('#Divisions').val();
+        var deprtments = $('#Departments');
 
-        });
+        if (currentDivision == "-1") {
+            $('#Departments option').remove();
+            deprtments.html('<option value="-1">Выберите подразделение</option>');
+            deprtments.attr('disabled', '');
+
+
+        } else {
+            var url = '@Url.Action("GetDepartments", "Home", new {divisionId = "-1"})';
+            url = url.replace('-1', currentDivision);
+            $.getJSON(url, function(data) {
+                var items = '<option value="-1">Выберите подразделение</option>';
+                $.each(data, function(i, state) {
+                    items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
+                });
+                deprtments.html(items);
+                deprtments.removeAttr('disabled');
+            });
+        }
+
+
+        $('#Positions option').remove();
+        var positions = $('#Positions');
+        positions.html('<option>Выберите должность</option>');
+        positions.attr('disabled', '');
     });
 
-    $('#Departments').change(function () {
-        //var URL = $('#CountryStateFormID').data('stateListAction');
-        var url = '@Url.Action("GetPositions", "Home", new {departmentId = "-1"})';
-        url = url.replace('-1', $('#Departments').val());
-         $.getJSON(url, function (data) {
-             var items = '<option>Выберите должность</option>';
-             $.each(data, function (i, state) {
-                 items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
-             });
-             $('#Positions').html(items);
+    $('#Departments').change(function() {
+        var currentDepartment = $('#Departments').val();
+        var positions = $('#Positions');
 
-         });
+        if (currentDepartment == "-1") {
+            $('#Positions option').remove();
+            positions.html('<option>Выберите должность</option>');
+            positions.attr('disabled', '');
+        } else {
+            var url = '@Url.Action("GetPositions", "Home", new {departmentId = "-1"})';
+            url = url.replace('-1', currentDepartment);
+            $.getJSON(url, function (data) {
+                var items = '<option>Выберите должность</option>';
+                $.each(data, function (i, state) {
+                    items += "<option value='" + state.Value + "'>" + state.Text + "</option>";
+                });
+                positions.html(items);
+                positions.removeAttr('disabled');
+            });
+        }
      });
 </script>
