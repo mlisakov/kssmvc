@@ -239,8 +239,6 @@
             $('#Departments option').remove();
             deprtments.html('<option value="-1">Выберите подразделение</option>');
             deprtments.attr('disabled', '');
-
-
         } else {
             var url = '@Url.Action("GetDepartments", "Home", new {divisionId = "-1"})';
             url = url.replace('-1', currentDivision);

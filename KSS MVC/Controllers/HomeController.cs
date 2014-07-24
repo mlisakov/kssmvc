@@ -17,6 +17,8 @@ namespace KSS.Controllers
         {
             HomeViewModel homeViewModel = new HomeViewModel(Session);
 
+            ViewBag.UserName = Session["UserName"];
+            ViewBag.UserID = Session["CurrentUser"];
 
             return View(homeViewModel);
         }

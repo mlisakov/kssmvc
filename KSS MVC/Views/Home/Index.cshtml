@@ -9,7 +9,8 @@
     <nav class="mainMenuLayout">
         <img class="logo" src="~/Images/logo.png"/>
         
-        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>
+@*        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>    *@
+        <a class="userLabel" data-url='@Url.Action("Index", "Employee", new { id = @ViewBag.UserID })'>@ViewBag.UserName</a>                        
 
         <ul class="mainMenu">
 @*            <li class="selectedPage">@Html.ActionLink("Главная", "Index", "Home")</li>*@
@@ -50,7 +51,18 @@
     var _lastObject = null;
     var _isLoading = false;
 
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        //клик по имени пользователя
+        $('.userLabel').on('click', function(e) {
+
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+
+            ChangeSelectedPage(0);
+            ClearTreeSelection();
+            loadSearchPage(url);
+        });
 
         //клик по пунктам главного меню
         $('.mainMenu li').on('click', function(e) {

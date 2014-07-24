@@ -197,6 +197,7 @@ ul {
 	overflow: hidden;
 	float: left;
 	white-space: nowrap;
+	max-width: 395px;
 }
 
 .innerUL li:hover span.tooltip {
@@ -296,6 +297,15 @@ ul {
 	vertical-align: text-bottom;
 	position: absolute;
 	left: 185px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+.userLabel:hover {
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 .logo {

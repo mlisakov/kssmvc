@@ -30,8 +30,13 @@ namespace KSS
         public void Session_Start()
         {
 #if RELEASE
+            LogHelper.WriteLog("Autorisation. RELEASE mode.");
+            LogHelper.WriteLog("Autorisation. UserName= " + Context.User.Identity.Name);
+
                 if (Context.User.Identity.IsAuthenticated)
                 {
+                    LogHelper.WriteLog("Autorisation. IsAuthenticated= " + Context.User.Identity.IsAuthenticated);
+            
                     string userLogin = Context.User.Identity.Name;
                     Tuple<Guid, string, bool> userInfo = DBHelper.GetLoginingUser(userLogin);
                     Guid userDivision = DBHelper.GetEmployeeDivision(userInfo.Item1).Id;
@@ -56,6 +61,7 @@ namespace KSS
                 }
                 else
                 {
+                    LogHelper.WriteLog("Autorisation. IsAuthenticated= " + Context.User.Identity.IsAuthenticated);
                     Session["CurrentUser"] = Guid.Empty;
                     Session["CurrentUserDepartment"] = Guid.Empty;
                     Session["CurrentUserDivision"] = Guid.Empty;
@@ -63,12 +69,14 @@ namespace KSS
                     Session["IsAdministrator"] = false;
                 }
 #else
+
+            LogHelper.WriteLog("Autorisation. Debug mode.");
             Session["CurrentUser"] = "B88F6C02-77F2-41B7-9C66-098A7262EE12";
             Session["CurrentUserDepartment"] =
                 DBHelper.GetEmployeeDepartment(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
             Session["CurrentUserDivision"] =
                 DBHelper.GetEmployeeDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
-            Session["UserName"] = "Петрович Василий Пупкин";
+            Session["UserName"] = "Неопознанный пользователь";
             Session["IsAdministrator"] = true;
 #endif
         }

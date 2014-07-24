@@ -8,7 +8,7 @@ namespace KSS.Helpers
     {
         private const string Path = @"C:\KSS_Site";
         private const string BaseFileName = "DBLog_";
-        private const string BaseExtension = "DBLog_";
+        private const string BaseExtension = ".log";
 
         public static void WriteLog(string fileName, string source)
         {
@@ -16,11 +16,15 @@ namespace KSS.Helpers
             {
                 if (!Directory.Exists(Path))
                     Directory.CreateDirectory(Path);
-                var fs2 = new FileStream(Path + @"\" + fileName, FileMode.Append, FileAccess.Write);
-                var sw = new StreamWriter(fs2, Encoding.Default);
-                sw.WriteLine(source);
-                sw.WriteLine();
-                sw.Close();
+
+                using (var fs = new FileStream(Path + @"\" + fileName, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    fs.Position = fs.Length;
+                    var sw = new StreamWriter(fs, Encoding.Default);
+                    sw.WriteLine(source);
+                    sw.WriteLine();
+                    sw.Close();
+                }
             }
             catch (Exception ex)
             {
@@ -39,6 +43,11 @@ namespace KSS.Helpers
         public static void WriteLog(string russianText, Exception ex)
         {
             WriteLog(BaseFileName + DateTime.Today.ToShortDateString() + BaseExtension, russianText, ex);
+        }
+
+        public static void WriteLog(string text)
+        {
+            WriteLog(BaseFileName + DateTime.Today.ToString("yy-MM-dd") + BaseExtension, text);
         }
     }
 }
