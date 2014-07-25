@@ -33,7 +33,7 @@
                             if (!node.HasChilds)
                             {
                                 <li>
-                                    <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+                                    <span class="leaf @node.Type" id="@node.Id" title="@node.Name">@node.Name</span>
                                 </li>
                             }
                             else
@@ -51,7 +51,7 @@
                             if (!node.HasChilds)
                             {
                                 <li>
-                                    <span class="leaf @node.Type" id="@node.Id">@node.Name</span>
+                                    <span class="leaf @node.Type" id="@node.Id" title="@node.Name">@node.Name</span>
                                 </li>
                             }
                             else
@@ -67,7 +67,7 @@
         {
             <li data-url='@Url.Action("TreeNodes", "Tree", new {id = node.Id, type = node.Type})'>
                 <div class="plus rootArrow"></div>
-                <span class="folder hasChilds @node.Type" id="@node.Id">
+                <span class="folder hasChilds @node.Type" id="@node.Id" title="@node.Name">
                     @node.Name
                 </span>
             </li>

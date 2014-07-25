@@ -67,8 +67,10 @@ namespace KSS.Models
         public List<EmployeeModel> GetEmployers()
         {
 
-            return DBHelper.SearchAdvanced(_division == null ? new Guid?() : _division.Id,
-                _department == null ? new Guid?() : _department.Id, 5, 0);
+            return DBHelper.SearchAdvanced(_division == null ? new Guid?() : _division.Id, Guid.Empty, false,
+                string.Empty,
+                _department == null ? new Guid?() : _department.Id, string.Empty, string.Empty, string.Empty,
+                string.Empty, 5, 0);
         }
     }
 }

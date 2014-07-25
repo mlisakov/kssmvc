@@ -291,18 +291,23 @@ ul {
 
 .userLabel {
 	font-size: 16px;
-	color: #fffefe;
-	margin-left: 20px;
+	color: #fffefe;	
 	text-decoration: none;
 	vertical-align: text-bottom;
 	position: absolute;
-	left: 185px;
+	left: 245px;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 260px;
+
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
 	-o-user-select: none;
 	user-select: none;
 }
+
 .userLabel:hover {
 	cursor: pointer;
 	text-decoration: underline;

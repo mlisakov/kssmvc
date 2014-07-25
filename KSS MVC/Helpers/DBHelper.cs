@@ -1,7 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Text;
 using KSS.Models;
+using KSS.Properties;
 using KSS.Server.Entities;
 using Microsoft.Ajax.Utilities;
 
@@ -816,7 +821,7 @@ namespace KSS.Helpers
         }
 
         public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int startIndex = 0)
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, int startIndex = 0 )
         {
             try
             {
@@ -1166,6 +1171,36 @@ namespace KSS.Helpers
             }
 
             return new List<PhoneType>();
+        }
+
+        public static string GetEmployeePhoto(Guid id)
+        {
+            try
+            {
+                var image = BaseModel.Employees.First(t => t.Id == id).PhotoFile;
+                if (!string.IsNullOrEmpty(image))
+                {
+                    return image;
+                }
+                var bmp = Resources.dafaultpic;
+
+                byte[] data;
+                using (var stream  = new MemoryStream())
+                {
+                    bmp.Save(stream, ImageFormat.Bmp);
+                    data = new byte[stream.Length];
+                    stream.Read(data, 0, data.Length);
+                }
+
+                var f = Convert.ToBase64String(data);
+                return f;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetEmployeePhoto.", ex);
+            }
+
+            return null;
         }
     }
 }

@@ -30,11 +30,13 @@
 <div class="personCardLayout">
     
     <div class="personIMGLayout">
-        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" /> 
-            @if (ViewBag.IsAdmin)
-            {
-                <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>
-            }
+        
+        <img class="personIMG" src="data:image;base64, @Model.GetImage()" />
+@*        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" /> *@
+        @if (ViewBag.IsAdmin)
+        {
+            <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>
+        }
     </div>
     
     

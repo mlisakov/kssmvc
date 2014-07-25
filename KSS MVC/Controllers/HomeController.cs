@@ -115,7 +115,8 @@ namespace KSS.Controllers
         public ActionResult SearchEmployeesAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
             string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int startIndex = 0)
         {
-            var employees = DBHelper.SearchAdvanced(divisionId, null, _pageSize, startIndex);
+//            var employees = DBHelper.SearchAdvanced(divisionId, null, _pageSize, startIndex);
+            var employees = DBHelper.Search(employeeName, _pageSize, startIndex);
             ViewResult view = View("SearchEmployeeResult", employees);
 
 //            var count = DBHelper.GetSearchResultAdvancedCount(employeeName) / _pageSize;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.UI.WebControls;
 using KSS.Helpers;
 using KSS.Server.Entities;
 
@@ -99,6 +100,11 @@ namespace KSS.Models
                     Location = EmployeePlaces.First(t => t.Location != null).Location;
                 }                
             }
+        }
+
+        public string GetImage()
+        {
+            return DBHelper.GetEmployeePhoto(Employee.Id);
         }
 
         public void ChangeFavoriteStatus()
