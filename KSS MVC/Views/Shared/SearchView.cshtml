@@ -39,7 +39,7 @@
                 }
             </select>
 
-            <select class="field rightItem">
+            <select id="Places" class="field rightItem">
                  <option class="comboBoxItem" value="-1">выберите местоположение</option>
                 @foreach (KeyValuePair<Guid,String> locality in Model.GetCustomLocality())
                 {
@@ -53,12 +53,12 @@
             
             <p class="fieldLabel rightItem">номер телефона</p>
 
-            <select class="field">
+            <select id="IsMemberOfHeadQuarterComboBox" class="field">
                 <option class="comboBoxItem" value="true">Да</option>
                 <option class="comboBoxItem" selected value="false">Нет</option>
             </select>
 
-            <input type="text" class="field rightItem"/>            
+            <input id="PhoneNumberAdditionalSearch" type="text" class="field rightItem"/>            
         </div>
 
         <div class="additionalSearchRow">
@@ -76,9 +76,9 @@
             </select>
             
             <div class="rightItem">
-                <input type="text" class="dataPicker" />
+                <input id="StartDatePicker" type="text" class="dataPicker" />
                 <p class="dataPickerSeparator">&ndash;</p>
-                <input type="text" class="dataPicker" />                   
+                <input id="EndDatePicker" type="text" class="dataPicker" />                   
             </div>
 
         </div>
@@ -168,7 +168,7 @@
 
 <script type="text/javascript">
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         $('#firstDatepicker').datepicker();
 
@@ -186,49 +186,86 @@
 
         $('#searchBtn').on('click', function(e) {
             var value = $('#searchText').val();
-            var url = '@Url.Action("SearchEmployees", "Home", new { employeeName = "-1", startIndex = 0})';
-            url = url.replace('-1', value);
+            var url = '@Url.Action("SearchEmployees", "Home")';
 
-            if ($('#advancedSearch').hasClass('advancedSearchOpened')) {
+            var dataParam = { employeeName:value, startIndex: 0 };
+
+            if ($('.advancedSearch').hasClass('advancedSearchOpened')) {
+
+                var divisionId = $('#Divisions option:selected').val();
+                var placeId = $('#Places option:selected').val();
+                var isMember = $('#IsMemberOfHeadQuarterComboBox option:selected').val();
+                var phoneNumber = $('#PhoneNumberAdditionalSearch').val();
+                var departmentId = $('#Departments option:selected').val();
+                var startDate = $('#StartDatePicker').val();
+                var endDate = $('#EndDatePicker').val();
+                var job = $('#Positions option:selected').val();
 
                 //реализация расширенного поиска
-//                var divValue = $('#Divisions :selected').val();
-//                var url = '@Url.Action("SearchEmployees", "Home", new { divisionId = "-5",startIndex = 0 })';
-//                url = url.replace('-5', divValue);
+                url = '@Url.Action("SearchEmployeesAdvanced", "Home")';
+
+                dataParam = {
+                    divisionId: divisionId,
+                    placeId: placeId,
+                    isMemberOfHeadquarter: isMember,
+                    phoneNumber: phoneNumber,
+                    departmentId: departmentId,
+                    dateStart: startDate,
+                    dateEnd: endDate,
+                    job: job,
+                    employeeName: escape(value),
+                    startIndex: 0
+                };
             }
 
             $('.searchProgress').show();
 
-            loadSearchPageResult(url);
+            loadSearchPageResult(url, dataParam);
         });
 
 
-        $('.advancedSearch').on('click', function(e) {
-            //toggle visibility of additional search panel
-            $('.additionalSearchPanel').slideToggle('slow');
+    $('.advancedSearch').on('click', function(e) {
+        //toggle visibility of additional search panel
+        $('.additionalSearchPanel').slideToggle('slow');
 
-            $(e.target).toggleClass('advancedSearchOpened');
+        $(e.target).toggleClass('advancedSearchOpened');
 
-            var arrow = $(e.target).children('span');
-            if (arrow.length > 0) {
-                if (arrow.html() == '↓')
-                    arrow.text('↑');
-                else
-                    arrow.text('↓');
-            }
+        var arrow = $(e.target).children('span');
+        if (arrow.length > 0) {
+            if (arrow.html() == '↓')
+                arrow.text('↑');
+            else
+                arrow.text('↓');
+        }
 
-        });
     });
+    });
+    
 
-    function loadSearchPageResult(url) {
-        $.get(url, function(data) {
-            var resultDiv = $('#searchResult');
-            if (resultDiv != null) {
-                $('.searchProgress').hide();
-                resultDiv.empty();
-                resultDiv.append(data);
-            }
-        });
+    function loadSearchPageResult(url, p) {
+        $.ajax({
+            url: url,
+            cache: false,
+            data:p
+        })
+            .done(function(data) {
+                var resultDiv = $('#searchResult');
+                if (resultDiv != null) {
+                    $('.searchProgress').hide();
+                    resultDiv.empty();
+                    resultDiv.append(data);
+                }
+            });
+
+        //
+        //        $.get(url, function(data) {
+        //            var resultDiv = $('#searchResult');
+        //            if (resultDiv != null) {
+        //                $('.searchProgress').hide();
+        //                resultDiv.empty();
+        //                resultDiv.append(data);
+        //            }
+        //        });
     };
 
     $('#Divisions').change(function() {
@@ -279,5 +316,5 @@
                 positions.removeAttr('disabled');
             });
         }
-     });
+    });
 </script>

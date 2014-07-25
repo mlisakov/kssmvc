@@ -815,7 +815,8 @@ namespace KSS.Helpers
             return 0;
         }
 
-        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? departmentId,int pageSize, int startIndex)
+        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int startIndex = 0)
         {
             try
             {
