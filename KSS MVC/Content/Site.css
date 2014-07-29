@@ -872,6 +872,7 @@ div.rightItem p {
 .personIMGLayout {
 	float: left;
 	height: 130px;
+	overflow: hidden;	
 	line-height: 130px;
 	text-align: center;
 }

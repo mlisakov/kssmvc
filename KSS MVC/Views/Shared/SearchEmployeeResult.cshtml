@@ -3,6 +3,7 @@
     Layout = "";
 }
 @using System.Data.Entity.Core
+@using System.Web.UI.WebControls
 @using KSS.Models
 @using KSS.Server.Entities
 @using Microsoft.Ajax.Utilities
@@ -15,7 +16,7 @@
         <li>
             <div class="lyncStatusDiv"></div>
             <div class="personIMGLayout">
-                <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" />    
+                <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
             </div>
             <div class="innerPersonLayout">
                 <h5 class="personName">
@@ -66,15 +67,58 @@
     {
         if (i == ViewBag.StartIndex)
         {
-            <a class='pageNmbr selectedPageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new { employeeName = ViewBag.Search, startIndex = i })'>
-                @(i + 1)
-            </a>
+
+            if (ViewBag.IsAdvanced)
+            {
+                <a class='pageNmbr selectedPageNmbr' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
+                                                               {
+                                                                   divisionId = ViewBag.SearchDivision,
+                                                                   placeId = ViewBag.SearchPlace,
+                                                                   isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                                   phoneNumber = ViewBag.SearchPhoneNumber,
+                                                                   departmentId = ViewBag.SearchDepartment,
+                                                                   dateStart = ViewBag.SearchDateStart,
+                                                                   dateEnd = ViewBag.SearchDateEnd,
+                                                                   job = ViewBag.SearchJob,
+                                                                   employeeName = ViewBag.Search, 
+                                                                   startIndex = i
+                                                               })'>
+                    @(i + 1)
+                </a>
+            }
+            else
+            {
+                <a class='pageNmbr selectedPageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new {employeeName = ViewBag.Search, startIndex = i})'>
+                    @(i + 1)
+                </a>
+            }
         }
         else
         {
-            <a class='pageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new { employeeName = ViewBag.Search, startIndex = i })'>
-                @(i + 1)
-            </a>
+            if (ViewBag.IsAdvanced)
+            {
+                <a class='pageNmbr' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
+                                                               {
+                                                                   divisionId = ViewBag.SearchDivision,
+                                                                   placeId = ViewBag.SearchPlace,
+                                                                   isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                                   phoneNumber = ViewBag.SearchPhoneNumber,
+                                                                   departmentId = ViewBag.SearchDepartment,
+                                                                   dateStart = ViewBag.SearchDateStart,
+                                                                   dateEnd = ViewBag.SearchDateEnd,
+                                                                   job = ViewBag.SearchJob,
+                                                                   employeeName = ViewBag.Search,
+                                                                   startIndex = i
+                                                               })'>
+                    @(i + 1)
+                </a>
+            }
+            else
+            {
+                <a class='pageNmbr' data-url='@Url.Action("SearchEmployees", "Home", new {employeeName = ViewBag.Search, startIndex = i})'>
+                    @(i + 1)
+                </a>
+            }
         }
     }
 
@@ -89,7 +133,29 @@
         if (ViewBag.StartIndex > 0)
         {
             <p class="paginationArrow">←</p>
-            <a class="paginationNavigationLink" data-url='@Url.Action("SearchEmployees", "Home", new { employeeName = ViewBag.Search, startIndex = ViewBag.StartIndex - 1 })'>Назад</a>
+            if (ViewBag.IsAdvanced)
+            {
+                <a class='paginationNavigationLink' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
+                                              {
+                                                  divisionId = ViewBag.SearchDivision,
+                                                  placeId = ViewBag.SearchPlace,
+                                                  isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                  phoneNumber = ViewBag.SearchPhoneNumber,
+                                                  departmentId = ViewBag.SearchDepartment,
+                                                  dateStart = ViewBag.SearchDateStart,
+                                                  dateEnd = ViewBag.SearchDateEnd,
+                                                  job = ViewBag.SearchJob,
+                                                  employeeName = ViewBag.Search,
+                                                  startIndex = ViewBag.StartIndex - 1
+                                              })'>
+                    Назад
+                </a>
+            }
+            else
+            {
+                <a class="paginationNavigationLink" data-url='@Url.Action("SearchEmployees", "Home", new {employeeName = ViewBag.Search, startIndex = ViewBag.StartIndex - 1})'>Назад</a>
+            }
+
         }
         else
         {
@@ -99,7 +165,29 @@
 
         if (ViewBag.StartIndex + 1 < ViewBag.PageCount)
         {
-            <a class="paginationNavigationLink forwardLink" data-url='@Url.Action("SearchEmployees", "Home", new { employeeName = ViewBag.Search, startIndex = ViewBag.StartIndex + 1 })'>Вперед</a>
+            if (ViewBag.IsAdvanced)
+            {
+                <a class='paginationNavigationLink forwardLink' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
+                                              {
+                                                  divisionId = ViewBag.SearchDivision,
+                                                  placeId = ViewBag.SearchPlace,
+                                                  isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                  phoneNumber = ViewBag.SearchPhoneNumber,
+                                                  departmentId = ViewBag.SearchDepartment,
+                                                  dateStart = ViewBag.SearchDateStart,
+                                                  dateEnd = ViewBag.SearchDateEnd,
+                                                  job = ViewBag.SearchJob,
+                                                  employeeName = ViewBag.Search,
+                                                  startIndex = ViewBag.StartIndex + 1
+                                              })'>
+                    Вперед
+                </a>
+            }
+            else
+            {
+            <a class="paginationNavigationLink forwardLink" data-url='@Url.Action("SearchEmployees", "Home", new { employeeName = ViewBag.Search, startIndex = ViewBag.StartIndex + 1 })'>Вперед</a>    
+            }
+            
             <p class="paginationArrow">→</p>
         }
     }

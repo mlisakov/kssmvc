@@ -20,6 +20,23 @@ namespace KSS.Models
             get { return _pageCount; }
         }
 
+        public Guid? DepartmentID
+        {
+            get { return _department == null ? new Guid?() : _department.Id; }
+        }
+
+        public Guid? DivisionID
+        {
+            get
+            {
+                return _division == null
+                    ? (_department == null
+                        ? new Guid?()
+                        : _department.DivisionId)
+                    : _division.Id;
+            }
+        }
+
         public SearchViewModel(HttpSessionStateBase session, Guid? id = null)
         {
             _session = session;
@@ -66,11 +83,17 @@ namespace KSS.Models
 
         public List<EmployeeModel> GetEmployers()
         {
+            var divisionId = DivisionID;
+            var departmentID = DepartmentID;
 
-            return DBHelper.SearchAdvanced(_division == null ? new Guid?() : _division.Id, Guid.Empty, false,
-                string.Empty,
-                _department == null ? new Guid?() : _department.Id, string.Empty, string.Empty, string.Empty,
-                string.Empty, 5, 0);
+            _pageCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
+                departmentID, string.Empty, string.Empty, string.Empty, string.Empty)/5;
+
+            if ((_pageCount%5) != 0)
+                _pageCount++;
+
+            return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
+                string.Empty, string.Empty, string.Empty, 5, true);
         }
     }
 }

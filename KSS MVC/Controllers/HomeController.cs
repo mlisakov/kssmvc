@@ -37,7 +37,21 @@ namespace KSS.Controllers
         public ActionResult SearchView(Guid id)
         {
             SearchViewModel model = new SearchViewModel(Session,id);
-            ViewResult view= View(model);                        
+
+            ViewResult view= View(model);
+
+            view.ViewBag.StartIndex = 0;            ;
+            view.ViewBag.IsAdvanced = true;
+            view.ViewBag.Search = "";            
+            view.ViewBag.SearchPlace = null;
+            view.ViewBag.SearchIsMember = false;
+
+            view.ViewBag.SearchPhoneNumber = "";            
+            view.ViewBag.SearchDateStart = "";
+            view.ViewBag.SearchDateEnd = "";
+            view.ViewBag.SearchJob = "";
+
+
             return view;
         }
 
@@ -101,8 +115,7 @@ namespace KSS.Controllers
 
             var count = DBHelper.GetSearchResultCount(employeeName)/_pageSize;
 
-//            int count = employees.Count / _pageSize;
-            if ((employees.Count%_pageSize) != 0)
+            if ((count % _pageSize) != 0)
                 count++;
 
             view.ViewBag.StartIndex = startIndex;
@@ -115,21 +128,33 @@ namespace KSS.Controllers
         public ActionResult SearchEmployeesAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
             string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int startIndex = 0)
         {
-//            var employees = DBHelper.SearchAdvanced(divisionId, null, _pageSize, startIndex);
-            var employees = DBHelper.Search(employeeName, _pageSize, startIndex);
+            var employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
+                departmentId,
+                dateStart, dateEnd, job, employeeName, _pageSize, false, startIndex);
+
             ViewResult view = View("SearchEmployeeResult", employees);
 
-//            var count = DBHelper.GetSearchResultAdvancedCount(employeeName) / _pageSize;
-            var count = 5;
+            var count = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
+                departmentId,
+                dateStart, dateEnd, job, employeeName)/_pageSize;
 
-            //            int count = employees.Count / _pageSize;
-            if ((employees.Count%_pageSize) != 0)
+            if ((count % _pageSize) != 0)
                 count++;
 
             view.ViewBag.StartIndex = startIndex;
             view.ViewBag.PageCount = count;
             view.ViewBag.IsAdvanced = true;
-            view.ViewBag.Search = "";
+            view.ViewBag.Search = employeeName;
+            view.ViewBag.SearchDivision = divisionId;
+            view.ViewBag.SearchPlace = placeId;
+            view.ViewBag.SearchIsMember = isMemberOfHeadquarter;
+
+            view.ViewBag.SearchPhoneNumber = phoneNumber;
+            view.ViewBag.SearchDepartment = departmentId;
+            view.ViewBag.SearchDateStart = dateStart;
+            view.ViewBag.SearchDateEnd = dateEnd;
+            view.ViewBag.SearchJob = job;
+
             return view;
         }
 

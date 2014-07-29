@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -231,7 +232,7 @@ namespace KSS.Helpers
                 LogHelper.WriteLog(
                     "Ошибка при получении департамента, в котором работает указанный сотрудник. GetEmployeeDepartment.", ex);
             }
-            return new DepartmentState {Department = "Не удалось получить данные."};
+            return new DepartmentState {Department = "-"};
         }
 
         /// <summary>
@@ -256,7 +257,7 @@ namespace KSS.Helpers
                     select divS).FirstOrDefault();
                 if (dState != null)
                     return dState;
-                return new DivisionState {Division = "Не задано!"};
+                return new DivisionState {Division = "-"};
             }
             catch (Exception ex)
             {
@@ -303,7 +304,7 @@ namespace KSS.Helpers
             {
                 return (from employee in BaseModel.Employees
                     where employee.Id.Equals(employeeGuid)
-                    select employee).FirstOrDefault();
+                    select employee).FirstOrDefault(); 
             }
             catch (Exception ex)
             {
@@ -326,14 +327,14 @@ namespace KSS.Helpers
                     ).FirstOrDefault();
                 if (pState != null)
                     return pState;
-                return new PositionState {Title = "Не задано!"};
+                return new PositionState {Title = "-"};
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("Ошибка при получении профессии сотрудника. GetEmployeePositionState.", ex);
             }
 
-            return new PositionState {Title = "Не удалось получить данные!"};
+            return new PositionState {Title = "-"};
         }
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
@@ -371,7 +372,7 @@ namespace KSS.Helpers
                     from empPlace in employeePlase.DefaultIfEmpty()
                     where employee.Id == employeeGuid
                     select empPlace
-                    );
+                    );                
                 return eP.Where(i => i != null).ToList();
             }
             catch (Exception ex)
@@ -714,8 +715,16 @@ namespace KSS.Helpers
         {
             try
             {
+                if (string.IsNullOrEmpty(employeeName))
+                    employeeName = string.Empty;
+
                 List<Employee> employees = (from employee in BaseModel.Employees
-                    where employee.Name.Contains(employeeName)
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                    from m in employeeStaff.DefaultIfEmpty()
+                    where
+                        m.ExpirationDate == null && employee.Name.Contains(employeeName)
+
+                    orderby m.Position.Ranking
                     select employee
                     ).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
                 var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
@@ -811,7 +820,13 @@ namespace KSS.Helpers
         {
             try
             {
-                return BaseModel.Employees.Count(e => e.Name.Contains(employeeName));
+                return (from employee in BaseModel.Employees
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                    from m in employeeStaff.DefaultIfEmpty()
+                    where
+                        m.ExpirationDate == null && employee.Name.Contains(employeeName)
+                    select employee
+                    ).Count();
             }
             catch (Exception ex)
             {
@@ -820,87 +835,187 @@ namespace KSS.Helpers
             return 0;
         }
 
-        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, int startIndex = 0 )
+        public static IQueryable<Employee> QueryAdvancedSearch(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, bool ignoreIsMember)
         {
-            try
+            phoneNumber = string.IsNullOrEmpty(phoneNumber) ? string.Empty : phoneNumber;
+            job = string.IsNullOrEmpty(job) ? string.Empty : job;
+            employeeName = string.IsNullOrEmpty(employeeName) ? string.Empty : employeeName;
+
+
+            var query = BaseModel.Employees.Where(e => e.Name.Contains(employeeName));
+
+
+            DateTime startDate;
+            DateTime endDate;
+
+
+            bool hasStartDate = DateTime.TryParse(dateStart, out startDate);
+            bool hasEndDate = DateTime.TryParse(dateEnd, out endDate);
+
+
+
+            if (divisionId.HasValue)
             {
-                List<Employee> employees = new List<Employee>();
                 if (departmentId.HasValue)
                 {
-                    if (divisionId.HasValue)
+                    query = (from employee in query
+                             join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                             from m in employeeStaff.DefaultIfEmpty()
+                             join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals
+                                 departmentState.Id into
+                                 depState
+
+                             from ds in depState.DefaultIfEmpty()
+                             join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                 divState
+
+                             from divS in divState.DefaultIfEmpty()
+
+                             where divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
+                                 ds.ExpirationDate == null && ds.Id == departmentId
+
+                             select employee);
+
+                    Guid jobGuid;
+                    if (Guid.TryParse(job, out jobGuid))
                     {
-                        //сотрудники из подразделения в дивизионе
-                        employees = (from employee in BaseModel.Employees
-                                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-
-                                     from m in employeeStaff.DefaultIfEmpty()
-                                     join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                                         depState
-
-                                     from ds in depState.DefaultIfEmpty()
-                                     join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                                         divState
-
-                                     from divS in divState.DefaultIfEmpty()
-
-                                     where
-                                         divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
-                                         ds.ExpirationDate == null && ds.Id == departmentId
-
-                                     select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
-                    }
-                    else
-                    {
-                        //сотрудники из подраздления
-                        employees = (from employee in BaseModel.Employees
-                                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-
-                                     from m in employeeStaff.DefaultIfEmpty()
-                                     join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                                         depState
-
-                                     from ds in depState.DefaultIfEmpty()
-                                     join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                                         divState
-
-                                     from divS in divState.DefaultIfEmpty()
-
-                                     where
-                                          divS.ExpirationDate == null && m.ExpirationDate == null &&
-                                         ds.ExpirationDate == null && ds.Id == departmentId
-
-                                     select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
-                    }
-
-
-
-                }
-
-                if (divisionId.HasValue)
-                {
-                    //сотрудники из дивизиона (корневые департаменты)
-                    employees = (from employee in BaseModel.Employees
+                        query = (from employee in query
                                  join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
                                  from m in employeeStaff.DefaultIfEmpty()
-                                 join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                                     depState
-
-                                 from ds in depState.DefaultIfEmpty()
-                                 join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                                     divState
-
-                                 from divS in divState.DefaultIfEmpty()
 
                                  where
-                                     divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
-                                     ds.ExpirationDate == null && ds.ParentId == null
+                                     m.ExpirationDate == null &&
+                                     m.Position.PositionStates.Any(
+                                         pos => pos.ExpirationDate == null && pos.Id == jobGuid)
 
-                                 select employee).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
+                                 select employee);
+                    }
                 }
+                else
+                {
+                    //сотрудники из дивизиона (корневые департаменты)
+                    query = (from employee in query
+                             join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                             from m in employeeStaff.DefaultIfEmpty()
+                             join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals
+                                 departmentState.Id into
+                                 depState
+
+                             from ds in depState.DefaultIfEmpty()
+                             join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                 divState
+
+                             from divS in divState.DefaultIfEmpty()
+
+                             where
+                                 divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null &&
+                                 ds.ExpirationDate == null
+
+                             select employee);
+                }
+            }
 
 
+            if (placeId.HasValue)
+            {
+                //c местом и номером телефона
+                query = (from employee in query
+                    join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
+                        employeePlace.EmployeeId into ep
+                    from empPlace in ep.DefaultIfEmpty()
+                    where
+                        empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value &&
+                        empPlace.PhoneNumber.Contains(phoneNumber)
+                    select employee);
+            }
+            else
+            {
+                //номер телефона
+                query = (from employee in query
+                         join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
+                             employeePlace.EmployeeId into ep
+                         from empPlace in ep.DefaultIfEmpty()
+                         where empPlace.PhoneNumber.Contains(phoneNumber)
+                         select employee);
+            }
+
+            if (!ignoreIsMember)
+                query =
+                    query.Where(
+                        e =>
+                            e.IsMemberOfHeadquarter == null
+                                ? !isMemberOfHeadquarter
+                                : e.IsMemberOfHeadquarter.Value == isMemberOfHeadquarter);
+
+
+            if (!hasStartDate)
+            {
+                //без начальной даты рождения
+
+                if (hasEndDate)
+                {
+                    //с конечной датой рождения
+                    query =
+                        query.Where(
+                            e =>
+                                e.BirthDay.HasValue && e.BirthDay.Value.Day <= endDate.Day &&
+                                e.BirthDay.Value.Month <= endDate.Month);
+                }
+            }
+            else
+            {
+                if (!hasEndDate)
+                {
+                    //c начальной датой рождения
+                    //без конечной даты рождения
+                    query =
+                        query.Where(
+                            e =>
+                                e.BirthDay.HasValue && e.BirthDay.Value.Day >= startDate.Day &&
+                                e.BirthDay.Value.Month >= startDate.Month);
+
+                }
+                else
+                {
+                    query =
+                        query.Where(
+                            e =>
+                                e.BirthDay.HasValue && e.BirthDay.Value.Day >= startDate.Day &&
+                                e.BirthDay.Value.Month >= startDate.Month &&
+                                e.BirthDay.Value.Day <= endDate.Day &&
+                                e.BirthDay.Value.Month <= endDate.Month);
+                    //с датами
+                }
+            }
+
+            return query;
+        }
+
+        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, bool ignoreIsMember,int startIndex = 0 )
+        {
+            try
+            {
+                var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
+                    dateStart, dateEnd, job, employeeName, ignoreIsMember);
+
+                query = (from employee in query
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                    from m in employeeStaff.DefaultIfEmpty()
+
+                    where
+                        m.ExpirationDate == null
+
+                    orderby m.Position.Ranking
+                    select employee).Skip(pageSize*startIndex)
+                    .Take(pageSize);
+
+                List<Employee> employees = query.ToList();
                 var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
                 return t;
             }
@@ -912,25 +1027,15 @@ namespace KSS.Helpers
             return new List<EmployeeModel>();
         }
 
-        public int GetAdvancedSearchResultCount(Guid divisionId)
+
+        public static int GetAdvancedSearchResultCount(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName)
         {
             try
             {
-                return (from employee in BaseModel.Employees
-                        join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-
-                        from m in employeeStaff.DefaultIfEmpty()
-                        join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                            depState
-
-                        from ds in depState.DefaultIfEmpty()
-                        join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into divState
-
-                        from divS in divState.DefaultIfEmpty()
-
-                        where divS.Id == divisionId && divS.ExpirationDate == null && m.ExpirationDate == null
-                        //                                             where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
-                        select employee).Count();
+                var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
+                    dateStart, dateEnd, job, employeeName, false);
+                return query.Count();
             }
             catch (Exception ex)
             {
@@ -1177,23 +1282,21 @@ namespace KSS.Helpers
         {
             try
             {
-                var image = BaseModel.Employees.First(t => t.Id == id).PhotoFile;
-                if (!string.IsNullOrEmpty(image))
+                byte[] data = BaseModel.Employees.First(t => t.Id == id).Photo;
+                if (data == null)
                 {
-                    return image;
-                }
-                var bmp = Resources.dafaultpic;
+                    var bmp = Resources.dafaultpic;
 
-                byte[] data;
-                using (var stream  = new MemoryStream())
-                {
-                    bmp.Save(stream, ImageFormat.Bmp);
-                    data = new byte[stream.Length];
-                    stream.Read(data, 0, data.Length);
-                }
 
-                var f = Convert.ToBase64String(data);
-                return f;
+                    using (var stream = new MemoryStream())
+                    {
+                        bmp.Save(stream, ImageFormat.Bmp);
+
+                        data = stream.ToArray();
+                    }
+                }
+                
+                return Convert.ToBase64String(data);
             }
             catch (Exception ex)
             {

@@ -31,7 +31,10 @@
     
     <div class="personIMGLayout">
         
-        <img class="personIMG" src="data:image;base64, @Model.GetImage()" />
+        <div class="personIMG" style="max-height: 110px; overflow: hidden; text-align: left">
+            <img src="data:image;base64, @Model.GetImage()"/>    
+        </div>
+        
 @*        <img class="personIMG" src="http://cp14.nevsepic.com.ua/184/18370/1385021122-haunted__by_senju_hime-d3dj1ah.jpg" /> *@
         @if (ViewBag.IsAdmin)
         {
