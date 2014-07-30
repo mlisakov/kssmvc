@@ -240,6 +240,7 @@
                 @if (ViewBag.IsAdmin)
                 {
                     <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.EmployeePlaces[i].Id">редактировать</p>
+                    <p id="deletePhoneLink_@i" class="personCardEdit personCardDeletePhoneLink" data-url="@Url.Action("DeletePhone", "Employee", new { employee = Model.Employee.Id, employPlaceId = Model.EmployeePlaces[i].Id })">удалить</p>
                 }
                 else
                 {
@@ -298,7 +299,7 @@
 
     $(document).ready(function() {
 
-        $('.personCardAddToFavoriteLink').on('click', function (e) {
+        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink').on('click', function (e) {
             var currentPageItem = $(this);
             var url = currentPageItem.data('url');
             

@@ -1239,25 +1239,27 @@ namespace KSS.Helpers
                 {
                     //create
 
-                    var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+                    var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
 
-                    if (placeWithLocation != null && phoneType.HasValue)
+                    if (phoneType.HasValue)
                     {
                         var entity = new EmployeePlace
                         {
                             EmployeeId = employee,
-                            LocationId = placeWithLocation.LocationId,
                             PhoneTypeId = phoneType.Value,
                             PhoneNumber = phone,
-                            Office = placeWithLocation.Office,
                             Id = Guid.NewGuid()
                         };
+
+                        if (placeWithLocation != null)
+                        {
+                            entity.LocationId = placeWithLocation.LocationId;
+                            entity.Office = placeWithLocation.Office;
+                        }
 
                         BaseModel.AddToEmployeePlaces(entity);
                         BaseModel.SaveChanges();
                     }
-
-                    
                 }
             }
             catch (Exception ex)
@@ -1330,6 +1332,23 @@ namespace KSS.Helpers
             }
 
             return false;
+        }
+
+        public static void DeletePhone(Guid employPlaceId)
+        {
+            try
+            {
+                var place = BaseModel.EmployeePlaces.FirstOrDefault(t => t.Id == employPlaceId);
+                if (place != null)
+                {
+                    BaseModel.DeleteObject(place);
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. DeletePhone.", ex);
+            }
         }
     }
 }

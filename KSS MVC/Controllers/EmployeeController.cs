@@ -82,6 +82,13 @@ namespace KSS.Controllers
             return Index(employee);
         }
 
+        public ActionResult DeletePhone(Guid employee, Guid employPlaceId)
+        {
+            DBHelper.DeletePhone(employPlaceId);
+
+            return Index(employee);
+        }
+
         public string SavePhoto(Guid employee, string image)
         {
             var result = DBHelper.UpdateEmployeePhoto(employee, image);
