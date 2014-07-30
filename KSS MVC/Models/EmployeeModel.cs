@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Web;
 using System.Web.UI.WebControls;
 using KSS.Helpers;
 using KSS.Server.Entities;
@@ -47,6 +49,10 @@ namespace KSS.Models
         public EmployeePlace Place { get; private set; }
 
         public bool IsFavorite { get; private set; }
+
+        [Required, FileExtensions(Extensions = "png",
+             ErrorMessage = "Specify a CSV file. (Comma-separated values)")]
+        public HttpPostedFileBase File { get; set; }
 
         public EmployeeModel(Guid employeeGuid, Guid currentUser)
         {

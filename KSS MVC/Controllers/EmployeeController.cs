@@ -81,5 +81,16 @@ namespace KSS.Controllers
 
             return Index(employee);
         }
+
+        public string SavePhoto(Guid employee, string image)
+        {
+            var result = DBHelper.UpdateEmployeePhoto(employee, image);
+
+            if (!result)
+            {
+                return "При сохранении новой фотографии произошла ошибка. Попробуйте позднее или обратитесь к администратору.";
+            }
+            return string.Empty;
+        }
     }
 }

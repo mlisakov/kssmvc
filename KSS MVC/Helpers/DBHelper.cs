@@ -1307,5 +1307,29 @@ namespace KSS.Helpers
 
             return null;
         }
+
+        public static bool UpdateEmployeePhoto(Guid employee, string image)
+        {
+            try
+            {
+                var user = BaseModel.Employees.FirstOrDefault(t => t.Id == employee);
+                if (user != null && !string.IsNullOrEmpty(image))
+                {
+                    image = image.Substring(image.IndexOf(',') + 1);
+                    byte[] imageBytes = Convert.FromBase64String(image);
+                    user.Photo = imageBytes;
+
+                    BaseModel.SaveChanges();
+
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateEmployeePhoto.", ex);
+            }
+
+            return false;
+        }
     }
 }

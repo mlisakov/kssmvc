@@ -29,46 +29,47 @@
 
 <div class="personCardLayout">
     
-    <div class="personIMGLayout">
-        
-        <div class="personIMG" style="max-height: 110px; overflow: hidden; text-align: left">
-            <img src="data:image;base64, @Model.GetImage()"/>    
+    <div>
+        <div style="float:left">
+
+            @*        <div class="personIMG" style="max-height: 110px; overflow: hidden; text-align: left">*@
+            <img class="personIMG" src="data:image;base64, @Model.GetImage()" />
+            @*        </div>*@
+
+            @if (ViewBag.IsAdmin)
+        {
+                <p id="loadImageLink" class="personCardEdit personCardLoadImage">загрузить фото</p>
+        }
         </div>
-        
-        @if (ViewBag.IsAdmin)
+
+
+        <div class="aroundPhotoPersonContainer">
+            <h5 class="personCardName">
+                @Model.Employee.Name
+            </h5>
+
+            @if (Model.Employee.BirthDay.HasValue)
         {
-            <p id="loadImageLink" class="personCardEdit personCardLoadImage" >загрузить фото</p>
+                <p class="personCardBirthDay">День Рождения: @Model.Employee.BirthDay.Value.Day @months[@Model.Employee.BirthDay.Value.Month]</p>
         }
-    </div>
-    
-    
-    <div class="aroundPhotoPersonContainer">
-        <h5 class="personCardName">
-            @Model.Employee.Name
-        </h5>
-        
-        @if (Model.Employee.BirthDay.HasValue)
-        {
-            <p class="personCardBirthDay">День Рождения: @Model.Employee.BirthDay.Value.Day @months[@Model.Employee.BirthDay.Value.Month]</p>
-        }
-            
-        <a class="personCardEmail" href="mailto:@Model.Employee.EMail">@Model.Employee.EMail</a>
-     
-        <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>
-            @if (Model.IsFavorite)
+
+            <a class="personCardEmail" href="mailto:@Model.Employee.EMail">@Model.Employee.EMail</a>
+
+            <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>
+                @if (Model.IsFavorite)
             {
-                <img src="~/Images/selectedStar.png" />
-                <p>в избранном</p>
+                    <img src="~/Images/selectedStar.png" />
+                    <p>в избранном</p>
             }
             else
             {
-                <img src="~/Images/star.png" />
-                <p>добавить в избранное</p>
+                    <img src="~/Images/star.png" />
+                    <p>добавить в избранное</p>
             }
-        </a>
+            </a>
+        </div>
+
     </div>
-    
-    
     <br/>
     
     <div class="personCardJobContainer">
@@ -289,8 +290,7 @@
         </div>
     }
 
-    
-    <input type="file" id="upload" name="upload" style="visibility: collapse; width: 1px; height: 1px" />
+    <input type="file" id="upload" name="image" style="visibility: collapse; width: 1px; height: 1px" />
 </div>
 
 
@@ -362,7 +362,55 @@
         });
 
         $('#loadImageLink').on('click', function(e) {
+            hideAllDialogs();
             $('#upload').click();
+        });
+
+        function readImage(input) {
+            if (input.files && input.files[0]) {
+                var FR = new FileReader();
+                FR.onload = function (e) {                    
+                    $('.personIMG').attr("src", e.target.result);
+
+                    var url = '@Url.Action("SavePhoto", "Employee")';
+                    var user = $('#memberOfHeadquarter').val();
+
+                    savePhoto(url, user, e.target.result);
+                };
+                FR.readAsDataURL(input.files[0]);
+            }
+        }
+
+        //сохранение места
+        function savePhoto(url, user, image) {
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.post(url, { employee: user, image: image },
+                function (data) {
+                    if (parent != null) {
+                        parent.find('.centralPartWithProgressBar').remove();
+                    }
+
+                    if (data != "")
+                        alert(data);
+                });
+        }
+
+        $('#upload').change(function() {
+            var file = this.files[0];
+            var name = file.name;
+            var size = file.size;
+            var type = file.type;
+
+
+            if (type.toString().indexOf("image") == -1)
+                alert('Неверный формат фотографии. Выберите другой файл.')
+            else {
+                readImage(this);
+            }
         });
 
         function hideAllDialogs() {
