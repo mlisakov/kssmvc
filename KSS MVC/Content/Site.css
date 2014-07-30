@@ -1109,6 +1109,14 @@ div.rightItem p {
 	cursor: pointer;	
 }
 
+.personCardAddToFavoriteLinkInline {
+	display: inline-block;
+	width: auto;
+}
+.personCardAddToFavoriteLinkInline img {	
+	margin-top: -15px;
+}
+
 .personCardJobTitle {	
 	font-weight: bold;
 	margin: 0;

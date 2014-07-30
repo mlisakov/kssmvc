@@ -48,8 +48,8 @@ namespace KSS.Models
 
         public bool IsFavorite { get; private set; }
 
-        public EmployeeModel(Guid employeeGuid)
-        {            
+        public EmployeeModel(Guid employeeGuid, Guid currentUser)
+        {
             Employee = DBHelper.GetEmployee(employeeGuid);
             DepartmentState = DBHelper.GetEmployeeDepartment(employeeGuid);
             DivisionState = DBHelper.GetEmployeeDivision(employeeGuid);
@@ -62,15 +62,10 @@ namespace KSS.Models
                 Place = EmployeePlaces.First(t => t.Location != null);
                 Location = Place.Location;
             }
-        }
 
-        public EmployeeModel(Guid employeeGuid, Guid currentUser)
-            : this(employeeGuid)
-        {
             IsFavorite = DBHelper.CheckIsFavorite(currentUser, employeeGuid);
             _currentUser = currentUser;
         }
-
 
         public EmployeeModel(Guid employeeGuid, bool loadDepartmentInfo,
             bool loadDivision,
@@ -107,18 +102,22 @@ namespace KSS.Models
             return DBHelper.GetEmployeePhoto(Employee.Id);
         }
 
-        public void ChangeFavoriteStatus()
+        /// <summary>
+        /// Добавление/удаление избранного. 
+        /// </summary>
+        /// <returns>Статус человека. True - если он в избранном, false - нет.</returns>
+        public bool ChangeFavoriteStatus()
         {
             if (_currentUser != Guid.Empty)
             {
-                bool result = false;
-                result = IsFavorite
+                bool result = IsFavorite
                     ? DBHelper.RemoveFromFavorites(_currentUser, Employee.Id)
                     : DBHelper.AddToFavorites(_currentUser, Employee.Id);
 
                 if (result)
                     IsFavorite = !IsFavorite;
             }
+            return IsFavorite;
         }
 
         public bool LoadLocation()

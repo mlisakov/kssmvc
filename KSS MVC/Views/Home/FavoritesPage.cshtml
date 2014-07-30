@@ -19,17 +19,22 @@
             <h5 class="personName">
                 <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>
             </h5>
+            <a class="personCardAddToFavoriteLinkInline personCardAddToFavoriteLink " data-url='@Url.Action("ChangeFavoriteStatusInline", "Employee", new { id = employee.Employee.Id })'>
+                @if (employee.IsFavorite)
+                {
+                    <img src="~/Images/selectedStar.png" />
+                }
+                else
+                {
+                    <img src="~/Images/star.png" />
+                }
+            </a>
 
             <p class="personDepartment"> @employee.DepartmentState.Department</p>
             <p class="personJob">@employee.PositionState.Title</p>
             <div class="phonesLine">
                 @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
                 {
-                    if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber))
-                    {
-                        continue;
-                    }                    
-                    
                     if (i == 0)
                     {
                         <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
@@ -38,6 +43,14 @@
                     {
                         <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
                     }
+                }
+                @if (employee.EmployeePlaces.Count == 0)
+                {
+                    <p class="personMail" style="margin-left:0">@employee.Employee.EMail</p>
+                }
+                else
+                {
+                    <p class="personMail">@employee.Employee.EMail</p>
                 }
             </div>
 @*            <div class="phonesLine">*@
@@ -167,7 +180,25 @@
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        $('.personCardAddToFavoriteLinkInline').on('click', function (e) {
+            var currentPageItem = $(this);
+            var url = currentPageItem.data('url');
+
+            $.ajax({
+                url: url,
+                cache: false
+            })
+                .done(function (data) {
+                    var img = currentPageItem.find('img');
+                    if (data == 'True') {
+                        img.attr('src', "/Images/selectedStar.png");
+                    } else {
+                        img.attr('src', "/Images/star.png");
+                    }
+                });
+        });
 
 //        $('#editListBtn').on('click', function(e) {
 //            var target = $('#editListBtn');

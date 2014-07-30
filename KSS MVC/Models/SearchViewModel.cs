@@ -83,6 +83,8 @@ namespace KSS.Models
 
         public List<EmployeeModel> GetEmployers()
         {
+            var guid = new Guid(_session["CurrentUser"].ToString());
+
             var divisionId = DivisionID;
             var departmentID = DepartmentID;
 
@@ -93,7 +95,7 @@ namespace KSS.Models
                 _pageCount++;
 
             return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
-                string.Empty, string.Empty, string.Empty, 5, true);
+                string.Empty, string.Empty, string.Empty, 5, true, guid);
         }
     }
 }

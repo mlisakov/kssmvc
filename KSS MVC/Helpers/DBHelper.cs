@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Cache;
 using System.Text;
 using KSS.Models;
 using KSS.Properties;
@@ -410,11 +411,11 @@ namespace KSS.Helpers
         /// <summary>
         /// Получение списка избранных для юзера, начиная с startIndex и количеством pageSize
         /// </summary>
-        /// <param name="employeeGuid"></param>
+        /// <param name="currentUser"></param>
         /// <param name="pageSize"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public static List<EmployeeModel> GetFavorites(Guid employeeGuid, int pageSize, int startIndex)
+        public static List<EmployeeModel> GetFavorites(Guid currentUser, int pageSize, int startIndex)
         {
             try
             {
@@ -422,11 +423,11 @@ namespace KSS.Helpers
                     (from fe in BaseModel.Favorites
                         join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
                         from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid
+                        where fe.EmployeeId == currentUser
                         orderby e.Position
                         select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
 
-                return favorites.Select(i => new EmployeeModel(i)).ToList();
+                return favorites.Select(i => new EmployeeModel(i, currentUser)).ToList();
             }
             catch (Exception ex)
             {
@@ -711,7 +712,7 @@ namespace KSS.Helpers
             return false;
         }
 
-        public static List<EmployeeModel> Search(string employeeName, int pageSize, int startIndex)
+        public static List<EmployeeModel> Search(Guid currentUser, string employeeName, int pageSize, int startIndex)
         {
             try
             {
@@ -727,7 +728,7 @@ namespace KSS.Helpers
                     orderby m.Position.Ranking
                     select employee
                     ).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
-                var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
+                var t = employees.Select(i => new EmployeeModel(i.Id, currentUser)).ToList();
                 return t;
             }
             catch (Exception ex)
@@ -992,18 +993,20 @@ namespace KSS.Helpers
                 }
             }
 
+        
+
             return query;
-        }
+        }        
 
         public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, bool ignoreIsMember,int startIndex = 0 )
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, bool ignoreIsMember, Guid currentUser,int startIndex = 0 )
         {
             try
             {
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName, ignoreIsMember);
 
-                query = (from employee in query
+                List<Employee> employees = (from employee in query
                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
                     from m in employeeStaff.DefaultIfEmpty()
@@ -1012,11 +1015,10 @@ namespace KSS.Helpers
                         m.ExpirationDate == null
 
                     orderby m.Position.Ranking
-                    select employee).Skip(pageSize*startIndex)
-                    .Take(pageSize);
+                    select employee).DistinctBy(i => i.Id).Skip(pageSize*startIndex)
+                    .Take(pageSize).ToList();
 
-                List<Employee> employees = query.ToList();
-                var t = employees.Select(i => new EmployeeModel(i.Id)).ToList();
+                var t = employees.Select(i => new EmployeeModel(i.Id, currentUser)).ToList();
                 return t;
             }
             catch (Exception ex)
@@ -1035,7 +1037,7 @@ namespace KSS.Helpers
             {
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName, false);
-                return query.Count();
+                return query.DistinctBy(t => t.Id).Count();                
             }
             catch (Exception ex)
             {

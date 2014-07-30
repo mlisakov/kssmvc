@@ -145,6 +145,7 @@
     </Compile>
     <Compile Include="Controllers\TreeController.cs" />
     <Compile Include="Helpers\DBHelper.cs" />
+    <Compile Include="Helpers\IdComparer.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\EmployeeModel.cs" />

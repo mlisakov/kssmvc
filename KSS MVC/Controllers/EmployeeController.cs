@@ -35,6 +35,16 @@ namespace KSS.Controllers
             return view;
         }
 
+        public bool ChangeFavoriteStatusInline(Guid id)
+        {
+            var currentUser = new Guid(Session["CurrentUser"].ToString());
+
+            var employeeViewModel = new EmployeeModel(id, currentUser);
+            var result = employeeViewModel.ChangeFavoriteStatus();
+
+            return result;
+        }
+
         [HttpGet]
         public string GetCities(string country, string region)
         {
