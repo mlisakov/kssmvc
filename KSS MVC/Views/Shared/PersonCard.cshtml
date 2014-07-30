@@ -28,8 +28,10 @@
 <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
 
 <div class="personCardLayout">
-    
-    <div>
+    <p class="paginationArrow" style="">←</p>
+    <a class="paginationNavigationLink backLink" style="" data-url="@ViewBag.BackLink">Назад</a>
+
+    <div style="margin-top: 10px">
         <div style="float:left">
 
             @*        <div class="personIMG" style="max-height: 110px; overflow: hidden; text-align: left">*@
@@ -299,10 +301,13 @@
 
     $(document).ready(function() {
 
-        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink').on('click', function (e) {
+        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink, .backLink').on('click', function (e) {
             var currentPageItem = $(this);
             var url = currentPageItem.data('url');
-            
+            alert(url);
+
+            if (url.indexOf('Favorites') != -1)
+                ChangeSelectedPageWithoutLoading(1);
             loadSearchPage(url);
         });
 

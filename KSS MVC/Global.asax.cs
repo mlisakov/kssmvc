@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Web;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -48,6 +49,7 @@ namespace KSS
                         Session["CurrentUserDepartment"] = userDepartment;
                         Session["CurrentUserDivision"] = userDivision;
                         Session["IsAdministrator"] = userInfo.Item3;
+                        Session["BackLink"] = "";
                     }
                     else
                     {
@@ -57,6 +59,7 @@ namespace KSS
                         Session["CurrentUserDivision"] = Guid.Empty;
                         Session["UserName"] += "Пустой департамент:";
                         Session["IsAdministrator"] = false;
+                        Session["BackLink"] = "";
                     }
                 }
                 else
@@ -67,6 +70,7 @@ namespace KSS
                     Session["CurrentUserDivision"] = Guid.Empty;
                     Session["UserName"] = "Неавторизованный пользователь:" + Context.User.Identity.Name;
                     Session["IsAdministrator"] = false;
+                    Session["BackLink"] = "";
                 }
 #else
 
@@ -78,6 +82,7 @@ namespace KSS
                 DBHelper.GetEmployeeDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
             Session["UserName"] = "Неопознанный пользователь";
             Session["IsAdministrator"] = true;
+            Session["BackLink"] = "";
 #endif
         }
     }

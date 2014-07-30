@@ -37,14 +37,18 @@ namespace KSS.Models
             }
         }
 
+        public string DepartmentName { get; set; }
+
         public SearchViewModel(HttpSessionStateBase session, Guid? id = null)
         {
             _session = session;
             if (id.HasValue)
                 _id = id.Value;
+
+            DepartmentName = GetDepartmentName();
         }
 
-        public string GetDepartmentName()
+        private string GetDepartmentName()
         {
             var result = "Без наименования";
 

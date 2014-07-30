@@ -17,6 +17,7 @@ namespace KSS.Controllers
 
             var view = View("PersonCard", employeeViewModel);
             view.ViewBag.IsAdmin = isAdmin;
+            view.ViewBag.BackLink = Session["BackLink"];
             return view;
         }
 
@@ -27,12 +28,7 @@ namespace KSS.Controllers
             var employeeViewModel = new EmployeeModel(id, currentUser);
             employeeViewModel.ChangeFavoriteStatus();
 
-            var view = View("PersonCard", employeeViewModel);
-            
-            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);
-            view.ViewBag.IsAdmin = isAdmin;
-
-            return view;
+            return Index(id);
         }
 
         public bool ChangeFavoriteStatusInline(Guid id)
@@ -60,14 +56,12 @@ namespace KSS.Controllers
             return sb.ToString();
         }
 
-
         public ActionResult SaveLocation(Guid employee, Guid city, string street, string edifice, string office)
         {
             DBHelper.UpdateEmployeePlaces(employee, city, street, edifice, office);
 
             return Index(employee);
         }
-
 
         [HttpPost]
         public void ChangeMemberOfHeadquarter(Guid employee, bool isMember)

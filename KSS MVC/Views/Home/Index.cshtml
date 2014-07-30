@@ -120,6 +120,21 @@
         });
     });
 
+    function ChangeSelectedPageWithoutLoading(page) {
+
+        var clickedItem = $('#mainMenuItem' + page);
+        if (!clickedItem.hasClass('selectedPage')) {
+
+            $('.selectedPage').removeClass('selectedPage');
+
+            clickedItem.addClass('selectedPage');
+
+            $('#centralPart').empty();
+
+            ClearTreeSelection();
+        }
+    }
+
     function ChangeSelectedPage(page) {
 
         var clickedItem = $('#mainMenuItem' + page);

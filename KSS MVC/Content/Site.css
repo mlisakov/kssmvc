@@ -1046,7 +1046,7 @@ div.rightItem p {
 /*person card start*/
 
 .personCardLayout {
-	margin: 30px;
+	margin: 20px 30px 30px 30px;
 	-moz-min-width: 500px;
 	-ms-min-width: 500px;
 	-o-min-width: 500px;

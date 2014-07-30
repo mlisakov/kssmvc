@@ -23,17 +23,6 @@ namespace KSS.Controllers
             return View(homeViewModel);
         }
 
-//        public async Task<ActionResult> Index()
-//        {
-//            HomeViewModel homeViewModel = new HomeViewModel(Session);
-//
-//            var items = await Task.Run(() => homeViewModel.GetBirthdayPeople());
-//            homeViewModel.Birthdays = items;
-//
-//            return View(homeViewModel);
-//        }
-
-
         public ActionResult SearchView(Guid id)
         {
             SearchViewModel model = new SearchViewModel(Session,id);
@@ -52,6 +41,7 @@ namespace KSS.Controllers
             view.ViewBag.SearchJob = "";
 
 
+            Session["BackLink"] = Url.Action("SearchView", "Home", new { id = id });
             return view;
         }
 
@@ -78,6 +68,10 @@ namespace KSS.Controllers
             ViewResult view = View("FavoritesPage", employees);
             view.ViewBag.StartIndex = startIndex;
             view.ViewBag.PageCount = pagesCount;
+
+
+            Session["BackLink"] = Url.Action("Favorites", "Home", new {startIndex = startIndex});
+            
             return view;
         }
 
@@ -107,7 +101,6 @@ namespace KSS.Controllers
             return view;
         }
 
-
         public ActionResult SearchEmployees(string employeeName, int startIndex = 0)
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
@@ -124,6 +117,9 @@ namespace KSS.Controllers
             view.ViewBag.PageCount = count;
             view.ViewBag.IsAdvanced = false;
             view.ViewBag.Search = employeeName;
+
+            Session["BackLink"] = Url.Action("SearchEmployees", "Home",
+                new {employeeName = employeeName, startIndex = startIndex});
             return view;
         }
 
@@ -159,6 +155,21 @@ namespace KSS.Controllers
             view.ViewBag.SearchDateEnd = dateEnd;
             view.ViewBag.SearchJob = job;
 
+
+            Session["BackLink"] = Url.Action("SearchEmployeesAdvanced", "Home",
+                new
+                {
+                    divisionId = divisionId,
+                    placeId = placeId,
+                    isMemberOfHeadquarter = isMemberOfHeadquarter,
+                    phoneNumber = phoneNumber,
+                    departmentId = departmentId,
+                    dateStart = dateStart,
+                    dateEnd = dateEnd,
+                    job = job,
+                    employeeName = employeeName,
+                    startIndex = startIndex,
+                });
             return view;
         }
 
