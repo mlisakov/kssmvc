@@ -869,9 +869,13 @@ div.rightItem p {
 
 .lyncStatusDiv {
 	width: 10px;
-	height: 100%;
-	background: #5dd255;
+	height: 100%;	
 	position: absolute;
+}
+
+.lyncStatusDiv img{
+	width: inherit;
+	height: inherit;
 }
 
 .personIMGLayout {

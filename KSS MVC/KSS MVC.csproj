@@ -231,6 +231,12 @@
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\dafaultpic.jpg" />
     <Content Include="Images\logoMRSK.png" />
+    <Content Include="Images\LyncStatuses\away.png" />
+    <Content Include="Images\LyncStatuses\busy.png" />
+    <Content Include="Images\LyncStatuses\donotdisturb.png" />
+    <Content Include="Images\LyncStatuses\empty.png" />
+    <Content Include="Images\LyncStatuses\offline.png" />
+    <Content Include="Images\LyncStatuses\online.png" />
     <Content Include="Images\star.png" />
     <Content Include="Images\selectedStar.png" />
     <Content Include="Images\headpx.png" />
@@ -258,6 +264,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
+    <Content Include="Scripts\lyncScripts.js" />
     <Content Include="Scripts\local.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\_references.js" />

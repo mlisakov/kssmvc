@@ -14,7 +14,11 @@
     @foreach (EmployeeModel employee in Model)
     {
         <li>
-            <div class="lyncStatusDiv"></div>
+            <div class="lyncStatusDiv">
+                <img src="~/Images/LyncStatuses/empty.png" data-email="@employee.Employee.EMail" onload="lyncImageLoaded(this);"
+                     onclick="lyncImageClicked(this);"
+                     onmouseout="lyncImageMouseOut();" />
+            </div>
             <div class="personIMGLayout">
                 <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
             </div>
