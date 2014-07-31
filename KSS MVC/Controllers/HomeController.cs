@@ -109,13 +109,14 @@ namespace KSS.Controllers
             var employees = DBHelper.Search(guid, employeeName, _pageSize, startIndex);
             ViewResult view = View("SearchEmployeeResult", employees);
 
-            var count = DBHelper.GetSearchResultCount(employeeName)/_pageSize;
+            var itemsCount = DBHelper.GetSearchResultCount(employeeName);
+            var pagesCount = itemsCount / _pageSize;
 
-            if ((count % _pageSize) != 0)
-                count++;
+            if ((itemsCount % _pageSize) != 0)
+                pagesCount++;
 
             view.ViewBag.StartIndex = startIndex;
-            view.ViewBag.PageCount = count;
+            view.ViewBag.PageCount = pagesCount;
             view.ViewBag.IsAdvanced = false;
             view.ViewBag.Search = employeeName;
 
@@ -135,15 +136,16 @@ namespace KSS.Controllers
 
             ViewResult view = View("SearchEmployeeResult", employees);
 
-            var count = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
+            var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
-                dateStart, dateEnd, job, employeeName)/_pageSize;
+                dateStart, dateEnd, job, employeeName);
+            var pagesCount = itemsCount/_pageSize;
 
-            if ((count % _pageSize) != 0)
-                count++;
+            if ((itemsCount % _pageSize) != 0)
+                pagesCount++;
 
             view.ViewBag.StartIndex = startIndex;
-            view.ViewBag.PageCount = count;
+            view.ViewBag.PageCount = pagesCount;
             view.ViewBag.IsAdvanced = true;
             view.ViewBag.Search = employeeName;
             view.ViewBag.SearchDivision = divisionId;

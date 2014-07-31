@@ -97,10 +97,12 @@ namespace KSS.Models
                 var divisionId = DivisionID;
                 var departmentID = DepartmentID;
 
-                _pageCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
-                    departmentID, string.Empty, string.Empty, string.Empty, string.Empty) / 5;
+                var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
+                    departmentID, string.Empty, string.Empty, string.Empty, string.Empty);
 
-                if ((_pageCount % 5) != 0)
+                _pageCount = itemsCount / 5;
+
+                if ((itemsCount % 5) != 0)
                     _pageCount++;
 
                 return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
