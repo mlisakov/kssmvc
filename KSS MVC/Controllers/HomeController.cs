@@ -25,7 +25,7 @@ namespace KSS.Controllers
 
         public ActionResult SearchView(Guid id)
         {
-            SearchViewModel model = new SearchViewModel(Session,id);
+            SearchViewModel model = id == Guid.Empty ? new SearchViewModel(Session) : new SearchViewModel(Session, id);
 
             ViewResult view= View(model);
 
@@ -98,6 +98,7 @@ namespace KSS.Controllers
         public ActionResult Help()
         {
             ViewResult view = View("Help");
+            Session["BackLink"] = Url.Action("Help", "Home");
             return view;
         }
 
@@ -192,7 +193,6 @@ namespace KSS.Controllers
         {
             return Json(new SelectList(DBHelper.GetPositionStatesByDepartment(departmentId), "Id", "Title"),
                 JsonRequestBehavior.AllowGet);
-        }
-        
+        }               
     }
 }

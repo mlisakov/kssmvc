@@ -29,8 +29,9 @@
                     <img src="~/Images/star.png" />
                 }
             </a>
-
-            <p class="personDepartment"> @employee.DepartmentState.Department</p>
+            
+            
+            <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
             <p class="personJob">@employee.PositionState.Title</p>
             <div class="phonesLine">
                 @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
@@ -227,12 +228,12 @@
 //            }
 //        });
 
-        $('.pageNmbr, .paginationNavigationLink, .emploeeLink').on('click', function (e) {
+        $('.pageNmbr, .paginationNavigationLink, .emploeeLink, .personDepartment').on('click', function (e) {
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
             $('.progress').show();
 
-            if (currentPageItem.hasClass('emploeeLink')) {
+            if (currentPageItem.hasClass('emploeeLink') || currentPageItem.hasClass('personDepartment')) {
                 ChangeSelectedPage(0);
             }
 

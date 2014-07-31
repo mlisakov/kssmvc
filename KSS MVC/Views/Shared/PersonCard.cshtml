@@ -301,13 +301,40 @@
 
     $(document).ready(function() {
 
-        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink, .backLink').on('click', function (e) {
+        $('.backLink').on('click', function(e)
+        {
             var currentPageItem = $(this);
             var url = currentPageItem.data('url');
-            alert(url);
+
+            if (url == "") {
+                $('#centralPart').empty();
+                ClearTreeSelection();
+                return;
+            }
+
+            if (url.indexOf('Help') != -1) {
+                ChangeSelectedPageWithoutLoading(2);
+            }
 
             if (url.indexOf('Favorites') != -1)
                 ChangeSelectedPageWithoutLoading(1);
+
+            if (url.indexOf('SearchEmployeesAdvanced') != -1 || url.indexOf('SearchEmployees') != -1) {
+
+                var searchView = '@Url.Action("SearchView","Home", new {id=Guid.Empty})';
+                loadSearchPage(searchView);
+                                loadSearchPageResult(url);
+                return;
+            }
+
+            loadSearchPage(url);
+        });
+
+
+        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink').on('click', function (e) {
+            var currentPageItem = $(this);
+            var url = currentPageItem.data('url');
+
             loadSearchPage(url);
         });
 

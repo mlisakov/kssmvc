@@ -9,7 +9,7 @@ namespace KSS.Models
 {
     public class SearchViewModel
     {
-        private Guid _id;
+        private Guid? _id;
         private DepartmentState _department;
         private DivisionState _division = null;
         private HttpSessionStateBase _session = null;
@@ -50,17 +50,21 @@ namespace KSS.Models
 
         private string GetDepartmentName()
         {
-            var result = "Без наименования";
+            var result = "";
 
-            _department = DBHelper.GetDepartmentState(_id);
-            if (_department == null)
+            if (_id.HasValue)
             {
-                _division = DBHelper.GetDivisionState(_id);
-                if (_division != null)
-                    result = _division.Division;
+                _department = DBHelper.GetDepartmentState(_id.Value);
+                if (_department == null)
+                {
+                    _division = DBHelper.GetDivisionState(_id.Value);
+                    if (_division != null)
+                        result = _division.Division;
+                }
+                else
+                    result = _department.Department;
             }
-            else
-                result = _department.Department;
+
 
             return result;
         }
@@ -87,19 +91,24 @@ namespace KSS.Models
 
         public List<EmployeeModel> GetEmployers()
         {
-            var guid = new Guid(_session["CurrentUser"].ToString());
+            if (_id.HasValue)
+            {
+                var guid = new Guid(_session["CurrentUser"].ToString());
+                var divisionId = DivisionID;
+                var departmentID = DepartmentID;
 
-            var divisionId = DivisionID;
-            var departmentID = DepartmentID;
+                _pageCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
+                    departmentID, string.Empty, string.Empty, string.Empty, string.Empty) / 5;
 
-            _pageCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
-                departmentID, string.Empty, string.Empty, string.Empty, string.Empty)/5;
+                if ((_pageCount % 5) != 0)
+                    _pageCount++;
 
-            if ((_pageCount%5) != 0)
-                _pageCount++;
+                return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
+                    string.Empty, string.Empty, string.Empty, 5, true, guid);
+            }
 
-            return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
-                string.Empty, string.Empty, string.Empty, 5, true, guid);
+            _pageCount = 0;
+            return new List<EmployeeModel>();
         }
     }
 }

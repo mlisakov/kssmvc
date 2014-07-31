@@ -833,6 +833,11 @@ div.rightItem p {
 	min-width: 360px;
 }
 
+.personDepartment:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .personJob {
 	font-size: 16px;
 	margin: 0;
