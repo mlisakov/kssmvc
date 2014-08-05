@@ -8,23 +8,22 @@ namespace KSS.Controllers
 {
     public class TreeController:Controller
     {
-        private static TreeViewModel _treeVM;
+        private static TreeViewModel _treeViewModel;
 
         public TreeController()
         {
-            if (_treeVM == null)
-                _treeVM = new TreeViewModel();
+            if (_treeViewModel == null)
+                _treeViewModel = new TreeViewModel(false);
         }
 
         public ActionResult Index()
         {
-            return View("Tree", _treeVM);
+            return View("Tree", _treeViewModel);
         }
 
         public ActionResult TreeNodes(Guid id,string type)
         {
-            //Session["Tree"] = _treeVM;
-            List<TreeViewNode> children=_treeVM.GetChildrens(id,
+            List<TreeViewNode> children=_treeViewModel.GetChildrens(id,
                 type.Equals("DivisionState") ? "DivisionState" : "DepartmentState").ToList();
             UpdateTreeCache(children, id);
             ViewBag.Children = children;
@@ -34,11 +33,20 @@ namespace KSS.Controllers
         private void UpdateTreeCache(List<TreeViewNode> children,Guid id)
         {
             if (Session["Tree"] == null)
-                Session["Tree"] = _treeVM;
+                Session["Tree"] = _treeViewModel;
 
-            TreeViewModel cachedTree = (TreeViewModel) Session["Tree"];
+            var cachedTree = (TreeViewModel) Session["Tree"];
             TreeViewNode node = cachedTree.GetNode(id);
             node.Children = children;
+        }
+
+        public ActionResult SpecificTree()
+        {
+            var treeModel = new TreeViewModel(true);
+            
+
+
+            return View("Tree", treeModel);
         }
     }
 }

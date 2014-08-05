@@ -30,11 +30,11 @@
                 <a class="personCardAddToFavoriteLinkInline personCardAddToFavoriteLink " data-url='@Url.Action("ChangeFavoriteStatusInline", "Employee", new { id = employee.Employee.Id })'>
                     @if (employee.IsFavorite)
                     {
-                        <img src="~/Images/selectedStar.png" />
+                        <img src="~/Images/selectedStar.png" title="Удалить из избранного" />
                     }
                     else
                     {
-                        <img src="~/Images/star.png" />
+                        <img src="~/Images/star.png" title="Добавить в избранное" />
                     }
                 </a>
 

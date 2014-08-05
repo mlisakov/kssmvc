@@ -6,11 +6,15 @@
         <title>@ViewBag.Title</title>
         <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
         <script src="~/Scripts/jquery-1.8.2.js"></script>
+        <script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>
+        <script type="text/javascript" src="~/Scripts/jquery.ui.datepicker-ru.js"></script>
     </head>
 
     <body>
+
+
         <div class="divHeader">
-                @RenderSection("Header")
+            @RenderSection("Header")
         </div>
         <div class="divBody">
             @RenderBody()

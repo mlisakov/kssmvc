@@ -510,6 +510,12 @@ ul {
 	color: #4988b9;
 }
 
+	.birthDayName:hover {
+		text-decoration: underline;
+		cursor: pointer;
+	}
+
+
 .birthDayDate {
 	line-height: normal;
 	margin: 0;
@@ -523,6 +529,11 @@ ul {
 	font-size: 11px;
 	color: #9a9a9a;
 	margin: 0;
+}
+
+.birthDayDepartment:hover {
+	text-decoration: underline;
+	cursor: pointer;
 }
 
 .birthDayJob {

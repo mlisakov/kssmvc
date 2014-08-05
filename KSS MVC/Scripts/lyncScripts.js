@@ -24,14 +24,32 @@ function lyncImageLoaded(img) {
 function InializeActiveX() {
 	if (nameCtrl === undefined) {
 		try {
-			if (window.ActiveXObject) {
-				nameCtrl = new ActiveXObject("Name.NameCtrl");
+
+			if ((Object.getOwnPropertyDescriptor && Object.getOwnPropertyDescriptor(window, "ActiveXObject")) || ("ActiveXObject" in window)) {
+
+				nameCtrl = navigator.plugins["Name.NameCtrl"];
+				if (nameCtrl) {
+					// Name.NameCtrl control is installed and enabled
+				} else {
+					try {
+						nameCtrl = new ActiveXObject("Name.NameCtrl");
+					} catch (e) {
+						// Name.NameCtrl control is not installed or disabled
+						console.log(e);
+					}
+				}
 			} else {
-				nameCtrl = CreateNPApiOnWindowsPlugin("application/x-sharepoint-uc");
+
+				if (window.ActiveXObject) {
+					nameCtrl = new ActiveXObject("Name.NameCtrl");
+				} else {
+					nameCtrl = CreateNPApiOnWindowsPlugin("application/x-sharepoint-uc");
+				}
 			}
 			attachLyncPresenceChangeEvent();
 		} catch (ex) {
 			alert("could not load ActiveXObject('Name.NameCtrl.1')");
+			console.log(e);
 		}
 
 	}
@@ -104,8 +122,19 @@ function showLyncStatus(uri, img) {
 
 	if (img != null) {
 
-		var status = getLyncPresenceString(nameCtrl.GetStatus(uri, "lyncspan"));
+		var status = "";
+		try {
+			status = getLyncPresenceString(nameCtrl.GetStatus(uri, "lyncspan"));
+			
+		} catch (e) {
+			console.log(e);			
+		}		
+
 		switch (status) {
+			case "":
+				if ($(img).attr("src") != "/Images/LyncStatuses/empty.png")
+					$(img).attr("src", "/Images/LyncStatuses/empty.png");
+				break;
 			case "donotdisturb":
 				if ($(img).attr("src") != "/Images/LyncStatuses/donotdisturb.png")
 					$(img).attr("src", "/Images/LyncStatuses/donotdisturb.png");

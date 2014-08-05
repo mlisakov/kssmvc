@@ -59,15 +59,15 @@
 
             <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>
                 @if (Model.IsFavorite)
-            {
+                {
                     <img src="~/Images/selectedStar.png" />
-                    <p>в избранном</p>
-            }
-            else
-            {
+                    <p title="Удалить из избранного">в избранном</p>
+                }
+                else
+                {
                     <img src="~/Images/star.png" />
                     <p>добавить в избранное</p>
-            }
+                }
             </a>
         </div>
 

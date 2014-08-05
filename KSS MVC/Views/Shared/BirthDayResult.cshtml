@@ -34,9 +34,13 @@
             @foreach (var item in Model.Where(t => t.Employee.BirthDay.Value.Day == DateTime.Today.Day && t.Employee.BirthDay.Value.Month == DateTime.Today.Month))
             {
                 <li class="birthDayPeopleItem">
-                    <h3 class="birthDayName">@item.Employee.Name</h3>
+                    <h3 class="birthDayName">                        
+                        <a class="emploeeBirthDayLink" data-url='@Url.Action("Index", "Employee", new { id = item.Employee.Id })'>@item.Employee.Name</a>
+                    </h3>                    
                     <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                    <p class="birthDayDepartment" data-url="@Url.Action("SearchView", "Home", new { id = item.DepartmentState.Id })">
+                        @item.DepartmentState.Department
+                    </p>                    
                     <p class="birthDayJob">@item.PositionState.Title</p>
                 </li>
             }
@@ -60,9 +64,13 @@
                 foreach (var item in items)
                 {
                     <li class="birthDayPeopleItem">
-                        <h3 class="birthDayName">@item.Employee.Name</h3>
+                        <h3 class="birthDayName">
+                            <a class="emploeeBirthDayLink" data-url='@Url.Action("Index", "Employee", new { id = item.Employee.Id })'>@item.Employee.Name</a>
+                        </h3>
                         <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                        <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                        <p class="birthDayDepartment" data-url="@Url.Action("SearchView", "Home", new { id = item.DepartmentState.Id })">
+                            @item.DepartmentState.Department
+                        </p>    
                         <p class="birthDayJob">@item.PositionState.Title</p>
                     </li>
                 }
@@ -74,9 +82,13 @@
             @foreach (var item in Model)
             {
                 <li class="birthDayPeopleItem">
-                    <h3 class="birthDayName">@item.Employee.Name</h3>
+                    <h3 class="birthDayName">
+                        <a class="emploeeBirthDayLink" data-url='@Url.Action("Index", "Employee", new { id = item.Employee.Id })'>@item.Employee.Name</a>
+                    </h3>
                     <p class="birthDayDate">@item.Employee.BirthDay.Value.Day @months[item.Employee.BirthDay.Value.Month]</p>
-                    <p class="birthDayDepartment">@item.DepartmentState.Department</p>
+                    <p class="birthDayDepartment" data-url="@Url.Action("SearchView", "Home", new { id = item.DepartmentState.Id })">
+                        @item.DepartmentState.Department
+                    </p>    
                     <p class="birthDayJob">@item.PositionState.Title</p>
                 </li>
             }
@@ -88,6 +100,18 @@
 
     $(document).ready(function() {
         
+        $('.emploeeBirthDayLink, .birthDayDepartment').on('click', function (e) {
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');            
+            $('.progress').show();
+
+            if (currentPageItem.hasClass('emploeeBirthDayLink') || currentPageItem.hasClass('birthDayDepartment')) {
+                ChangeSelectedPage(0);
+            }
+
+            loadSearchPage(url);
+        });
+
         $('.tabHeader').on('click', function (e) {
             var clickedItem = $(e.target);
             if (!clickedItem.hasClass('selectedTabHeader')) {
@@ -107,14 +131,6 @@
                 $(tabItem).toggleClass('selectedTabItemContent');
             }
         });
-
-//        $('.pageNmbr').on('click', function (e) {
-//            var currentPageItem = $(e.target);
-//            var url = currentPageItem.data('url');
-//            $('.progress').show();
-//
-//            loadSearchPage(url);
-//        });
     });
 
 </script>

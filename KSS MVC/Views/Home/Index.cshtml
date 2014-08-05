@@ -4,22 +4,40 @@
 <script src="@Url.Content("~/Scripts/jquery.jstree.js")" type="text/javascript"></script>
 <script src="~/Scripts/lyncScripts.js" type="text/javascript"></script>
 
+<link href="~/Content/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
+<script src="@Url.Content("~/Scripts/jquery-ui.min.js")" type="text/javascript"></script>
+<script src="@Url.Content("~/Scripts/jquery.ui.datepicker-ru.js")" type="text/javascript"></script>
+
+<script language="javascript" type="text/javascript">
+    //var sessionTimeoutWarning = '@Session["TimeoutWarning"]';
+    
+    var sessionTimeout = "@Session.Timeout";    
+
+    var timeOnPageLoad = new Date();
+
+    var sTimeout = sessionTimeout * 60 * 1000;
+    setTimeout('SessionWarning()', sTimeout);
+
+    function SessionWarning() {
+        var message = "В связи с неактивностью время вашей сессии вышло, и справочник более не доступен. Нажмите ОК для перезагрузки страницы.";
+        alert(message);
+        window.location = "../Home/Index";
+    }
+</script>
+
 @section Header
 {
 
     <nav class="mainMenuLayout">
         <img class="logo" src="~/Images/logoMRSK.png"/>
-        
-@*        <a class="userLabel" href='@Url.Action("Index", "Employee", new {id = "B682C266-37A5-42E5-A2C8-09845970534B"})'>Неавторизованный пользователь</a>    *@
+       
         <a class="userLabel" data-url='@Url.Action("Index", "Employee", new { id = @ViewBag.UserID })'>@ViewBag.UserName</a>                        
 
         <ul class="mainMenu">
-@*            <li class="selectedPage">@Html.ActionLink("Главная", "Index", "Home")</li>*@
-@*            <li>@Html.ActionLink("Избранное", "Favorites", "Home")</li>*@
-            @*            <li>@Html.ActionLink("Помощь", "Help", "Home")</li>*@
-            <li id="mainMenuItem0" class="selectedPage">Главная</li>
+            <li id="mainMenuItem0" class="" data-url='@Url.Action("SearchView", "Home", new { id = Guid.Empty })'>Главная</li>
             <li id="mainMenuItem1" data-url='@Url.Action("Favorites", "Home", new { startIndex = 0 })'>Избранное</li>
             <li id="mainMenuItem2" data-url='@Url.Action("Help", "Home")'>Помощь</li>
+            <li id="mainMenuItem3" data-url='@Url.Action("SpecificTree", "Tree")' style="width: 200px">Специальные телефоны</li>
         </ul>
         
         <div class="birthDayComboBox">                                
@@ -32,7 +50,7 @@
         </div>
 
         <div class="birthDayLayout">
-            <img id="birthDayProgress" src="Images/progress.gif" />
+            <img id="birthDayProgress" src="~/Images/progress.gif" />
         </div>
     </nav>
 }
@@ -54,8 +72,24 @@
 
     $(document).ready(function () {
 
+        LoadCentralPartInitialy();
+
+        function LoadCentralPartInitialy() {
+
+            var clickedItem = $('#mainMenuItem0');
+            $('.selectedPage').removeClass('selectedPage');
+            clickedItem.addClass('selectedPage');
+            
+            $('#centralPart').empty();
+
+            var url = '@Url.Action("SearchView", "Home", new { id = Guid.Empty })';
+
+            ClearTreeSelection();
+            loadSearchPage(url);
+        }
+
         //клик по имени пользователя
-        $('.userLabel').on('click', function(e) {
+        $('.userLabel').on('click', function (e) {
 
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
@@ -66,15 +100,21 @@
         });
 
         //клик по пунктам главного меню
-        $('.mainMenu li').on('click', function(e) {
+        $('.mainMenu li').on('click', function (e) {
             var clickedItem = $(e.target);
 
             var idItem = clickedItem.attr('id');
-            ChangeSelectedPage(idItem.substr(idItem.length - 1));
+
+            idItem = idItem.substr(idItem.length - 1);
+
+            if (idItem == 0) {
+                LoadCentralPartInitialy();
+            } else
+                ChangeSelectedPage(idItem);
         });
 
         //клик по комбобоксу с днями рождений
-        $('.birthDayComboBox').on('click', function(e) {
+        $('.birthDayComboBox').on('click', function (e) {
             var comboBox = $('.birthDayComboBox');
             comboBox.toggleClass('activeBirthDayComboBox');
             comboBox.find('.plus').toggleClass('activePlus');
@@ -91,7 +131,7 @@
         });
 
         //клик по пункту дерева
-        $('#divTree').on('click', function(e) {
+        $('#divTree').on('click', function (e) {
             var target = $(e.target);
             var isSpan = $(e.target).is('span');
 
@@ -142,14 +182,17 @@
         if (!clickedItem.hasClass('selectedPage')) {
             $('.selectedPage').removeClass('selectedPage');
             clickedItem.addClass('selectedPage');
-        
+            
             $('#centralPart').empty();
-        
+
+            if (page == 0)
+                return;
+
             var url = clickedItem.data('url');
             if (url != null) {
-        
+
                 ClearTreeSelection();
-        
+
                 loadSearchPage(url);
             }
         }
@@ -164,6 +207,7 @@
         }
     }
 
+
     //загрузка центральной части для главной страницы
     function loadSearchPage(url) {
         var parent = $('#centralPart');
@@ -171,22 +215,20 @@
             parent.append('<div class="centralPartWithProgressBar"/>');
         }
 
-//        $.get(url, function (data) {
-//            if (parent != null) {
-//                    parent.empty();
-//                    parent.append(data);                    
-//            }
-        //        });
-
         $.ajax({
-                url: url,
-                cache: false,
+            url: url,
+            cache: false,
 
-            })
-            .done(function(data) {
+        })
+            .done(function (data) {
                 if (parent != null) {
                     parent.empty();
                     parent.append(data);
+
+                    
+                    parent.find('input.dataPicker').each(function () {                        
+                        $(this).datepicker();
+                    });
                 }
             });
     }
