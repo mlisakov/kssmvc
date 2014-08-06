@@ -19,7 +19,7 @@ namespace KSS.Models
         {
             _session = session;
             if (session["Tree"] == null)
-                TreeViewModel = new TreeViewModel(false);
+                TreeViewModel = new TreeViewModel(false, true);
             else
                 TreeViewModel = (TreeViewModel)session["Tree"];
         }

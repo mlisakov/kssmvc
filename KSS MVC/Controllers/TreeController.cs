@@ -13,7 +13,7 @@ namespace KSS.Controllers
         public TreeController()
         {
             if (_treeViewModel == null)
-                _treeViewModel = new TreeViewModel(false);
+                _treeViewModel = new TreeViewModel(false, true);
         }
 
         public ActionResult Index()
@@ -36,17 +36,18 @@ namespace KSS.Controllers
                 Session["Tree"] = _treeViewModel;
 
             var cachedTree = (TreeViewModel) Session["Tree"];
-            TreeViewNode node = cachedTree.GetNode(id);
-            node.Children = children;
+            if (cachedTree.IsCacheEnabled)
+            {
+                TreeViewNode node = cachedTree.GetNode(id);
+                node.Children = children;
+            }
         }
 
         public ActionResult SpecificTree()
         {
-            var treeModel = new TreeViewModel(true);
+            var treeModel = new TreeViewModel(true, false);
             
-
-
-            return View("Tree", treeModel);
+            return View("SpecificTree", treeModel);
         }
     }
 }

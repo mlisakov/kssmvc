@@ -46,6 +46,16 @@ namespace KSS.Models
         }
 
 
+        public TreeViewNode(DepartmentSpecificState departmentSpecificState, bool hasChildren)
+            : this()
+        {
+            Id = departmentSpecificState.Id;
+            Name = departmentSpecificState.Name;
+            Type = "departmentSpecificState";
+            _hasChildren = hasChildren;
+        }
+
+
         private void InitDivisionStateNode(DivisionState divisionState,bool hasChildren)
         {
             Id = divisionState.Id;

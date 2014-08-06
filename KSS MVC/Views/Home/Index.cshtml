@@ -13,9 +13,8 @@
     
     var sessionTimeout = "@Session.Timeout";    
 
-    var timeOnPageLoad = new Date();
-
     var sTimeout = sessionTimeout * 60 * 1000;
+
     setTimeout('SessionWarning()', sTimeout);
 
     function SessionWarning() {
@@ -85,6 +84,7 @@
             var url = '@Url.Action("SearchView", "Home", new { id = Guid.Empty })';
 
             ClearTreeSelection();
+            showMainTree();
             loadSearchPage(url);
         }
 
@@ -96,11 +96,13 @@
 
             ChangeSelectedPage(0);
             ClearTreeSelection();
+            showMainTree();
+
             loadSearchPage(url);
         });
 
         //клик по пунктам главного меню
-        $('.mainMenu li').on('click', function (e) {
+        $('.mainMenu li').on('click', function(e) {
             var clickedItem = $(e.target);
 
             var idItem = clickedItem.attr('id');
@@ -193,7 +195,14 @@
 
                 ClearTreeSelection();
 
-                loadSearchPage(url);
+                if (page == 3) {
+                    //load specific tree
+                    loadTree(url);
+                } else {
+                    showMainTree();
+                    loadSearchPage(url);
+                }
+                
             }
         }
     }
@@ -205,6 +214,35 @@
             _lastObject = null;
             _lastId = '-1';
         }
+    }
+
+    function showMainTree() {
+        var parent = $('#divTree');
+        if (parent != null) {
+            parent.find('.specificInnerUL:first').remove();
+            parent.find('.innerUL:first').show();
+        }
+    }
+
+    //загрузка центральной части для главной страницы
+    function loadTree(url) {
+        var parent = $('#divTree');
+        if (parent != null) {
+            parent.append('<div class="centralPartWithProgressBar"/>');
+        }
+
+        $.ajax({
+            url: url,
+            cache: false,
+
+        })
+            .done(function (data) {
+                if (parent != null) {
+                    parent.find('.innerUL:first').toggle();
+                    parent.find('.centralPartWithProgressBar').remove();
+                    parent.append(data);
+                }
+            });
     }
 
 

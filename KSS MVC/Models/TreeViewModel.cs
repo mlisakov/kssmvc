@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using KSS.Server.Entities;
 
 namespace KSS.Models
@@ -11,8 +12,13 @@ namespace KSS.Models
         public List<TreeViewNode> RootNodes;
         private readonly Dictionary<Guid,TreeViewNode> _dictionaryTree;
 
-        public TreeViewModel(bool loadAllDivisions)
+
+        public bool IsCacheEnabled { get; private set; }
+
+        public TreeViewModel(bool loadAllDivisions, bool isCacheEnabled)
         {
+            IsCacheEnabled = isCacheEnabled;
+
             if (_baseModel == null)
                 _baseModel = new CompanyBaseModel();
             _dictionaryTree = new Dictionary<Guid, TreeViewNode>();
@@ -31,25 +37,40 @@ namespace KSS.Models
             //Thread.Sleep(5000);
             if (!id.HasValue) return null;
 
-            if (_dictionaryTree.ContainsKey(id.Value))
-                _dictionaryTree[id.Value].Expanded = !_dictionaryTree[id.Value].Expanded;
+            if (IsCacheEnabled)
+            {
+                if (_dictionaryTree.ContainsKey(id.Value))
+                    _dictionaryTree[id.Value].Expanded = !_dictionaryTree[id.Value].Expanded;
 
-            if (!_dictionaryTree[id.Value].Expanded)
-                return null;
+                if (!_dictionaryTree[id.Value].Expanded)
+                    return null;
+            }
+
 
             //Берем данные их кэш
-            if (_dictionaryTree.ContainsKey(id.Value) && _dictionaryTree[id.Value].Children.Any())
+            if (IsCacheEnabled)
             {
-                return _dictionaryTree[id.Value].Children;
+                if (_dictionaryTree.ContainsKey(id.Value) && _dictionaryTree[id.Value].Children.Any())
+                {
+                    return _dictionaryTree[id.Value].Children;
+                }
             }
+
+
             if (type.Equals("DepartmentState"))
             {
                 var departmentStates =
                     _baseModel.DepartmentStates.Where(t => t.ParentId == id.Value && t.ExpirationDate == null);
 
-                _dictionaryTree[id.Value].Children = SelectDepartmentStateNodes(departmentStates, id);
 
-                return _dictionaryTree[id.Value].Children;
+                var result = SelectDepartmentStateNodes(departmentStates, id);  
+
+                if (IsCacheEnabled)
+                {
+                    _dictionaryTree[id.Value].Children = result;
+                }
+
+                return result;
             }
             var divisions =
                 _baseModel.DivisionStates.Where(t => t.ParentId == id.Value && t.ExpirationDate == null)
@@ -65,8 +86,13 @@ namespace KSS.Models
                 children.AddRange(SelectDepartmentStateNodes(departments, id));
             }
             children.AddRange(SelectDivisionStateNodes(divisions, id));
-            _dictionaryTree[id.Value].Children = children;
-            return _dictionaryTree[id.Value].Children;
+
+            if (IsCacheEnabled)
+            {
+                _dictionaryTree[id.Value].Children = children;    
+            }
+
+            return children;
         }
 
         private void FillRootDivision(bool loadAllDivisions)
@@ -98,37 +124,69 @@ namespace KSS.Models
 
         private void GetChildren2(TreeViewNode parent)
         {
-            if (parent != null && parent.HasChilds)
+            if (parent != null)
             {
-
                 var childs =
                     _baseModel.DivisionStates.Where(t => t.ParentId == parent.Id && t.ExpirationDate == null)
                         .OrderBy(t => t.Division);
 
-
                 if (childs.Any())
                 {
-//                    children.AddRange(SelectDepartmentStateNodes(departments, id));
                     foreach (var division in childs)
                     {
                         bool hasChildren =
                             _baseModel.DivisionStates.Any(i => i.ParentId == division.Id && i.ExpirationDate == null);
 
                         var newItem = new TreeViewNode(division, hasChildren) {Expanded = true};
-                        GetChildren2(newItem);
-
                         parent.Children.Add(newItem);
+
+                        GetChildren2(newItem);
+                    }                    
+                }
+                else
+                {
+
+                    var specificItems =
+                        _baseModel.DepartmentSpecificStates.Where(
+                            t => t.ExpirationDate == null && t.DivisionId == parent.Id);
+                    if (specificItems.Any())
+                    {
+                        var rootSpecificItems = specificItems.Where(t => t.ParentId == null && t.ExpirationDate == null).ToList();
+
+                        foreach (DepartmentSpecificState rootSpecificItem in rootSpecificItems)
+                        {
+                            bool hasChildren =
+                                specificItems.Any(i => i.ParentId == rootSpecificItem.Id && i.ExpirationDate == null);
+
+                            var newItem = new TreeViewNode(rootSpecificItem, hasChildren) {Expanded = true};
+                            if (hasChildren)
+                                LoadSpecificDepartments(newItem.Children, specificItems, rootSpecificItem.Id);
+
+                            parent.Children.Add(newItem);
+                        }
                     }
                 }
+            }
+        }
 
-//                bool hasChildren =
-//                    _baseModel.DivisionStates.Any(i => i.ParentId == parent.Id && i.ExpirationDate == null);
+        private void LoadSpecificDepartments(List<TreeViewNode> parentList, IQueryable<DepartmentSpecificState> query,
+            Guid id)
+        {
+            if (query.Any(t => t.ParentId == id && t.ExpirationDate == null))
+            {
+                var items = query.Where(t => t.ParentId == id && t.ExpirationDate == null).ToList();
+                foreach (DepartmentSpecificState specificState in items)
+                {
 
-//                parent.HasChilds = hasChildren
-//                var result = GetChildrens(parent.Id, "DivisionState");
+                    bool hasChildren = query.Any(t => t.ParentId == specificState.Id && t.ExpirationDate == null);
+                    var newItem = new TreeViewNode(specificState, hasChildren) {Expanded = true};
 
+                    if (hasChildren)
+                        LoadSpecificDepartments(newItem.Children, query, specificState.Id);
 
-            }            
+                    parentList.Add(newItem);
+                }
+            }
         }
 
         private List<TreeViewNode> SelectDepartmentStateNodes(IEnumerable<DepartmentState> departmentStates, Guid? parentId)
