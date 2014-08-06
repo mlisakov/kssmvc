@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.UI.WebControls;
 using KSS.Helpers;
@@ -131,5 +132,24 @@ namespace KSS.Models
             var f = DBHelper.GetEmployeePlaces(_currentUser);
             return true;
         }
+
+        public List<DepartmentState> GetFullDepartmentName()
+        {
+            var departments = new List<DepartmentState>();
+            if (DepartmentState != null)
+                GetFullDepartmentName(departments, DepartmentState.Id);
+            return departments;
+        }
+
+        private void GetFullDepartmentName(List<DepartmentState> departments, Guid? departmentGuid)
+        {
+            if (departmentGuid.HasValue)
+            {
+                var department = DBHelper.GetDepartmentState(departmentGuid.Value);
+                departments.Add(department);
+                GetFullDepartmentName(departments, department.ParentId);
+            }
+        }
+
     }
 }

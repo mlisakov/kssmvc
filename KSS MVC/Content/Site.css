@@ -1182,6 +1182,15 @@ div.rightItem p {
 	margin-top: 10px;
 }
 
+.personCardDepartmentLink {
+	color: #4988b9;	
+}
+
+.personCardDepartmentLink:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
 .personCardPlaceContainer {
 	margin-top: 60px;
 	font-size: 16px;

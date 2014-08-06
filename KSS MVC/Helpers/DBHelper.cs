@@ -33,7 +33,7 @@ namespace KSS.Helpers
         {
             try
             {
-                return BaseModel.DepartmentStates.FirstOrDefault(t => t.Id == id);
+                return BaseModel.DepartmentStates.FirstOrDefault(t => t.Id == id && t.ExpirationDate == null);
             }
             catch (Exception ex)
             {

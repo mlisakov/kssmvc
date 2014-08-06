@@ -83,7 +83,27 @@
 
 
         <p class="personCardJobTitle personCardJobMarginTop">Подразделение:</p>
-        <p class="personCardJob personCardJobMarginTop">@Model.DepartmentState.Department</p>
+        <p class="personCardJob personCardJobMarginTop">
+            @{
+                var items = Model.GetFullDepartmentName();
+                for (int i = items.Count - 1; i > -1; i--)
+                {
+                    if (items[i].ExpirationDate == null)
+                    {
+                        <a class="personCardDepartmentLink" data-url="@Url.Action("SearchView", "Home", new {id = items[i].Id})"> @items[i].Department</a>
+                    }
+                    else
+                    {
+                        <a> @items[i].Department</a>
+                    }
+                    
+                    if (i != 0)
+                    {
+                        <a> -> </a>
+                    }
+                }
+            }
+        </p>
         
         
         <p class="personCardJobTitle personCardJobMarginTop">Член штаба:</p>
@@ -299,7 +319,19 @@
 
 <script>
 
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        $('.personCardDepartmentLink').on('click', function (e) {
+
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            ChangeSelectedPage(0);
+
+            ClearTreeSelection();
+            loadSearchPage(url);
+        });
 
         $('.backLink').on('click', function(e)
         {
