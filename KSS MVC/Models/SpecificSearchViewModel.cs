@@ -19,7 +19,19 @@ namespace KSS.Models
             get { return _pageCount; }
         }
 
+        public int StartIndex { get; set; }
+
         public string SpecificDepartmentName { get; set; }
+
+        public Guid ID
+        {
+            get
+            {
+                if (_id.HasValue)
+                    return _id.Value;
+                return Guid.Empty;
+            }
+        }
 
         public SpecificSearchViewModel(HttpSessionStateBase session, Guid? id = null)
         {
@@ -28,6 +40,7 @@ namespace KSS.Models
                 _id = id.Value;
 
             SpecificDepartmentName = GetSpecificDepartmentName();
+            StartIndex = 0;
         }
 
         private string GetSpecificDepartmentName()
@@ -55,7 +68,7 @@ namespace KSS.Models
                 if ((itemsCount % 5) != 0)
                     _pageCount++;
 
-                var f = DBHelper.GetSpecificStaffs(_id.Value, 5);
+                var f = DBHelper.GetSpecificStaffs(_id.Value, 5, StartIndex);
 
                 return f;
 //                return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,

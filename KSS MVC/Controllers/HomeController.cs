@@ -45,13 +45,15 @@ namespace KSS.Controllers
             return view;
         }
 
-        public ActionResult SpecificSearchView(Guid id)
+        public ActionResult SpecificSearchView(Guid id, int startIndex = 0 )
         {
             var model = new SpecificSearchViewModel(Session, id);
+            model.StartIndex = startIndex;
 
-            Session["BackLink"] = Url.Action("SpecificSearchView", "Home", new { id = id });
+            Session["BackLink"] = Url.Action("SpecificSearchView", "Home", new {id = id, startIndex = startIndex});
 
             ViewResult view = View(model);
+            view.ViewBag.StartIndex = startIndex;                        
             return view;
         }
 
@@ -205,6 +207,18 @@ namespace KSS.Controllers
         {
             return Json(new SelectList(DBHelper.GetPositionStatesByDepartment(departmentId), "Id", "Title"),
                 JsonRequestBehavior.AllowGet);
-        }               
+        }
+
+        public ActionResult SpecificCard(Guid id)
+        {
+            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);            
+
+            var specificModel = new SpecificStaffModel(id);
+
+            var view = View("SpecificCard", specificModel);
+            view.ViewBag.IsAdmin = isAdmin;
+            view.ViewBag.BackLink = Session["BackLink"];
+            return view;
+        }
     }
 }

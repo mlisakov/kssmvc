@@ -312,6 +312,7 @@
     <Content Include="Views\Home\FavoritesPage.cshtml" />
     <Content Include="Views\Shared\SpecificTree.cshtml" />
     <Content Include="Views\Shared\SpecificSearchView.cshtml" />
+    <Content Include="Views\Shared\SpecificCard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

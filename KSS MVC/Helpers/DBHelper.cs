@@ -1404,14 +1404,14 @@ namespace KSS.Helpers
             return 0;
         }
 
-        public static List<SpecificStaffModel> GetSpecificStaffs(Guid id, int itemsCount)
+        public static List<SpecificStaffModel> GetSpecificStaffs(Guid id, int pageSize, int startIndex)
         {
             try
             {
                 var items =
                     BaseModel.SpecificStaffs.Where(t => t.DepartmentSpecificId == id)
-                        .OrderBy(t => t.Ranking)
-                        .Take(itemsCount).ToList();
+                        .OrderBy(t => t.Ranking).Skip(pageSize*startIndex)
+                        .Take(pageSize).ToList();
                 return items.Select(t => new SpecificStaffModel(t.Id)).ToList();                
             }
             catch (Exception ex)
@@ -1419,6 +1419,33 @@ namespace KSS.Helpers
                 LogHelper.WriteLog("Ошибка. GetSpecificStaffs.", ex);
             }
             return new List<SpecificStaffModel>();
+        }
+
+        public static List<Employee> GetPersonsInDivision(Guid divisionId)
+        {
+            try
+            {
+                var employes = (from employee in BaseModel.Employees
+                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                    from m in employeeStaff.DefaultIfEmpty()
+                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                        depState
+                    from ds in depState.DefaultIfEmpty()
+                    join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                        divState
+                    from divS in divState.DefaultIfEmpty()
+                    where
+                        m.ExpirationDate == null && ds.ExpirationDate == null && divS.ExpirationDate == null &&
+                        divS.Id == divisionId
+                    select employee).DistinctBy(t => t.Id).OrderBy(t => t.Name).ToList();
+
+                return employes;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetPersonsInDivision.", ex);
+            }
+            return new List<Employee>();
         }
     }
 }

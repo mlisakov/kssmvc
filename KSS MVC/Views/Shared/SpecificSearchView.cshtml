@@ -17,48 +17,26 @@
 
     for (int i = startIndex; i < count; i++)
     {
-@*        if (i == ViewBag.StartIndex)*@
-@*        {*@
-@*            if (ViewBag.IsAdvanced)*@
-@*            {*@
-@*                <a class='pageNmbr selectedPageNmbr linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new*@
-@*                                                                   {*@
-@*                                                                       divisionId = Model.DivisionID,*@
-@*                                                                       placeId = ViewBag.SearchPlace,*@
-@*                                                                       isMemberOfHeadquarter = ViewBag.SearchIsMember,*@
-@*                                                                       phoneNumber = ViewBag.SearchPhoneNumber,*@
-@*                                                                       departmentId = Model.DepartmentID,*@
-@*                                                                       dateStart = ViewBag.SearchDateStart,*@
-@*                                                                       dateEnd = ViewBag.SearchDateEnd,*@
-@*                                                                       job = ViewBag.SearchJob,*@
-@*                                                                       employeeName = ViewBag.Search,*@
-@*                                                                       startIndex = i*@
-@*                                                                   })'>*@
-@*                    @(i + 1)*@
-@*                </a>*@
-@*            }*@
-@*        }*@
-@*        else*@
-@*        {*@
-@*            if (ViewBag.IsAdvanced)*@
-@*            {*@
-@*                <a class='pageNmbr linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new*@
-@*                                                  {*@
-@*                                                      divisionId = Model.DivisionID,*@
-@*                                                      placeId = ViewBag.SearchPlace,*@
-@*                                                      isMemberOfHeadquarter = ViewBag.SearchIsMember,*@
-@*                                                      phoneNumber = ViewBag.SearchPhoneNumber,*@
-@*                                                      departmentId = Model.DepartmentID,*@
-@*                                                      dateStart = ViewBag.SearchDateStart,*@
-@*                                                      dateEnd = ViewBag.SearchDateEnd,*@
-@*                                                      job = ViewBag.SearchJob,*@
-@*                                                      employeeName = ViewBag.Search,*@
-@*                                                      startIndex = i*@
-@*                                                  })'>*@
-@*                    @(i + 1)*@
-@*                </a>*@
-@*            }*@
-@*        }*@
+        if (i == ViewBag.StartIndex)
+        {
+                <a class='pageNmbr selectedPageNmbr linkInSearchPage' data-url='@Url.Action("SpecificSearchView", "Home", new
+                                                                           {
+                                                                               id = Model.ID,
+                                                                               startIndex = i
+                                                                           })'>
+                    @(i + 1)
+                </a>
+        }
+        else
+        {
+                <a class='pageNmbr linkInSearchPage' data-url='@Url.Action("SpecificSearchView", "Home", new
+                                                  {
+                                                      id = Model.ID,
+                                                      startIndex = i
+                                                  })'>
+                    @(i + 1)
+                </a>
+        }
     }
 
     if (after)
@@ -68,14 +46,14 @@
 }
 
 <div class="searchLayout">
-    <h3 class="departmentHeader">@Model.SpecificDepartmentName
-        <img class="searchProgress" src="~/Images/progress.gif" />
-    </h3>
-    
-    <div class="shortSearch">
-        <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по названию" maxlength="100"/>
-        <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        
-    </div>    
+@*    <h3 class="departmentHeader">@Model.SpecificDepartmentName*@
+@*        <img class="searchProgress" src="~/Images/progress.gif" />*@
+@*    </h3>*@
+@*    *@
+@*    <div class="shortSearch">*@
+@*        <input id="searchText" type="text" class="departmentSearchText" placeholder="поиск по названию" maxlength="100"/>*@
+@*        <input id="searchBtn" type="button" class="departmentSearchButton" value="найти"  />        *@
+@*    </div>    *@
     
     <div id="searchResult" class="centralResultPanel">
         <ul class="personUL">
@@ -104,10 +82,8 @@
                     <div class="innerPersonLayout">
                         <h5 class="personName">                            
 @*                            <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@specificStaff.SpecificStaff.Position</a>*@
-                            <a class="emploeeLink" >@specificStaff.SpecificStaff.Position</a>
+                            <a class="specificStaffLink" data-url='@Url.Action("SpecificCard","Home", new {id=specificStaff.SpecificStaff.Id})' >@specificStaff.SpecificStaff.Position</a>
                         </h5>
-@*$1$                        <p class="personDepartment"> @employee.DepartmentState.Department</p>#1#*@
-@*                        <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>*@
                         <p class="personJob">@specificStaff.Address</p>
                         <div class="phonesLine">
                             @for (int i = 0; i < specificStaff.SpecificStaffPlaces.Count; i++)
@@ -153,99 +129,77 @@
                 </li>
             }
         </ul>
-@*        *@
-@*        <div class="pagesContainer">*@
-@*            @{*@
-@*                if (ViewBag.StartIndex > 0)*@
-@*                {*@
-@*                    <p class="paginationArrow">←</p>*@
-@*                    if (ViewBag.IsAdvanced)*@
-@*                    {*@
-@*                        <a class='paginationNavigationLink linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new*@
-@*                                                                  {*@
-@*                                                                      divisionId = Model.DivisionID,*@
-@*                                                                      placeId = ViewBag.SearchPlace,*@
-@*                                                                      isMemberOfHeadquarter = ViewBag.SearchIsMember,*@
-@*                                                                      phoneNumber = ViewBag.SearchPhoneNumber,*@
-@*                                                                      departmentId = Model.DepartmentID,*@
-@*                                                                      dateStart = ViewBag.SearchDateStart,*@
-@*                                                                      dateEnd = ViewBag.SearchDateEnd,*@
-@*                                                                      job = ViewBag.SearchJob,*@
-@*                                                                      employeeName = ViewBag.Search,*@
-@*                                                                      startIndex = ViewBag.StartIndex - 1*@
-@*                                                                  })'>*@
-@*                            Назад*@
-@*                        </a>*@
-@*                    }*@
-@*                }*@
-@*                else*@
-@*                {*@
-@*                    <p class="paginationArrow" style="visibility: collapse">←</p>*@
-@*    <a class="paginationNavigationLink linkInSearchPage" style="visibility: collapse">Назад</a>*@
-@*                }*@
-@**@
-@*                if (ViewBag.StartIndex + 1 < Model.PageCount)*@
-@*                {*@
-@*                    if (ViewBag.IsAdvanced)*@
-@*                    {*@
-@*                        <a class='paginationNavigationLink forwardLink linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new*@
-@*                                                                              {*@
-@*                                                                                  divisionId = Model.DivisionID,*@
-@*                                                                                  placeId = "",*@
-@*                                                                                  isMemberOfHeadquarter = ViewBag.SearchIsMember,*@
-@*                                                                                  phoneNumber = ViewBag.SearchPhoneNumber,*@
-@*                                                                                  departmentId = Model.DepartmentID,*@
-@*                                                                                  dateStart = ViewBag.SearchDateStart,*@
-@*                                                                                  dateEnd = ViewBag.SearchDateEnd,*@
-@*                                                                                  job = ViewBag.SearchJob,*@
-@*                                                                                  employeeName = ViewBag.Search,*@
-@*                                                                                  startIndex = ViewBag.StartIndex + 1*@
-@*                                                                              })'>*@
-@*                            Вперед*@
-@*                        </a>*@
-@*                    }*@
-@*                    <p class="paginationArrow">→</p>*@
-@*                }*@
-@*            }*@
-@*        </div>*@
-@**@
-@*        <div id="pages" class="pagesContainer">*@
-@*            @{*@
-@*                const int maxPagesCount = 4;*@
-@*                var length = Model.PageCount;*@
-@*                var startIndex = ViewBag.StartIndex;*@
-@**@
-@*                if (length > maxPagesCount)*@
-@*                {*@
-@*                    //отрисовываем вариант при куче страниц*@
-@**@
-@**@
-@*                    if (length - startIndex < maxPagesCount)*@
-@*                    {*@
-@*                        //отрисовываем остатки*@
-@*                        @DrawPages(length - maxPagesCount, length, false, true);*@
-@*                    }*@
-@*                    else*@
-@*                    {*@
-@*                        if (startIndex > 1)*@
-@*                        {*@
-@*                            //отрисовываем средний случай (2 /3/ 4 5)*@
-@*                            @DrawPages(startIndex - 1, maxPagesCount + startIndex - 1, true, true);*@
-@*                        }*@
-@*                        else*@
-@*                        {*@
-@*                            //отрисовываем стартовый случай (1 /2/ 3 4 или /1/ 2 3 4)*@
-@*                            @DrawPages(0, maxPagesCount, true, false);*@
-@*                        }*@
-@*                    }*@
-@*                }*@
-@*                else*@
-@*                {*@
-@*                    //отрисовываем меньше 5 страниц*@
-@*                    @DrawPages(0, length, false, false);*@
-@*                }*@
-@*            }*@
-@*        </div>*@
+        
+        <div class="pagesContainer">
+            @{
+                if (ViewBag.StartIndex > 0)
+                {
+                    <p class="paginationArrow">←</p>
+                        <a class='paginationNavigationLink linkInSearchPage' data-url='@Url.Action("SpecificSearchView","Home", new
+                                                                                       {
+                                                                                           id = Model.ID,
+                                                                                           startIndex = ViewBag.StartIndex - 1
+                                                                                       })'>
+                            Назад
+                        </a>
+                }
+                else
+                {
+                    <p class="paginationArrow" style="visibility: collapse">←</p>
+                    <a class="paginationNavigationLink linkInSearchPage" style="visibility: collapse">Назад</a>
+                }
+
+                if (ViewBag.StartIndex + 1 < Model.PageCount)
+                {
+                        <a class='paginationNavigationLink forwardLink linkInSearchPage' data-url='@Url.Action("SpecificSearchView", "Home", new
+                                                                              {
+                                                                                  id = Model.ID,                                                                                           
+                                                                                  startIndex = ViewBag.StartIndex + 1
+                                                                              })'>
+                            Вперед
+                        </a>
+                    <p class="paginationArrow">→</p>
+                }
+            }
+        </div>
+
+        <div id="pages" class="pagesContainer">
+            @{
+                const int maxPagesCount = 4;
+                var length = Model.PageCount;
+                var startIndex = ViewBag.StartIndex;
+
+                if (length > maxPagesCount)
+                {
+                    //отрисовываем вариант при куче страниц
+
+
+                    if (length - startIndex < maxPagesCount)
+                    {
+                        //отрисовываем остатки
+                        @DrawPages(length - maxPagesCount, length, false, true);
+                    }
+                    else
+                    {
+                        if (startIndex > 1)
+                        {
+                            //отрисовываем средний случай (2 /3/ 4 5)
+                            @DrawPages(startIndex - 1, maxPagesCount + startIndex - 1, true, true);
+                        }
+                        else
+                        {
+                            //отрисовываем стартовый случай (1 /2/ 3 4 или /1/ 2 3 4)
+                            @DrawPages(0, maxPagesCount, true, false);
+                        }
+                    }
+                }
+                else
+                {
+                    //отрисовываем меньше 5 страниц
+                    @DrawPages(0, length, false, false);
+                }
+            }
+        </div>
     </div>
     
 </div>
@@ -265,7 +219,18 @@
             loadSearchPageResult(url);
         });
 
-        $('.emploeeLink, .personDepartment').on('click', function(e) {
+        $(' .specificStaffLink').on('click', function (e) {
+
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            //ChangeSelectedPage(0);            
+            //ClearTreeSelection();
+            loadSearchPage(url);
+        });
+
+        $(' .personDepartment').on('click', function(e) {
 
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
@@ -277,15 +242,15 @@
             loadSearchPage(url);
         });
 
-        $('#searchBtn').on('click', function(e) {
-            var value = $('#searchText').val();
-            var url = '@Url.Action("SearchEmployees", "Home")';
-
-            var dataParam = { employeeName: value, startIndex: 0 };
-
-            $('.searchProgress').show();
-            loadSearchPageResult(url, dataParam);
-        });
+//        $('#searchBtn').on('click', function(e) {
+//            var value = $('#searchText').val();
+//            var url = '@Url.Action("SearchEmployees", "Home")';
+//
+//            var dataParam = { employeeName: value, startIndex: 0 };
+//
+//            $('.searchProgress').show();
+//            loadSearchPageResult(url, dataParam);
+//        });
 
 
         function loadSearchPageResult(url, p) {

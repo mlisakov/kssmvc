@@ -1,0 +1,630 @@
+﻿@{
+    Layout = "";
+}
+
+@using KSS.Helpers
+@using KSS.Server.Entities
+@using NLog.Targets
+@model KSS.Models.SpecificStaffModel
+           
+
+<div class="personCardLayout">
+    <p class="paginationArrow" style="">←</p>
+    <a class="paginationNavigationLink backLink" style="" data-url="@ViewBag.BackLink">Назад</a>
+
+    <div style="margin-top: 10px">
+        <div style="float:left">            
+            <img class="personIMG" src="data:image;base64, @Model.GetImage()" />            
+        </div>
+
+
+        <div class="aroundPhotoPersonContainer">
+            <h5 class="personCardName">
+                @Model.SpecificStaff.Position
+            </h5>
+
+            @*            @if (Model.Employee.BirthDay.HasValue)*@
+            @*            {*@
+            @*                <p class="personCardBirthDay">День Рождения: @Model.Employee.BirthDay.Value.Day @months[@Model.Employee.BirthDay.Value.Month]</p>*@
+            @*            }*@
+
+            @*            <a class="personCardEmail" href="mailto:@Model.Employee.EMail">@Model.Employee.EMail</a>*@
+
+            @*            <a class="personCardAddToFavoriteLink" data-url='@Url.Action("ChangeFavoriteStatus", "Employee", new { id = Model.Employee.Id})'>*@
+            @*                @if (Model.IsFavorite)*@
+            @*                {*@
+            @*                    <img src="~/Images/selectedStar.png" />*@
+            @*                    <p title="Удалить из избранного">в избранном</p>*@
+            @*                }*@
+            @*                else*@
+            @*                {*@
+            @*                    <img src="~/Images/star.png" />*@
+            @*                    <p>добавить в избранное</p>*@
+            @*                }*@
+            @*            </a>*@
+            @if (Model.RelatedEmployee != null)
+            {
+                <p class="personName specificRelatedPersonName" >
+                    <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = Model.RelatedEmployee.Id})'>@Model.RelatedEmployee.Name</a>                            
+                </p>
+
+                <p class="personCardJob specificPersonCardJobLabel">
+                    @{
+                        var items = Model.GetEmployeeFullDepartmentName();
+                        for (int i = items.Count - 1; i > -1; i--)
+                        {
+                            if (items[i].ExpirationDate == null)
+                            {
+                                <a class="personCardDepartmentLink" data-url="@Url.Action("SearchView", "Home", new {id = items[i].Id})"> @items[i].Department</a>
+                            }
+                            else
+                            {
+                                <a> @items[i].Department</a>
+                            }
+
+                            if (i != 0)
+                            {
+                                <a> -> </a>
+                            }
+                        }
+                    }
+                </p>
+
+                <p class="personCardJob specificPersonCardJobLabel" >@Model.EmployeePositionState.Title</p>
+            }
+            else
+            {
+                <p class="personCardJob specificPersonCardJobLabel specificRelatedPersonName" >нет контактного лица</p>
+
+                if (ViewBag.IsAdmin)
+                {
+                    <p id="editContactPersonLink" class="personCardJob personCardEdit specificPersonCardJobLabel">назначить</p>
+                }
+            }
+        </div>
+
+    </div>
+    
+    @if (ViewBag.IsAdmin)
+    {
+        <div class="specificCardChangePersonDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">Сотрудник</p>
+            <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1">
+                <option selected="selected">не выбран</option>
+                
+                @foreach (var person in Model.GetPersonsInDivision())
+                {
+                    <option value="@person.Key">@person.Value</option>
+                }
+            </select>
+
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelEditPlace" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input id="savePlaceButton" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7" />
+            </div>
+
+        </div>
+    }
+    
+    <br/>
+    
+    <div class="personCardJobContainer">
+@*        <p class="personCardJobTitle">Должность:</p>*@
+@*        <p class="personCardJob">@Model.PositionState.Title</p>*@
+
+@*        <p class="personCardJobTitle personCardJobMarginTop">Филиал:</p>*@
+@*        <p class="personCardJob personCardJobMarginTop">@Model.DivisionState.Division</p>*@
+
+
+        <p class="personCardJobTitle personCardJobMarginTop">Подразделение:</p>
+        <p class="personCardJob personCardJobMarginTop">
+@*            @{*@
+@*                var items = Model.GetFullDepartmentName();*@
+@*                for (int i = items.Count - 1; i > -1; i--)*@
+@*                {*@
+@*                    if (items[i].ExpirationDate == null)*@
+@*                    {*@
+@*                        <a class="personCardDepartmentLink" data-url="@Url.Action("SearchView", "Home", new {id = items[i].Id})"> @items[i].Department</a>*@
+@*                    }*@
+@*                    else*@
+@*                    {*@
+@*                        <a> @items[i].Department</a>*@
+@*                    }*@
+@*                    *@
+@*                    if (i != 0)*@
+@*                    {*@
+@*                        <a> -> </a>*@
+@*                    }*@
+@*                }*@
+@*                        }*@
+            
+            <a class="" > @Model.SpecificStaff.DepartmentSpecificState.Name</a>
+        </p>
+        
+        
+@*        <p class="personCardJobTitle personCardJobMarginTop">Член штаба:</p>*@
+@*        @if (ViewBag.IsAdmin)*@
+@*        {*@
+@*            if (Model.Employee.IsMemberOfHeadquarter.HasValue && Model.Employee.IsMemberOfHeadquarter.Value)*@
+@*            {*@
+@*                <input id='memberOfHeadquarter' type="checkbox" value="@Model.Employee.Id" checked class="personCardDepartmentMember" />*@
+@*            }*@
+@*            else*@
+@*            {*@
+@*                <input id='memberOfHeadquarter' type="checkbox" value="@Model.Employee.Id" class="personCardDepartmentMember" />*@
+@*            }*@
+@*        }*@
+@*        else*@
+@*        {*@
+@*            if (Model.Employee.IsMemberOfHeadquarter.HasValue && Model.Employee.IsMemberOfHeadquarter.Value)*@
+@*            {*@
+@*                <input id='memberOfHeadquarter' type="checkbox" value="@Model.Employee.Id" checked disabled="" class="personCardDepartmentMember" />*@
+@*            }*@
+@*            else*@
+@*            {*@
+@*                <input id='memberOfHeadquarter' type="checkbox" value="@Model.Employee.Id" disabled="" class="personCardDepartmentMember" />*@
+@*            }*@
+@*        }*@
+        
+    </div>
+    
+    
+    <div class="personCardPlaceContainer">
+        <p class="personCardJobTitle">Местоположение:</p>
+
+@*        <p class="personCardJob">Россия, Ростовская область, Ростов-на-Дону</p>*@
+        
+            @if (Model.SpecificStaffLocation != null)
+            {
+                <!--в этой только СТРАНА, ОБЛАСТЬ, ГОРОД-->
+                <p class="personCardJob">
+                    
+                    @Model.SpecificStaffLocation.Locality.Country, @Model.SpecificStaffLocation.Locality.Region, @Model.SpecificStaffLocation.Locality.Locality1
+                </p>
+
+                <!--в этой только УЛИЦА, ДОМ-->
+@*                <p class="personCardJob">ул. Большая Садовая, 49.</p>*@
+                <p class="personCardJob">
+                    @Model.SpecificStaffLocation.Street, @Model.SpecificStaffLocation.Edifice
+                </p>
+            }
+            else
+            {
+                <p class="personCardJob">-</p>
+                <p class="personCardJob"></p>
+            }
+
+
+        <p class="personCardJobTitle personCardJobMarginTop">Номер офиса:</p>
+        
+        @if (Model.SpecificStaffPlaces.Any(t => !string.IsNullOrEmpty(t.Office)))
+        {
+            <p class="personCardJob personCardJobMarginTop">
+                @Model.SpecificStaffPlaces.First(t => !string.IsNullOrEmpty(t.Office)).Office
+            </p>
+        }
+        else
+        {
+            <p class="personCardJob personCardJobMarginTop">-</p>
+        }
+      
+        
+        @if (ViewBag.IsAdmin)
+        {
+            <p id="editPlaceLink" class="personCardJob personCardEdit ">редактировать</p>
+        }
+    </div>
+    
+    @if (ViewBag.IsAdmin)
+    {
+        <div class="personCardChangePlaceDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">страна</p>
+            <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1">
+                <option selected="selected">Россия</option>
+            </select>
+        
+            <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
+            <select id="personCardRegionComboBoxControl" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">                
+                @foreach (var reg in DBHelper.GetRegions("Россия"))
+                {
+                    if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Region, reg))
+                    {
+                        <option value="@reg" selected="selected">@reg</option>
+                        continue;
+                    }
+                    <option value="@reg">@reg</option>
+                }
+            </select>
+        
+            <p class="personCardChangePlaceDialogSimpleLabel">населенный пункт</p>
+            <select id="personCardCityComboBoxControl" class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                @if (Model.SpecificStaffLocation != null)
+                {
+                    foreach (var reg in DBHelper.GetLocalities(Model.SpecificStaffLocation.Locality.Country, Model.SpecificStaffLocation.Locality.Region))
+                    {
+                        if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Locality1, reg.Value))
+                        {
+                            <option value="@reg.Key" selected="selected">@reg.Value</option>
+                            continue;
+                        }
+                        <option value="@reg.Key">@reg.Value</option>
+                    }
+                }
+            </select>
+        
+            <p class="personCardChangePlaceDialogSimpleLabel">улица</p>
+            @if (Model.SpecificStaffLocation != null)
+            {
+                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" value="@Model.SpecificStaffLocation.Street" />
+            }
+            else
+            {
+                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" />
+            }
+           
+            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">дом</p>
+            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер офиса</p>
+        
+            
+            @if (Model.SpecificStaffLocation != null)
+            {
+                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5" value="@Model.SpecificStaffLocation.Edifice"/>
+                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6" value="@Model.SpecificStaffPlaceWithLocation.Office"/>
+            }
+            else
+            {
+                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5"/>
+                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6"/>
+            }
+
+        
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelEditPlace" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input id="savePlaceButton" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7"/>                    
+            </div>
+
+        </div>
+    }
+
+
+@*    <div class="personCardPlaceContainer">*@
+@*        <p class="personCardPhonesHeader" style="float:none">ТЕЛЕФОНЫ:</p>*@
+@*        *@
+@*        @for (int i = 0; i < Model.SpecificStaffPlaces.Count; i++)*@
+@*        {*@
+@*            <div>*@
+@*                <p id="phoneType_@i" class="personCardJobTitle">@Model.SpecificStaffPlaces[i].PhoneType.Category:</p>*@
+@*                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.SpecificStaffPlaces[i].PhoneNumber</p>*@
+@*                @if (ViewBag.IsAdmin)*@
+@*                {*@
+@*                    <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.SpecificStaffPlaces[i].Id">редактировать</p>*@
+@*                    <p id="deletePhoneLink_@i" class="personCardEdit personCardDeletePhoneLink" data-url="@Url.Action("DeletePhone", "Employee", new { employee = Model.Employee.Id, employPlaceId = Model.EmployeePlaces[i].Id })">удалить</p>*@
+@*                }*@
+@*                else*@
+@*                {*@
+@*                    <p class="personCardEdit personCardEditPhoneLink" style="visibility: hidden">редактировать</p>*@
+@*                }*@
+@*            </div>*@
+@*        }*@
+@*        @if (ViewBag.IsAdmin)*@
+@*        {*@
+@*            <div class="personCardDialog personCardChangePhoneDialog" >*@
+@*                <p id="personCardChangePhoneDialogPhoneTypeLabel" class="personCardChangePlaceDialogSimpleLabel">*@
+@*                    тип номера*@
+@*                </p>*@
+@*                <input id="personCardChangePhoneTextBox" type="text" class="personCardStreet personCardChangePlaceDialogText" />*@
+@**@
+@*                <div class="personCardChangePlaceDialogButtonsContainer">*@
+@*                    <p id="cancelEditPhone" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>*@
+@*                    <input id="updatePhoneButton" data-placeid="0" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7" />*@
+@*                </div>*@
+@*            </div>*@
+@*        }*@
+@*    </div>*@
+@*    *@
+@*    @if (ViewBag.IsAdmin)*@
+@*    {*@
+@*        <p id="personCardAddPhoneLink" class="personCardJob personCardEdit " style="margin-top: 10px; display: block">добавить новый</p>*@
+@*        *@
+@*        <div class="personCardDialog personCardAddPhoneDialog">*@
+@*            <p class="personCardChangePlaceDialogSimpleLabel">*@
+@*                тип номера*@
+@*            </p>*@
+@*            <select id="phoneTypeComboBox" class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="10">*@
+@*                @foreach (var type in DBHelper.GetPhoneTypes())*@
+@*                {*@
+@*                    <option value="@type.Id">@type.Type</option>*@
+@*                }*@
+@*            </select>*@
+@**@
+@*            <p class="personCardChangePlaceDialogSimpleLabel">*@
+@*                номер телефона*@
+@*            </p>*@
+@*            <input id="addPhoneTextBoxPhone" type="text" class="personCardStreet personCardChangePlaceDialogText" tabindex="11"/>*@
+@**@
+@*            <div class="personCardChangePlaceDialogButtonsContainer">*@
+@*                <p id="cancelAddPhone" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>*@
+@*                <input id="addPhoneButton" type="button" data-placeid="0" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="12" />*@
+@*            </div>*@
+@*        </div>*@
+@*    }*@
+@**@
+@*    <input type="file" id="upload" name="image" style="visibility: collapse; width: 1px; height: 1px" />*@
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+
+        $('.emploeeLink, .personCardDepartmentLink').on('click', function (e) {
+
+            var currentPageItem = $(e.target);
+            var url = currentPageItem.data('url');
+            $('.progress').show();
+
+            ChangeSelectedPage(0);
+
+            ClearTreeSelection();
+            loadSearchPage(url);
+        });
+
+        $('.backLink').on('click', function(e)
+        {
+            var currentPageItem = $(this);
+            var url = currentPageItem.data('url');
+
+            if (url == "") {
+                $('#centralPart').empty();
+                ClearTreeSelection();
+                return;
+            }
+
+            if (url.indexOf('Help') != -1) {
+                ChangeSelectedPageWithoutLoading(2);
+            }
+
+            if (url.indexOf('Favorites') != -1)
+                ChangeSelectedPageWithoutLoading(1);
+
+            if (url.indexOf('SearchEmployeesAdvanced') != -1 || url.indexOf('SearchEmployees') != -1) {
+
+                var searchView = '@Url.Action("SearchView","Home", new {id=Guid.Empty})';
+                loadSearchPage(searchView);
+                                loadSearchPageResult(url);
+                return;
+            }
+
+            loadSearchPage(url);
+        });
+
+
+        $('.personCardAddToFavoriteLink, .personCardDeletePhoneLink').on('click', function (e) {
+            var currentPageItem = $(this);
+            var url = currentPageItem.data('url');
+
+            loadSearchPage(url);
+        });
+
+
+        $('#editContactPersonLink').on('click', function(e) {
+            hideAllDialogs();
+
+            var dialog = $('.specificCardChangePersonDialog').first();
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#editPlaceLink').on('click', function (e) {
+            hideAllDialogs();
+
+            var dialog = $(".personCardChangePlaceDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#cancelEditPlace, #cancelEditPhone, #cancelAddPhone').on('click', function () {
+            hideAllDialogs();
+        });
+
+        $('.personCardEditPhoneLink').on('click', function (e) {
+            hideAllDialogs();
+
+            var clickedItem = $(e.target);
+
+            var placeId = clickedItem.data('placeid');
+
+            var idItem = clickedItem.attr('id');
+
+            idItem = idItem.substr(14);//"editPhoneLink_".length == 14            
+
+            $('#personCardChangePhoneTextBox').val($('#phoneNumber_' + idItem).text());
+            
+            var dialog = $('.personCardChangePhoneDialog').first();
+
+            $('#updatePhoneButton').attr("data-placeId", placeId);
+
+            var oldPosition = $(this).position();
+
+            dialog.css({
+                top: (oldPosition.top)
+            });
+            
+            dialog.show();
+        });
+
+        $('#personCardAddPhoneLink').on('click', function(e) {
+            hideAllDialogs();
+
+            var dialog = $(".personCardAddPhoneDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#loadImageLink').on('click', function(e) {
+            hideAllDialogs();
+            $('#upload').click();
+        });
+
+        function readImage(input) {
+            if (input.files && input.files[0]) {
+                var FR = new FileReader();
+                FR.onload = function (e) {                    
+                    $('.personIMG').attr("src", e.target.result);
+
+                    var url = '@Url.Action("SavePhoto", "Employee")';
+                    var user = $('#memberOfHeadquarter').val();
+
+                    savePhoto(url, user, e.target.result);
+                };
+                FR.readAsDataURL(input.files[0]);
+            }
+        }
+
+        //сохранение фото
+        function savePhoto(url, user, image) {
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.post(url, { employee: user, image: image },
+                function (data) {
+                    if (parent != null) {
+                        parent.find('.centralPartWithProgressBar').remove();
+                    }
+
+                    if (data != "")
+                        alert(data);
+                });
+        }
+
+        $('#upload').change(function() {
+            var file = this.files[0];
+            var name = file.name;
+            var size = file.size;
+            var type = file.type;
+
+
+            if (type.toString().indexOf("image") == -1)
+                alert('Неверный формат фотографии. Выберите другой файл.')
+            else {
+                readImage(this);
+            }
+        });
+
+        function hideAllDialogs() {
+            $(".personCardDialog").hide();
+        }
+
+
+        //region changed
+        $('#personCardRegionComboBoxControl').change(function () {
+
+            $('#personCardCityComboBoxControl option').remove();
+
+            var url = '@Url.Action("GetCities", "Employee")';
+
+            loadCities(url, $('.personCardCountryComboBox option:selected').text(), $('#personCardRegionComboBoxControl option:selected').text());
+        });
+
+        //Загрузка городов
+        function loadCities(url, countryValue, regionValue) {            
+            $.get(url, { country: countryValue, region: regionValue }, function (data) {
+                var parent = $('#personCardCityComboBoxControl');
+                if (parent != null) {                    
+                    parent.append(data);
+                }                
+            });
+        };
+
+
+        $('#savePlaceButton').on('click', function () {
+            
+            var url = '@Url.Action("SaveLocation", "Employee")';
+            
+            var user = $('#memberOfHeadquarter').val();
+            var city = $('#personCardCityComboBoxControl option:selected').val();
+            var street = $('.personCardStreet').val();
+            var edifice = $('.personCardHouse').val();
+            var office = $('.personCardOfficeNumber').val();
+
+            savePlace(url, user, city, street, edifice, office);
+        });
+
+
+        $('#memberOfHeadquarter').change(function () {
+
+            var control = $(this);
+            $.post('@Url.Action("ChangeMemberOfHeadquarter","Employee")', { employee: control.val(), isMember: control.is('input:checked') }, function (data) {
+
+            });
+        });
+
+
+        //сохранение места
+        function savePlace(url, user, city, street, edifice, office) {
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.get(url, { employee: user, city: city, street: street, edifice: edifice, office: office }, function(data) {
+                if (parent != null) {
+                    parent.empty();
+                    parent.append(data);
+                }
+            });
+        }
+
+
+        $('#updatePhoneButton').on('click', function() {
+            var url = '@Url.Action("SavePhone", "Employee")';
+
+            var user = $('#memberOfHeadquarter').val();
+            var place = $('#updatePhoneButton').data('placeid');
+            var phone = $('#personCardChangePhoneTextBox').val();
+
+            savePhone(url, user, place, null, phone);
+        });
+
+        $('#addPhoneButton').on('click', function () {
+            var url = '@Url.Action("SavePhone", "Employee")';
+
+            var user = $('#memberOfHeadquarter').val();
+            var phoneType = $('#phoneTypeComboBox option:selected').val();
+            var phone = $('#addPhoneTextBoxPhone').val();
+
+            savePhone(url, user, null, phoneType, phone);
+        });
+
+        function savePhone(url, user, place, phoneType, phone) {
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.get(url, { employee: user, place: place, phoneType: phoneType, phone: phone}, function (data) {
+                if (parent != null) {
+                    parent.empty();
+                    parent.append(data);
+                }
+            });
+        }
+    });
+
+</script>

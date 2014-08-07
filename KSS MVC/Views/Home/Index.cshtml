@@ -194,8 +194,10 @@
             
             $('#centralPart').empty();
 
-            if (page == 0)
+            if (page == 0) {
+                showMainTree();
                 return;
+            }
 
             var url = clickedItem.data('url');
             if (url != null) {
