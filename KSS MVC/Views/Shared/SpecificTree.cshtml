@@ -26,13 +26,13 @@
             {
                 if (node.Children.All(i => !i.Expanded))
                 {
-                    <ul class="innerUL innerUL-background">
+                    <ul class="innerUL innerUL-background specificInnerUL">
                         @foreach (TreeViewNode childNode in node.Children)
                         {
                             if (!node.HasChilds)
                             {
                                 <li>
-                                    <span class="leaf @node.Type" id="@node.Id" title="@node.Name">@node.Name</span>
+                                    <span class="leaf @node.Type"  id="@node.Id" title="@node.Name">@node.Name</span>
                                 </li>
                             }
                             else
@@ -44,13 +44,13 @@
                 }
                 else
                 {
-                      <ul class="innerUL">
+                    <ul class="innerUL specificInnerUL">
                         @foreach (TreeViewNode childNode in node.Children)
                         {
                             if (!node.HasChilds)
                             {
                                 <li>
-                                    <span class="leaf @node.Type" id="@node.Id" title="@node.Name">@node.Name</span>
+                                    <span class="leaf @node.Type"  id="@node.Id" title="@node.Name">@node.Name</span>
                                 </li>
                             }
                             else
@@ -77,7 +77,7 @@
 }
 
 
-<ul class="innerUL">
+<ul class="innerUL specificInnerUL">
     @foreach (TreeViewNode rootNode in Model.RootNodes)
     {
         @TreeView(rootNode)
@@ -89,7 +89,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
 
-        $('.innerUL').on('click', function (e) {
+        $('.specificInnerUL').on('click', function (e) {
             
             var currentListItem = $(e.target);
 
@@ -113,18 +113,19 @@
                     minus.toggleClass("minus");
                     minus.toggleClass("plus");
 
-
-                    var treeProgress = $('<img class="treeProgress" src="../Images/progress.gif" />');
-                    currentListItem.prepend(treeProgress);
-                    //currentListItem.append(treeProgress);
+                    e.stopPropagation();
+                    return;
+                    //var treeProgress = $('<img class="treeProgress" src="Images/progress.gif" />');
+                    //currentListItem.prepend(treeProgress);
+                    
                     //load items
-                    loadDivisionStates(currentListItem, url);
+                    //loadDivisionStates(currentListItem, url);
 
 
                     e.stopPropagation();
                 } else {
 
-                    $.get(url, function () { });
+                    //$.get(url, function () { });
                    
                     var next = currentListItem.next();
 
@@ -160,16 +161,16 @@
                 }
             }
         });
-
-        function loadDivisionStates(listItem, url) {
-            $.get(url, function (data) {
-                //                listItem.parent().after(data);
-
-                listItem.after(data);
-                listItem.find('.treeProgress').remove();
-                listItem.next().addClass('innerUL-background');
-            });
-        }
+//
+//        function loadDivisionStates(listItem, url) {
+//            $.get(url, function (data) {
+//                //                listItem.parent().after(data);
+//
+//                listItem.after(data);
+//                listItem.find('.treeProgress').remove();
+//                listItem.next().addClass('innerUL-background');
+//            });
+//        }
 
     });
 </script>

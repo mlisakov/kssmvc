@@ -148,8 +148,10 @@
     <Compile Include="Helpers\IdComparer.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
+    <Compile Include="Models\SpecificStaffModel.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
+    <Compile Include="Models\SpecificSearchViewModel.cs" />
     <Compile Include="Models\SearchViewModel.cs" />
     <Compile Include="Models\TreeViewModel.cs" />
     <Compile Include="Models\TreeViewNode.cs" />
@@ -309,6 +311,7 @@
     <Content Include="Views\Shared\BirthDayResult.cshtml" />
     <Content Include="Views\Home\FavoritesPage.cshtml" />
     <Content Include="Views\Shared\SpecificTree.cshtml" />
+    <Content Include="Views\Shared\SpecificSearchView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

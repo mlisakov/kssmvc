@@ -127,11 +127,11 @@ namespace KSS.Models
             return IsFavorite;
         }
 
-        public bool LoadLocation()
-        {
-            var f = DBHelper.GetEmployeePlaces(_currentUser);
-            return true;
-        }
+//        public bool LoadLocation()
+//        {
+//            var f = DBHelper.GetEmployeePlaces(_currentUser);
+//            return true;
+//        }
 
         public List<DepartmentState> GetFullDepartmentName()
         {

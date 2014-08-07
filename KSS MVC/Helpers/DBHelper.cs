@@ -106,6 +106,24 @@ namespace KSS.Helpers
         }
 
         /// <summary>
+        /// Получение спец.департамента по его ИД
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static DepartmentSpecificState GetDepartmentSpecificState(Guid id)
+        {
+            try
+            {
+                return BaseModel.DepartmentSpecificStates.FirstOrDefault(t => t.Id == id);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка при получении дивизиона по его ИД. GetDivisionState.", ex);
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Получение списка дивизионов
         /// </summary>
         /// <returns></returns>
@@ -1031,12 +1049,12 @@ namespace KSS.Helpers
 
 
         public static int GetAdvancedSearchResultCount(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName)
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, bool ignoreIsMember)
         {
             try
             {
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
-                    dateStart, dateEnd, job, employeeName, false);
+                    dateStart, dateEnd, job, employeeName, ignoreIsMember);
                 return query.DistinctBy(t => t.Id).Count();                
             }
             catch (Exception ex)
@@ -1286,12 +1304,16 @@ namespace KSS.Helpers
         {
             try
             {
-                byte[] data = BaseModel.Employees.First(t => t.Id == id).Photo;
+                byte[] data = null;
+                
+                if (id != Guid.Empty)
+                {
+                    data = BaseModel.Employees.First(t => t.Id == id).Photo;    
+                }
+                
                 if (data == null)
                 {
                     var bmp = Resources.dafaultpic;
-
-
                     using (var stream = new MemoryStream())
                     {
                         bmp.Save(stream, ImageFormat.Bmp);
@@ -1349,6 +1371,54 @@ namespace KSS.Helpers
             {
                 LogHelper.WriteLog("Ошибка. DeletePhone.", ex);
             }
+        }
+
+        public static SpecificStaff GetSpecificStaff(Guid id)
+        {
+            try
+            {
+                return BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == id);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetSpecificStaff.", ex);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Количество SpecificStaff с  DepartmentSpecificId == id
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public static int GetSpecificStaffsCount(Guid id)
+        {
+            try
+            {
+                return BaseModel.SpecificStaffs.Count(t => t.DepartmentSpecificId == id);                
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetSpecificStaffsCount.", ex);
+            }
+            return 0;
+        }
+
+        public static List<SpecificStaffModel> GetSpecificStaffs(Guid id, int itemsCount)
+        {
+            try
+            {
+                var items =
+                    BaseModel.SpecificStaffs.Where(t => t.DepartmentSpecificId == id)
+                        .OrderBy(t => t.Ranking)
+                        .Take(itemsCount).ToList();
+                return items.Select(t => new SpecificStaffModel(t.Id)).ToList();                
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetSpecificStaffs.", ex);
+            }
+            return new List<SpecificStaffModel>();
         }
     }
 }

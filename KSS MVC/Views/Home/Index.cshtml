@@ -133,7 +133,7 @@
         });
 
         //клик по пункту дерева
-        $('#divTree').on('click', function (e) {
+        $('#divTree').on('click', function(e) {
             var target = $(e.target);
             var isSpan = $(e.target).is('span');
 
@@ -150,8 +150,13 @@
 
                     var url = '@Url.Action("SearchView", new {id = "-1"})';
                     url = url.replace('-1', ids);
-
-                    ChangeSelectedPage(0);
+                    
+                    if (target.hasClass('DepartmentSpecificState')) {
+                        url = '@Url.Action("SpecificSearchView", new {id = "-1"})';
+                        url = url.replace('-1', ids);
+                    } else {
+                        ChangeSelectedPage(0);
+                    }
 
                     loadSearchPage(url);
 
@@ -163,6 +168,7 @@
         });
     });
 
+    //смена выделенного пункта меню без соответствующей загрузки данных
     function ChangeSelectedPageWithoutLoading(page) {
 
         var clickedItem = $('#mainMenuItem' + page);
@@ -178,6 +184,7 @@
         }
     }
 
+    //смена выделенного пункта меню
     function ChangeSelectedPage(page) {
 
         var clickedItem = $('#mainMenuItem' + page);
@@ -213,6 +220,8 @@
             _lastObject.removeClass('selectedTreeNode');
             _lastObject = null;
             _lastId = '-1';
+        } else {
+            $('.selectedTreeNode').removeClass('selectedTreeNode');
         }
     }
 
@@ -229,6 +238,7 @@
         var parent = $('#divTree');
         if (parent != null) {
             parent.append('<div class="centralPartWithProgressBar"/>');
+            parent.find('.innerUL:first').hide();
         }
 
         $.ajax({
@@ -237,8 +247,7 @@
 
         })
             .done(function (data) {
-                if (parent != null) {
-                    parent.find('.innerUL:first').toggle();
+                if (parent != null) {                    
                     parent.find('.centralPartWithProgressBar').remove();
                     parent.append(data);
                 }

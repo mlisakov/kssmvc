@@ -45,6 +45,16 @@ namespace KSS.Controllers
             return view;
         }
 
+        public ActionResult SpecificSearchView(Guid id)
+        {
+            var model = new SpecificSearchViewModel(Session, id);
+
+            Session["BackLink"] = Url.Action("SpecificSearchView", "Home", new { id = id });
+
+            ViewResult view = View(model);
+            return view;
+        }
+
         public ActionResult Favorites(int startIndex)
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
@@ -138,7 +148,7 @@ namespace KSS.Controllers
 
             var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
-                dateStart, dateEnd, job, employeeName);
+                dateStart, dateEnd, job, employeeName, false);
             var pagesCount = itemsCount/_pageSize;
 
             if ((itemsCount % _pageSize) != 0)

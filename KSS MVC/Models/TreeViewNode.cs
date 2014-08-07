@@ -51,7 +51,7 @@ namespace KSS.Models
         {
             Id = departmentSpecificState.Id;
             Name = departmentSpecificState.Name;
-            Type = "departmentSpecificState";
+            Type = "DepartmentSpecificState";
             _hasChildren = hasChildren;
         }
 

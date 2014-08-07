@@ -1319,3 +1319,21 @@ div.rightItem p {
 }
 
 /*person card end*/
+
+
+
+/*SpecificStaff begin*/
+
+.contactInfoLabel {
+	font-weight: bold;
+}
+
+.specificStaffEmployeeName {
+	font-size: 16px;
+	margin: 0;
+}
+
+.specificStaffEmployeeDepartment {
+	margin: 0;
+}
+/*SpecificStaff end*/
