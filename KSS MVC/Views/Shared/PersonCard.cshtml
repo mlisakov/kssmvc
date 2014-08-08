@@ -34,9 +34,7 @@
     <div style="margin-top: 10px">
         <div style="float:left">
 
-            @*        <div class="personIMG" style="max-height: 110px; overflow: hidden; text-align: left">*@
             <img class="personIMG" src="data:image;base64, @Model.GetImage()" />
-            @*        </div>*@
 
             @if (ViewBag.IsAdmin)
         {
@@ -101,6 +99,10 @@
                     {
                         <a> -> </a>
                     }
+                }
+                if (items.Count == 0)
+                {
+                    <p class="personCardJob">-</p>   
                 }
             }
         </p>
@@ -256,6 +258,10 @@
         
         @for (int i = 0; i < Model.EmployeePlaces.Count; i++)
         {
+            if (string.IsNullOrEmpty(Model.EmployeePlaces[i].PhoneNumber) || Model.EmployeePlaces[i].PhoneNumber == "_")
+            {
+                continue;
+            }
             <div>
                 <p id="phoneType_@i" class="personCardJobTitle">@Model.EmployeePlaces[i].PhoneType.Category:</p>
                 <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.EmployeePlaces[i].PhoneNumber</p>
@@ -350,6 +356,9 @@
 
             if (url.indexOf('Favorites') != -1)
                 ChangeSelectedPageWithoutLoading(1);
+
+            if (url.indexOf('Specific') != -1)
+                ChangeSelectedPage(3);
 
             if (url.indexOf('SearchEmployeesAdvanced') != -1 || url.indexOf('SearchEmployees') != -1) {
 

@@ -2,20 +2,18 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Antlr.Runtime;
 using KSS.Helpers;
 using KSS.Models;
-using KSS.Server.Entities;
-using Newtonsoft.Json;
 
 namespace KSS.Controllers
 {
     public class HomeController : Controller
     {
-        private int _pageSize = 5;
+        private const int PageSize = 5;
+
         public ActionResult Index()
         {
-            HomeViewModel homeViewModel = new HomeViewModel(Session);
+            var homeViewModel = new HomeViewModel(Session);
 
             ViewBag.UserName = Session["UserName"];
             ViewBag.UserID = Session["CurrentUser"];
@@ -29,7 +27,7 @@ namespace KSS.Controllers
 
             ViewResult view= View(model);
 
-            view.ViewBag.StartIndex = 0;            ;
+            view.ViewBag.StartIndex = 0;
             view.ViewBag.IsAdvanced = true;
             view.ViewBag.Search = "";            
             view.ViewBag.SearchPlace = null;
@@ -70,10 +68,10 @@ namespace KSS.Controllers
             {
                 DBHelper.CheckAndOrderFavorites(guid);
 
-                employees = DBHelper.GetFavorites(guid, _pageSize, startIndex);
+                employees = DBHelper.GetFavorites(guid, PageSize, startIndex);
 
-                pagesCount = favoritesCount / _pageSize;
-                if ((favoritesCount % _pageSize) != 0)
+                pagesCount = favoritesCount / PageSize;
+                if ((favoritesCount % PageSize) != 0)
                     pagesCount++;
             }
 
@@ -118,13 +116,13 @@ namespace KSS.Controllers
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
 
-            var employees = DBHelper.Search(guid, employeeName, _pageSize, startIndex);
+            var employees = DBHelper.Search(guid, employeeName, PageSize, startIndex);
             ViewResult view = View("SearchEmployeeResult", employees);
 
             var itemsCount = DBHelper.GetSearchResultCount(employeeName);
-            var pagesCount = itemsCount / _pageSize;
+            var pagesCount = itemsCount / PageSize;
 
-            if ((itemsCount % _pageSize) != 0)
+            if ((itemsCount % PageSize) != 0)
                 pagesCount++;
 
             view.ViewBag.StartIndex = startIndex;
@@ -144,16 +142,16 @@ namespace KSS.Controllers
 
             var employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
-                dateStart, dateEnd, job, employeeName, _pageSize, false, guid, startIndex);
+                dateStart, dateEnd, job, employeeName, PageSize, false, guid, startIndex);
 
             ViewResult view = View("SearchEmployeeResult", employees);
 
             var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
                 dateStart, dateEnd, job, employeeName, false);
-            var pagesCount = itemsCount/_pageSize;
+            var pagesCount = itemsCount/PageSize;
 
-            if ((itemsCount % _pageSize) != 0)
+            if ((itemsCount % PageSize) != 0)
                 pagesCount++;
 
             view.ViewBag.StartIndex = startIndex;
@@ -219,6 +217,37 @@ namespace KSS.Controllers
             view.ViewBag.IsAdmin = isAdmin;
             view.ViewBag.BackLink = Session["BackLink"];
             return view;
+        }
+
+
+        public ActionResult SavePersonForSpecificCard(Guid id,Guid employeeId)
+        {
+            DBHelper.SavePersonForSpecificCard(id, employeeId);
+
+            return SpecificCard(id);
+        }
+
+
+        public ActionResult SaveLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
+        {
+            DBHelper.UpdateLocationForSpecificCard(specificStaffId, city, street, edifice, office);
+
+            return SpecificCard(specificStaffId);
+        }
+
+
+        public ActionResult DeleteSpecificPhone(Guid specificStaffId, Guid specificStaffPlaceId)
+        {
+            DBHelper.DeleteSpecificPhone(specificStaffPlaceId);
+
+            return SpecificCard(specificStaffId);
+        }
+
+        public ActionResult SaveSpecificPhone(Guid specificStaffId, Guid? specificStaffPlaceId, Guid? phoneType, string phone)
+        {
+            DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
+
+            return SpecificCard(specificStaffId);
         }
     }
 }

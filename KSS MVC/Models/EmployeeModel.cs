@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using System.Text;
 using System.Web;
-using System.Web.UI.WebControls;
 using KSS.Helpers;
 using KSS.Server.Entities;
 
@@ -143,7 +141,7 @@ namespace KSS.Models
 
         private void GetFullDepartmentName(List<DepartmentState> departments, Guid? departmentGuid)
         {
-            if (departmentGuid.HasValue)
+            if (departmentGuid.HasValue && departmentGuid.Value!= Guid.Empty)
             {
                 var department = DBHelper.GetDepartmentState(departmentGuid.Value);
                 departments.Add(department);

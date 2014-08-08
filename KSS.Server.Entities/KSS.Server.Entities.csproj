@@ -49,10 +49,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CompanyBaseModel.cs">
+    <Compile Include="Company.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>CompanyBaseModel.tt</DependentUpon>
+      <DependentUpon>Company.tt</DependentUpon>
     </Compile>
     <Compile Include="Company.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -72,9 +72,9 @@
     <None Include="Company.edmx.diagram">
       <DependentUpon>Company.edmx</DependentUpon>
     </None>
-    <None Include="CompanyBaseModel.tt">
+    <None Include="Company.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>CompanyBaseModel.cs</LastGenOutput>
+      <LastGenOutput>Company.cs</LastGenOutput>
       <DependentUpon>Company.edmx</DependentUpon>
     </None>
     <None Include="packages.config" />

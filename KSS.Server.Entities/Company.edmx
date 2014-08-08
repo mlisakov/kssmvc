@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CompanyBaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="CompanyBaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Decrease">
           <Key>
             <PropertyRef Name="Id" />
@@ -24,6 +24,17 @@
           <Property Name="Number" Type="nvarchar" MaxLength="20" />
           <Property Name="ManualInput" Type="bit" Nullable="false" />
           <Property Name="RossetiCode" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="DepartmentSpecificState">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="DivisionId" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
+          <Property Name="ExpirationDate" Type="smalldatetime" />
         </EntityType>
         <EntityType Name="DepartmentState">
           <Key>
@@ -236,6 +247,7 @@
           <Property Name="EmployeeId" Type="uniqueidentifier" />
           <Property Name="Position" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="Ranking" Type="nvarchar" MaxLength="20" Nullable="false" />
+          <Property Name="DepartmentSpecificId" Type="uniqueidentifier" />
         </EntityType>
         <EntityType Name="SpecificStaffPlace">
           <Key>
@@ -288,6 +300,30 @@
           <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
           <Property Name="ExpirationDate" Type="smalldatetime" />
         </EntityType>
+        <Association Name="FK_DepartmentSpecificState_DepartmentSpecificState">
+          <End Role="DepartmentSpecificState" Type="Self.DepartmentSpecificState" Multiplicity="0..1" />
+          <End Role="DepartmentSpecificState1" Type="Self.DepartmentSpecificState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DepartmentSpecificState">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DepartmentSpecificState1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DepartmentSpecificState_Division">
+          <End Role="Division" Type="Self.Division" Multiplicity="1" />
+          <End Role="DepartmentSpecificState" Type="Self.DepartmentSpecificState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Division">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DepartmentSpecificState">
+              <PropertyRef Name="DivisionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DepartmentState_Department">
           <End Role="Department" Type="Self.Department" Multiplicity="1" />
           <End Role="DepartmentState" Type="Self.DepartmentState" Multiplicity="*" />
@@ -549,6 +585,18 @@
             </Principal>
             <Dependent Role="SpecificStaff">
               <PropertyRef Name="DepartmentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpecificStaff_DepartmentSpecificState">
+          <End Role="DepartmentSpecificState" Type="Self.DepartmentSpecificState" Multiplicity="0..1" />
+          <End Role="SpecificStaff" Type="Self.SpecificStaff" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DepartmentSpecificState">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpecificStaff">
+              <PropertyRef Name="DepartmentSpecificId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -663,6 +711,7 @@
         <EntityContainer Name="CompanyBaseModelStoreContainer">
           <EntitySet Name="Decrease" EntityType="Self.Decrease" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Department" EntityType="Self.Department" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DepartmentSpecificState" EntityType="Self.DepartmentSpecificState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DepartmentState" EntityType="Self.DepartmentState" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Division" EntityType="Self.Division" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DivisionPhoneCode" EntityType="Self.DivisionPhoneCode" Schema="dbo" store:Type="Tables" />
@@ -687,6 +736,14 @@
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Territory" EntityType="Self.Territory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TerritoryState" EntityType="Self.TerritoryState" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_DepartmentSpecificState_DepartmentSpecificState" Association="Self.FK_DepartmentSpecificState_DepartmentSpecificState">
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificState" />
+            <End Role="DepartmentSpecificState1" EntitySet="DepartmentSpecificState" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentSpecificState_Division" Association="Self.FK_DepartmentSpecificState_Division">
+            <End Role="Division" EntitySet="Division" />
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificState" />
+          </AssociationSet>
           <AssociationSet Name="FK_DepartmentState_Department" Association="Self.FK_DepartmentState_Department">
             <End Role="Department" EntitySet="Department" />
             <End Role="DepartmentState" EntitySet="DepartmentState" />
@@ -775,6 +832,10 @@
             <End Role="Department" EntitySet="Department" />
             <End Role="SpecificStaff" EntitySet="SpecificStaff" />
           </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaff_DepartmentSpecificState" Association="Self.FK_SpecificStaff_DepartmentSpecificState">
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificState" />
+            <End Role="SpecificStaff" EntitySet="SpecificStaff" />
+          </AssociationSet>
           <AssociationSet Name="FK_SpecificStaff_Employee" Association="Self.FK_SpecificStaff_Employee">
             <End Role="Employee" EntitySet="Employee" />
             <End Role="SpecificStaff" EntitySet="SpecificStaff" />
@@ -812,18 +873,182 @@
             <End Role="TerritoryState" EntitySet="TerritoryState" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="KSS.Server.Entities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="CompanyBaseModel" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Decreases" EntityType="KSS.Server.Entities.Decrease" />
+          <EntitySet Name="Departments" EntityType="KSS.Server.Entities.Department" />
+          <EntitySet Name="DepartmentSpecificStates" EntityType="KSS.Server.Entities.DepartmentSpecificState" />
+          <EntitySet Name="DepartmentStates" EntityType="KSS.Server.Entities.DepartmentState" />
+          <EntitySet Name="Divisions" EntityType="KSS.Server.Entities.Division" />
+          <EntitySet Name="DivisionPhoneCodes" EntityType="KSS.Server.Entities.DivisionPhoneCode" />
+          <EntitySet Name="DivisionStates" EntityType="KSS.Server.Entities.DivisionState" />
+          <EntitySet Name="Employees" EntityType="KSS.Server.Entities.Employee" />
+          <EntitySet Name="EmployeePlaces" EntityType="KSS.Server.Entities.EmployeePlace" />
+          <EntitySet Name="Favorites" EntityType="KSS.Server.Entities.Favorite" />
+          <EntitySet Name="HistoryUsers" EntityType="KSS.Server.Entities.HistoryUser" />
+          <EntitySet Name="Localities" EntityType="KSS.Server.Entities.Locality" />
+          <EntitySet Name="Locations" EntityType="KSS.Server.Entities.Location" />
+          <EntitySet Name="Operators" EntityType="KSS.Server.Entities.Operator" />
+          <EntitySet Name="Options" EntityType="KSS.Server.Entities.Option" />
+          <EntitySet Name="PhoneMatrixInts" EntityType="KSS.Server.Entities.PhoneMatrixInt" />
+          <EntitySet Name="PhoneMatrixIntFulls" EntityType="KSS.Server.Entities.PhoneMatrixIntFull" />
+          <EntitySet Name="PhoneTypes" EntityType="KSS.Server.Entities.PhoneType" />
+          <EntitySet Name="PhoneZoneInts" EntityType="KSS.Server.Entities.PhoneZoneInt" />
+          <EntitySet Name="Positions" EntityType="KSS.Server.Entities.Position" />
+          <EntitySet Name="PositionStates" EntityType="KSS.Server.Entities.PositionState" />
+          <EntitySet Name="SpecificStaffs" EntityType="KSS.Server.Entities.SpecificStaff" />
+          <EntitySet Name="SpecificStaffPlaces" EntityType="KSS.Server.Entities.SpecificStaffPlace" />
+          <EntitySet Name="Staffs" EntityType="KSS.Server.Entities.Staff" />
+          <EntitySet Name="sysdiagrams" EntityType="KSS.Server.Entities.sysdiagram" />
+          <EntitySet Name="Territories" EntityType="KSS.Server.Entities.Territory" />
+          <EntitySet Name="TerritoryStates" EntityType="KSS.Server.Entities.TerritoryState" />
+          <AssociationSet Name="FK_DepartmentState_Department" Association="KSS.Server.Entities.FK_DepartmentState_Department">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="DepartmentState" EntitySet="DepartmentStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentState_Department1" Association="KSS.Server.Entities.FK_DepartmentState_Department1">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="DepartmentState" EntitySet="DepartmentStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Position_Department" Association="KSS.Server.Entities.FK_Position_Department">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="Position" EntitySet="Positions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaff_Department" Association="KSS.Server.Entities.FK_SpecificStaff_Department">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Staff_Department" Association="KSS.Server.Entities.FK_Staff_Department">
+            <End Role="Department" EntitySet="Departments" />
+            <End Role="Staff" EntitySet="Staffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentSpecificState_DepartmentSpecificState" Association="KSS.Server.Entities.FK_DepartmentSpecificState_DepartmentSpecificState">
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificStates" />
+            <End Role="DepartmentSpecificState1" EntitySet="DepartmentSpecificStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentSpecificState_Division" Association="KSS.Server.Entities.FK_DepartmentSpecificState_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaff_DepartmentSpecificState" Association="KSS.Server.Entities.FK_SpecificStaff_DepartmentSpecificState">
+            <End Role="DepartmentSpecificState" EntitySet="DepartmentSpecificStates" />
+            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentState_Division" Association="KSS.Server.Entities.FK_DepartmentState_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DepartmentState" EntitySet="DepartmentStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DepartmentState_Employee" Association="KSS.Server.Entities.FK_DepartmentState_Employee">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="DepartmentState" EntitySet="DepartmentStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DivisionPhoneCode_Division" Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DivisionPhoneCode" EntitySet="DivisionPhoneCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DivisionPhoneCode_Division1" Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division1">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DivisionPhoneCode" EntitySet="DivisionPhoneCodes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DivisionState_Division" Association="KSS.Server.Entities.FK_DivisionState_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DivisionState" EntitySet="DivisionStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DivisionState_Division1" Association="KSS.Server.Entities.FK_DivisionState_Division1">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="DivisionState" EntitySet="DivisionStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Division" Association="KSS.Server.Entities.FK_Location_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TerritoryState_Division" Association="KSS.Server.Entities.FK_TerritoryState_Division">
+            <End Role="Division" EntitySet="Divisions" />
+            <End Role="TerritoryState" EntitySet="TerritoryStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePlace_Employee" Association="KSS.Server.Entities.FK_EmployeePlace_Employee">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_Employee_EmployeeId" Association="KSS.Server.Entities.FK_Favorites_Employee_EmployeeId">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="Favorite" EntitySet="Favorites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Favorites_Employee_LinkedEmployeeId" Association="KSS.Server.Entities.FK_Favorites_Employee_LinkedEmployeeId">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="Favorite" EntitySet="Favorites" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaff_Employee" Association="KSS.Server.Entities.FK_SpecificStaff_Employee">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Staff_Employee" Association="KSS.Server.Entities.FK_Staff_Employee">
+            <End Role="Employee" EntitySet="Employees" />
+            <End Role="Staff" EntitySet="Staffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePlace_Location" Association="KSS.Server.Entities.FK_EmployeePlace_Location">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_EmployeePlace_PhoneType" Association="KSS.Server.Entities.FK_EmployeePlace_PhoneType">
+            <End Role="PhoneType" EntitySet="PhoneTypes" />
+            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Locality" Association="KSS.Server.Entities.FK_Location_Locality">
+            <End Role="Locality" EntitySet="Localities" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_PhoneZoneInt" Association="KSS.Server.Entities.FK_Location_PhoneZoneInt">
+            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Location_Territory" Association="KSS.Server.Entities.FK_Location_Territory">
+            <End Role="Territory" EntitySet="Territories" />
+            <End Role="Location" EntitySet="Locations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaffPlace_Location" Association="KSS.Server.Entities.FK_SpecificStaffPlace_Location">
+            <End Role="Location" EntitySet="Locations" />
+            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhoneMatrixInt_PhoneZoneInt_FromId" Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_FromId">
+            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
+            <End Role="PhoneMatrixInt" EntitySet="PhoneMatrixInts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PhoneMatrixInt_PhoneZoneInt_ToId" Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_ToId">
+            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
+            <End Role="PhoneMatrixInt" EntitySet="PhoneMatrixInts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaffPlace_PhoneType" Association="KSS.Server.Entities.FK_SpecificStaffPlace_PhoneType">
+            <End Role="PhoneType" EntitySet="PhoneTypes" />
+            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_PositionState_Position" Association="KSS.Server.Entities.FK_PositionState_Position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="PositionState" EntitySet="PositionStates" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Staff_Position" Association="KSS.Server.Entities.FK_Staff_Position">
+            <End Role="Position" EntitySet="Positions" />
+            <End Role="Staff" EntitySet="Staffs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SpecificStaffPlace_SpecificStaff" Association="KSS.Server.Entities.FK_SpecificStaffPlace_SpecificStaff">
+            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
+            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
+          </AssociationSet>
+          <AssociationSet Name="FK_TerritoryState_Territory" Association="KSS.Server.Entities.FK_TerritoryState_Territory">
+            <End Role="Territory" EntitySet="Territories" />
+            <End Role="TerritoryState" EntitySet="TerritoryStates" />
+          </AssociationSet>
+        </EntityContainer>
         <EntityType Name="Decrease">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Original" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Brief" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Original" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Brief" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Priority" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Department">
@@ -831,16 +1056,31 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Ranking" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Number" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ManualInput" Type="Boolean" Nullable="false" />
           <Property Name="RossetiCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="DepartmentStates" Relationship="Self.FK_DepartmentState_Department" FromRole="Department" ToRole="DepartmentState" />
-          <NavigationProperty Name="DepartmentStates1" Relationship="Self.FK_DepartmentState_Department1" FromRole="Department" ToRole="DepartmentState" />
-          <NavigationProperty Name="Positions" Relationship="Self.FK_Position_Department" FromRole="Department" ToRole="Position" />
-          <NavigationProperty Name="SpecificStaffs" Relationship="Self.FK_SpecificStaff_Department" FromRole="Department" ToRole="SpecificStaff" />
-          <NavigationProperty Name="Staffs" Relationship="Self.FK_Staff_Department" FromRole="Department" ToRole="Staff" />
+          <NavigationProperty Name="DepartmentStates" Relationship="KSS.Server.Entities.FK_DepartmentState_Department" FromRole="Department" ToRole="DepartmentState" />
+          <NavigationProperty Name="DepartmentStates1" Relationship="KSS.Server.Entities.FK_DepartmentState_Department1" FromRole="Department" ToRole="DepartmentState" />
+          <NavigationProperty Name="Positions" Relationship="KSS.Server.Entities.FK_Position_Department" FromRole="Department" ToRole="Position" />
+          <NavigationProperty Name="SpecificStaffs" Relationship="KSS.Server.Entities.FK_SpecificStaff_Department" FromRole="Department" ToRole="SpecificStaff" />
+          <NavigationProperty Name="Staffs" Relationship="KSS.Server.Entities.FK_Staff_Department" FromRole="Department" ToRole="Staff" />
+        </EntityType>
+        <EntityType Name="DepartmentSpecificState">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Guid" Nullable="false" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="DivisionId" Type="Guid" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="DepartmentSpecificState1" Relationship="KSS.Server.Entities.FK_DepartmentSpecificState_DepartmentSpecificState" FromRole="DepartmentSpecificState" ToRole="DepartmentSpecificState1" />
+          <NavigationProperty Name="DepartmentSpecificState2" Relationship="KSS.Server.Entities.FK_DepartmentSpecificState_DepartmentSpecificState" FromRole="DepartmentSpecificState1" ToRole="DepartmentSpecificState" />
+          <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_DepartmentSpecificState_Division" FromRole="DepartmentSpecificState" ToRole="Division" />
+          <NavigationProperty Name="SpecificStaffs" Relationship="KSS.Server.Entities.FK_SpecificStaff_DepartmentSpecificState" FromRole="DepartmentSpecificState" ToRole="SpecificStaff" />
         </EntityType>
         <EntityType Name="DepartmentState">
           <Key>
@@ -851,29 +1091,30 @@
           <Property Name="ParentId" Type="Guid" />
           <Property Name="DivisionId" Type="Guid" Nullable="false" />
           <Property Name="ChiefId" Type="Guid" />
-          <Property Name="Department" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Department" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Department1" Relationship="Self.FK_DepartmentState_Department" FromRole="DepartmentState" ToRole="Department" />
-          <NavigationProperty Name="Department2" Relationship="Self.FK_DepartmentState_Department1" FromRole="DepartmentState" ToRole="Department" />
-          <NavigationProperty Name="Division" Relationship="Self.FK_DepartmentState_Division" FromRole="DepartmentState" ToRole="Division" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_DepartmentState_Employee" FromRole="DepartmentState" ToRole="Employee" />
+          <NavigationProperty Name="Department1" Relationship="KSS.Server.Entities.FK_DepartmentState_Department" FromRole="DepartmentState" ToRole="Department" />
+          <NavigationProperty Name="Department2" Relationship="KSS.Server.Entities.FK_DepartmentState_Department1" FromRole="DepartmentState" ToRole="Department" />
+          <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_DepartmentState_Division" FromRole="DepartmentState" ToRole="Division" />
+          <NavigationProperty Name="Employee" Relationship="KSS.Server.Entities.FK_DepartmentState_Employee" FromRole="DepartmentState" ToRole="Employee" />
         </EntityType>
         <EntityType Name="Division">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Ranking" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Essential" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="DepartmentStates" Relationship="Self.FK_DepartmentState_Division" FromRole="Division" ToRole="DepartmentState" />
-          <NavigationProperty Name="DivisionPhoneCodes" Relationship="Self.FK_DivisionPhoneCode_Division" FromRole="Division" ToRole="DivisionPhoneCode" />
-          <NavigationProperty Name="DivisionPhoneCodes1" Relationship="Self.FK_DivisionPhoneCode_Division1" FromRole="Division" ToRole="DivisionPhoneCode" />
-          <NavigationProperty Name="DivisionStates" Relationship="Self.FK_DivisionState_Division" FromRole="Division" ToRole="DivisionState" />
-          <NavigationProperty Name="DivisionStates1" Relationship="Self.FK_DivisionState_Division1" FromRole="Division" ToRole="DivisionState" />
-          <NavigationProperty Name="Locations" Relationship="Self.FK_Location_Division" FromRole="Division" ToRole="Location" />
-          <NavigationProperty Name="TerritoryStates" Relationship="Self.FK_TerritoryState_Division" FromRole="Division" ToRole="TerritoryState" />
+          <NavigationProperty Name="DepartmentSpecificStates" Relationship="KSS.Server.Entities.FK_DepartmentSpecificState_Division" FromRole="Division" ToRole="DepartmentSpecificState" />
+          <NavigationProperty Name="DepartmentStates" Relationship="KSS.Server.Entities.FK_DepartmentState_Division" FromRole="Division" ToRole="DepartmentState" />
+          <NavigationProperty Name="DivisionPhoneCodes" Relationship="KSS.Server.Entities.FK_DivisionPhoneCode_Division" FromRole="Division" ToRole="DivisionPhoneCode" />
+          <NavigationProperty Name="DivisionPhoneCodes1" Relationship="KSS.Server.Entities.FK_DivisionPhoneCode_Division1" FromRole="Division" ToRole="DivisionPhoneCode" />
+          <NavigationProperty Name="DivisionStates" Relationship="KSS.Server.Entities.FK_DivisionState_Division" FromRole="Division" ToRole="DivisionState" />
+          <NavigationProperty Name="DivisionStates1" Relationship="KSS.Server.Entities.FK_DivisionState_Division1" FromRole="Division" ToRole="DivisionState" />
+          <NavigationProperty Name="Locations" Relationship="KSS.Server.Entities.FK_Location_Division" FromRole="Division" ToRole="Location" />
+          <NavigationProperty Name="TerritoryStates" Relationship="KSS.Server.Entities.FK_TerritoryState_Division" FromRole="Division" ToRole="TerritoryState" />
         </EntityType>
         <EntityType Name="DivisionPhoneCode">
           <Key>
@@ -882,9 +1123,9 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="DivisionFromId" Type="Guid" Nullable="false" />
           <Property Name="DivisionToId" Type="Guid" Nullable="false" />
-          <Property Name="IntPhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Division" Relationship="Self.FK_DivisionPhoneCode_Division" FromRole="DivisionPhoneCode" ToRole="Division" />
-          <NavigationProperty Name="Division1" Relationship="Self.FK_DivisionPhoneCode_Division1" FromRole="DivisionPhoneCode" ToRole="Division" />
+          <Property Name="IntPhoneCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_DivisionPhoneCode_Division" FromRole="DivisionPhoneCode" ToRole="Division" />
+          <NavigationProperty Name="Division1" Relationship="KSS.Server.Entities.FK_DivisionPhoneCode_Division1" FromRole="DivisionPhoneCode" ToRole="Division" />
         </EntityType>
         <EntityType Name="DivisionState">
           <Key>
@@ -893,21 +1134,21 @@
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="ParentId" Type="Guid" />
-          <Property Name="Division" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Division" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="DivisionBrief" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Division1" Relationship="Self.FK_DivisionState_Division" FromRole="DivisionState" ToRole="Division" />
-          <NavigationProperty Name="Division2" Relationship="Self.FK_DivisionState_Division1" FromRole="DivisionState" ToRole="Division" />
+          <NavigationProperty Name="Division1" Relationship="KSS.Server.Entities.FK_DivisionState_Division" FromRole="DivisionState" ToRole="Division" />
+          <NavigationProperty Name="Division2" Relationship="KSS.Server.Entities.FK_DivisionState_Division1" FromRole="DivisionState" ToRole="Division" />
         </EntityType>
         <EntityType Name="Employee">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Code" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="PersonId" Type="Guid" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Sex" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="BirthDay" Type="DateTime" Precision="0" />
           <Property Name="ITN" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
@@ -931,12 +1172,12 @@
           <Property Name="Photo" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Position" Type="Int32" Nullable="false" />
           <Property Name="IsMemberOfHeadquarter" Type="Boolean" />
-          <NavigationProperty Name="DepartmentStates" Relationship="Self.FK_DepartmentState_Employee" FromRole="Employee" ToRole="DepartmentState" />
-          <NavigationProperty Name="EmployeePlaces" Relationship="Self.FK_EmployeePlace_Employee" FromRole="Employee" ToRole="EmployeePlace" />
-          <NavigationProperty Name="Favorites" Relationship="Self.FK_Favorites_Employee_EmployeeId" FromRole="Employee" ToRole="Favorites" />
-          <NavigationProperty Name="Favorites1" Relationship="Self.FK_Favorites_Employee_LinkedEmployeeId" FromRole="Employee" ToRole="Favorites" />
-          <NavigationProperty Name="SpecificStaffs" Relationship="Self.FK_SpecificStaff_Employee" FromRole="Employee" ToRole="SpecificStaff" />
-          <NavigationProperty Name="Staffs" Relationship="Self.FK_Staff_Employee" FromRole="Employee" ToRole="Staff" />
+          <NavigationProperty Name="DepartmentStates" Relationship="KSS.Server.Entities.FK_DepartmentState_Employee" FromRole="Employee" ToRole="DepartmentState" />
+          <NavigationProperty Name="EmployeePlaces" Relationship="KSS.Server.Entities.FK_EmployeePlace_Employee" FromRole="Employee" ToRole="EmployeePlace" />
+          <NavigationProperty Name="Favorites" Relationship="KSS.Server.Entities.FK_Favorites_Employee_EmployeeId" FromRole="Employee" ToRole="Favorite" />
+          <NavigationProperty Name="Favorites1" Relationship="KSS.Server.Entities.FK_Favorites_Employee_LinkedEmployeeId" FromRole="Employee" ToRole="Favorite" />
+          <NavigationProperty Name="SpecificStaffs" Relationship="KSS.Server.Entities.FK_SpecificStaff_Employee" FromRole="Employee" ToRole="SpecificStaff" />
+          <NavigationProperty Name="Staffs" Relationship="KSS.Server.Entities.FK_Staff_Employee" FromRole="Employee" ToRole="Staff" />
         </EntityType>
         <EntityType Name="EmployeePlace">
           <Key>
@@ -946,11 +1187,11 @@
           <Property Name="EmployeeId" Type="Guid" Nullable="false" />
           <Property Name="LocationId" Type="Guid" />
           <Property Name="PhoneTypeId" Type="Guid" Nullable="false" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Office" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_EmployeePlace_Employee" FromRole="EmployeePlace" ToRole="Employee" />
-          <NavigationProperty Name="Location" Relationship="Self.FK_EmployeePlace_Location" FromRole="EmployeePlace" ToRole="Location" />
-          <NavigationProperty Name="PhoneType" Relationship="Self.FK_EmployeePlace_PhoneType" FromRole="EmployeePlace" ToRole="PhoneType" />
+          <NavigationProperty Name="Employee" Relationship="KSS.Server.Entities.FK_EmployeePlace_Employee" FromRole="EmployeePlace" ToRole="Employee" />
+          <NavigationProperty Name="Location" Relationship="KSS.Server.Entities.FK_EmployeePlace_Location" FromRole="EmployeePlace" ToRole="Location" />
+          <NavigationProperty Name="PhoneType" Relationship="KSS.Server.Entities.FK_EmployeePlace_PhoneType" FromRole="EmployeePlace" ToRole="PhoneType" />
         </EntityType>
         <EntityType Name="Favorite">
           <Key>
@@ -959,8 +1200,8 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="EmployeeId" Type="Guid" Nullable="false" />
           <Property Name="LinkedEmployeeId" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_Favorites_Employee_EmployeeId" FromRole="Favorites" ToRole="Employee" />
-          <NavigationProperty Name="Employee1" Relationship="Self.FK_Favorites_Employee_LinkedEmployeeId" FromRole="Favorites" ToRole="Employee" />
+          <NavigationProperty Name="Employee" Relationship="KSS.Server.Entities.FK_Favorites_Employee_EmployeeId" FromRole="Favorite" ToRole="Employee" />
+          <NavigationProperty Name="Employee1" Relationship="KSS.Server.Entities.FK_Favorites_Employee_LinkedEmployeeId" FromRole="Favorite" ToRole="Employee" />
         </EntityType>
         <EntityType Name="HistoryUser">
           <Key>
@@ -976,11 +1217,11 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Locality1" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Region" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Country" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CityPhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Locations" Relationship="Self.FK_Location_Locality" FromRole="Locality" ToRole="Location" />
+          <Property Name="Locality1" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Region" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Country" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="CityPhoneCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Locations" Relationship="KSS.Server.Entities.FK_Location_Locality" FromRole="Locality" ToRole="Location" />
         </EntityType>
         <EntityType Name="Location">
           <Key>
@@ -990,16 +1231,16 @@
           <Property Name="DivisionId" Type="Guid" Nullable="false" />
           <Property Name="LocalityId" Type="Guid" Nullable="false" />
           <Property Name="TerritoryId" Type="Guid" />
-          <Property Name="Street" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Street" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Edifice" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Building" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="PhoneZoneId" Type="Guid" />
-          <NavigationProperty Name="Division" Relationship="Self.FK_Location_Division" FromRole="Location" ToRole="Division" />
-          <NavigationProperty Name="EmployeePlaces" Relationship="Self.FK_EmployeePlace_Location" FromRole="Location" ToRole="EmployeePlace" />
-          <NavigationProperty Name="Locality" Relationship="Self.FK_Location_Locality" FromRole="Location" ToRole="Locality" />
-          <NavigationProperty Name="PhoneZoneInt" Relationship="Self.FK_Location_PhoneZoneInt" FromRole="Location" ToRole="PhoneZoneInt" />
-          <NavigationProperty Name="Territory" Relationship="Self.FK_Location_Territory" FromRole="Location" ToRole="Territory" />
-          <NavigationProperty Name="SpecificStaffPlaces" Relationship="Self.FK_SpecificStaffPlace_Location" FromRole="Location" ToRole="SpecificStaffPlace" />
+          <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_Location_Division" FromRole="Location" ToRole="Division" />
+          <NavigationProperty Name="EmployeePlaces" Relationship="KSS.Server.Entities.FK_EmployeePlace_Location" FromRole="Location" ToRole="EmployeePlace" />
+          <NavigationProperty Name="Locality" Relationship="KSS.Server.Entities.FK_Location_Locality" FromRole="Location" ToRole="Locality" />
+          <NavigationProperty Name="PhoneZoneInt" Relationship="KSS.Server.Entities.FK_Location_PhoneZoneInt" FromRole="Location" ToRole="PhoneZoneInt" />
+          <NavigationProperty Name="Territory" Relationship="KSS.Server.Entities.FK_Location_Territory" FromRole="Location" ToRole="Territory" />
+          <NavigationProperty Name="SpecificStaffPlaces" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_Location" FromRole="Location" ToRole="SpecificStaffPlace" />
         </EntityType>
         <EntityType Name="Operator">
           <Key>
@@ -1024,9 +1265,9 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="FromId" Type="Guid" Nullable="false" />
           <Property Name="ToId" Type="Guid" Nullable="false" />
-          <Property Name="PhoneCode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="PhoneZoneInt" Relationship="Self.FK_PhoneMatrixInt_PhoneZoneInt_FromId" FromRole="PhoneMatrixInt" ToRole="PhoneZoneInt" />
-          <NavigationProperty Name="PhoneZoneInt1" Relationship="Self.FK_PhoneMatrixInt_PhoneZoneInt_ToId" FromRole="PhoneMatrixInt" ToRole="PhoneZoneInt" />
+          <Property Name="PhoneCode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="PhoneZoneInt" Relationship="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_FromId" FromRole="PhoneMatrixInt" ToRole="PhoneZoneInt" />
+          <NavigationProperty Name="PhoneZoneInt1" Relationship="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_ToId" FromRole="PhoneMatrixInt" ToRole="PhoneZoneInt" />
         </EntityType>
         <EntityType Name="PhoneMatrixIntFull">
           <Key>
@@ -1045,21 +1286,21 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Type" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Category" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Type" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Category" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="Sequence" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="EmployeePlaces" Relationship="Self.FK_EmployeePlace_PhoneType" FromRole="PhoneType" ToRole="EmployeePlace" />
-          <NavigationProperty Name="SpecificStaffPlaces" Relationship="Self.FK_SpecificStaffPlace_PhoneType" FromRole="PhoneType" ToRole="SpecificStaffPlace" />
+          <NavigationProperty Name="EmployeePlaces" Relationship="KSS.Server.Entities.FK_EmployeePlace_PhoneType" FromRole="PhoneType" ToRole="EmployeePlace" />
+          <NavigationProperty Name="SpecificStaffPlaces" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_PhoneType" FromRole="PhoneType" ToRole="SpecificStaffPlace" />
         </EntityType>
         <EntityType Name="PhoneZoneInt">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Zone" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Locations" Relationship="Self.FK_Location_PhoneZoneInt" FromRole="PhoneZoneInt" ToRole="Location" />
-          <NavigationProperty Name="PhoneMatrixInts" Relationship="Self.FK_PhoneMatrixInt_PhoneZoneInt_FromId" FromRole="PhoneZoneInt" ToRole="PhoneMatrixInt" />
-          <NavigationProperty Name="PhoneMatrixInts1" Relationship="Self.FK_PhoneMatrixInt_PhoneZoneInt_ToId" FromRole="PhoneZoneInt" ToRole="PhoneMatrixInt" />
+          <Property Name="Zone" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Locations" Relationship="KSS.Server.Entities.FK_Location_PhoneZoneInt" FromRole="PhoneZoneInt" ToRole="Location" />
+          <NavigationProperty Name="PhoneMatrixInts" Relationship="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_FromId" FromRole="PhoneZoneInt" ToRole="PhoneMatrixInt" />
+          <NavigationProperty Name="PhoneMatrixInts1" Relationship="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_ToId" FromRole="PhoneZoneInt" ToRole="PhoneMatrixInt" />
         </EntityType>
         <EntityType Name="Position">
           <Key>
@@ -1068,14 +1309,14 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="Code" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="TitleId" Type="Guid" Nullable="false" />
-          <Property Name="TitleCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="TitleCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="DepartmentId" Type="Guid" Nullable="false" />
-          <Property Name="DepartmentCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="DepartmentCode" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Ranking" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ManualInput" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Department" Relationship="Self.FK_Position_Department" FromRole="Position" ToRole="Department" />
-          <NavigationProperty Name="PositionStates" Relationship="Self.FK_PositionState_Position" FromRole="Position" ToRole="PositionState" />
-          <NavigationProperty Name="Staffs" Relationship="Self.FK_Staff_Position" FromRole="Position" ToRole="Staff" />
+          <NavigationProperty Name="Department" Relationship="KSS.Server.Entities.FK_Position_Department" FromRole="Position" ToRole="Department" />
+          <NavigationProperty Name="PositionStates" Relationship="KSS.Server.Entities.FK_PositionState_Position" FromRole="Position" ToRole="PositionState" />
+          <NavigationProperty Name="Staffs" Relationship="KSS.Server.Entities.FK_Staff_Position" FromRole="Position" ToRole="Staff" />
         </EntityType>
         <EntityType Name="PositionState">
           <Key>
@@ -1083,10 +1324,10 @@
             <PropertyRef Name="ValidationDate" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Position" Relationship="Self.FK_PositionState_Position" FromRole="PositionState" ToRole="Position" />
+          <NavigationProperty Name="Position" Relationship="KSS.Server.Entities.FK_PositionState_Position" FromRole="PositionState" ToRole="Position" />
         </EntityType>
         <EntityType Name="SpecificStaff">
           <Key>
@@ -1095,11 +1336,13 @@
           <Property Name="Id" Type="Guid" Nullable="false" />
           <Property Name="DepartmentId" Type="Guid" Nullable="false" />
           <Property Name="EmployeeId" Type="Guid" />
-          <Property Name="Position" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Ranking" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Department" Relationship="Self.FK_SpecificStaff_Department" FromRole="SpecificStaff" ToRole="Department" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_SpecificStaff_Employee" FromRole="SpecificStaff" ToRole="Employee" />
-          <NavigationProperty Name="SpecificStaffPlaces" Relationship="Self.FK_SpecificStaffPlace_SpecificStaff" FromRole="SpecificStaff" ToRole="SpecificStaffPlace" />
+          <Property Name="Position" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Ranking" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="DepartmentSpecificId" Type="Guid" />
+          <NavigationProperty Name="Department" Relationship="KSS.Server.Entities.FK_SpecificStaff_Department" FromRole="SpecificStaff" ToRole="Department" />
+          <NavigationProperty Name="DepartmentSpecificState" Relationship="KSS.Server.Entities.FK_SpecificStaff_DepartmentSpecificState" FromRole="SpecificStaff" ToRole="DepartmentSpecificState" />
+          <NavigationProperty Name="Employee" Relationship="KSS.Server.Entities.FK_SpecificStaff_Employee" FromRole="SpecificStaff" ToRole="Employee" />
+          <NavigationProperty Name="SpecificStaffPlaces" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_SpecificStaff" FromRole="SpecificStaff" ToRole="SpecificStaffPlace" />
         </EntityType>
         <EntityType Name="SpecificStaffPlace">
           <Key>
@@ -1109,11 +1352,11 @@
           <Property Name="SpecificStaffId" Type="Guid" Nullable="false" />
           <Property Name="LocationId" Type="Guid" />
           <Property Name="PhoneTypeId" Type="Guid" Nullable="false" />
-          <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PhoneNumber" Type="String" Nullable="false" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="Office" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Location" Relationship="Self.FK_SpecificStaffPlace_Location" FromRole="SpecificStaffPlace" ToRole="Location" />
-          <NavigationProperty Name="PhoneType" Relationship="Self.FK_SpecificStaffPlace_PhoneType" FromRole="SpecificStaffPlace" ToRole="PhoneType" />
-          <NavigationProperty Name="SpecificStaff" Relationship="Self.FK_SpecificStaffPlace_SpecificStaff" FromRole="SpecificStaffPlace" ToRole="SpecificStaff" />
+          <NavigationProperty Name="Location" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_Location" FromRole="SpecificStaffPlace" ToRole="Location" />
+          <NavigationProperty Name="PhoneType" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_PhoneType" FromRole="SpecificStaffPlace" ToRole="PhoneType" />
+          <NavigationProperty Name="SpecificStaff" Relationship="KSS.Server.Entities.FK_SpecificStaffPlace_SpecificStaff" FromRole="SpecificStaffPlace" ToRole="SpecificStaff" />
         </EntityType>
         <EntityType Name="Staff">
           <Key>
@@ -1127,15 +1370,15 @@
           <Property Name="HolidayEndDate" Type="DateTime" Precision="0" />
           <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Department" Relationship="Self.FK_Staff_Department" FromRole="Staff" ToRole="Department" />
-          <NavigationProperty Name="Employee" Relationship="Self.FK_Staff_Employee" FromRole="Staff" ToRole="Employee" />
-          <NavigationProperty Name="Position" Relationship="Self.FK_Staff_Position" FromRole="Staff" ToRole="Position" />
+          <NavigationProperty Name="Department" Relationship="KSS.Server.Entities.FK_Staff_Department" FromRole="Staff" ToRole="Department" />
+          <NavigationProperty Name="Employee" Relationship="KSS.Server.Entities.FK_Staff_Employee" FromRole="Staff" ToRole="Employee" />
+          <NavigationProperty Name="Position" Relationship="KSS.Server.Entities.FK_Staff_Position" FromRole="Staff" ToRole="Position" />
         </EntityType>
         <EntityType Name="sysdiagram">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="principal_id" Type="Int32" Nullable="false" />
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
@@ -1146,8 +1389,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Guid" Nullable="false" />
-          <NavigationProperty Name="Locations" Relationship="Self.FK_Location_Territory" FromRole="Territory" ToRole="Location" />
-          <NavigationProperty Name="TerritoryStates" Relationship="Self.FK_TerritoryState_Territory" FromRole="Territory" ToRole="TerritoryState" />
+          <NavigationProperty Name="Locations" Relationship="KSS.Server.Entities.FK_Location_Territory" FromRole="Territory" ToRole="Location" />
+          <NavigationProperty Name="TerritoryStates" Relationship="KSS.Server.Entities.FK_TerritoryState_Territory" FromRole="Territory" ToRole="TerritoryState" />
         </EntityType>
         <EntityType Name="TerritoryState">
           <Key>
@@ -1159,12 +1402,12 @@
           <Property Name="Territory" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="ValidationDate" Type="DateTime" Nullable="false" Precision="0" />
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
-          <NavigationProperty Name="Division" Relationship="Self.FK_TerritoryState_Division" FromRole="TerritoryState" ToRole="Division" />
-          <NavigationProperty Name="Territory1" Relationship="Self.FK_TerritoryState_Territory" FromRole="TerritoryState" ToRole="Territory" />
+          <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_TerritoryState_Division" FromRole="TerritoryState" ToRole="Division" />
+          <NavigationProperty Name="Territory1" Relationship="KSS.Server.Entities.FK_TerritoryState_Territory" FromRole="TerritoryState" ToRole="Territory" />
         </EntityType>
         <Association Name="FK_DepartmentState_Department">
-          <End Role="Department" Type="Self.Department" Multiplicity="1" />
-          <End Role="DepartmentState" Type="Self.DepartmentState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DepartmentState" Role="DepartmentState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Department">
               <PropertyRef Name="Id" />
@@ -1175,8 +1418,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DepartmentState_Department1">
-          <End Role="Department" Type="Self.Department" Multiplicity="0..1" />
-          <End Role="DepartmentState" Type="Self.DepartmentState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.DepartmentState" Role="DepartmentState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Department">
               <PropertyRef Name="Id" />
@@ -1187,8 +1430,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Position_Department">
-          <End Role="Department" Type="Self.Department" Multiplicity="1" />
-          <End Role="Position" Type="Self.Position" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Position" Role="Position" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Department">
               <PropertyRef Name="Id" />
@@ -1199,8 +1442,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SpecificStaff_Department">
-          <End Role="Department" Type="Self.Department" Multiplicity="1" />
-          <End Role="SpecificStaff" Type="Self.SpecificStaff" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.SpecificStaff" Role="SpecificStaff" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Department">
               <PropertyRef Name="Id" />
@@ -1211,8 +1454,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Staff_Department">
-          <End Role="Department" Type="Self.Department" Multiplicity="1" />
-          <End Role="Staff" Type="Self.Staff" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Staff" Role="Staff" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Department">
               <PropertyRef Name="Id" />
@@ -1222,9 +1465,45 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_DepartmentSpecificState_DepartmentSpecificState">
+          <End Type="KSS.Server.Entities.DepartmentSpecificState" Role="DepartmentSpecificState" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.DepartmentSpecificState" Role="DepartmentSpecificState1" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DepartmentSpecificState">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DepartmentSpecificState1">
+              <PropertyRef Name="ParentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DepartmentSpecificState_Division">
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DepartmentSpecificState" Role="DepartmentSpecificState" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Division">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="DepartmentSpecificState">
+              <PropertyRef Name="DivisionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SpecificStaff_DepartmentSpecificState">
+          <End Type="KSS.Server.Entities.DepartmentSpecificState" Role="DepartmentSpecificState" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.SpecificStaff" Role="SpecificStaff" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="DepartmentSpecificState">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SpecificStaff">
+              <PropertyRef Name="DepartmentSpecificId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_DepartmentState_Division">
-          <End Role="Division" Type="Self.Division" Multiplicity="1" />
-          <End Role="DepartmentState" Type="Self.DepartmentState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DepartmentState" Role="DepartmentState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1235,8 +1514,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DepartmentState_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
-          <End Role="DepartmentState" Type="Self.DepartmentState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.DepartmentState" Role="DepartmentState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
@@ -1247,8 +1526,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DivisionPhoneCode_Division">
-          <End Role="Division" Type="Self.Division" Multiplicity="1" />
-          <End Role="DivisionPhoneCode" Type="Self.DivisionPhoneCode" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DivisionPhoneCode" Role="DivisionPhoneCode" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1259,8 +1538,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DivisionPhoneCode_Division1">
-          <End Role="Division" Type="Self.Division" Multiplicity="1" />
-          <End Role="DivisionPhoneCode" Type="Self.DivisionPhoneCode" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DivisionPhoneCode" Role="DivisionPhoneCode" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1271,8 +1550,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DivisionState_Division">
-          <End Role="Division" Type="Self.Division" Multiplicity="1" />
-          <End Role="DivisionState" Type="Self.DivisionState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.DivisionState" Role="DivisionState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1283,8 +1562,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_DivisionState_Division1">
-          <End Role="Division" Type="Self.Division" Multiplicity="0..1" />
-          <End Role="DivisionState" Type="Self.DivisionState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.DivisionState" Role="DivisionState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1295,8 +1574,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Location_Division">
-          <End Role="Division" Type="Self.Division" Multiplicity="1" />
-          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1307,8 +1586,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TerritoryState_Division">
-          <End Role="Division" Type="Self.Division" Multiplicity="0..1" />
-          <End Role="TerritoryState" Type="Self.TerritoryState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Division" Role="Division" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.TerritoryState" Role="TerritoryState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Division">
               <PropertyRef Name="Id" />
@@ -1319,8 +1598,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EmployeePlace_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
-          <End Role="EmployeePlace" Type="Self.EmployeePlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.EmployeePlace" Role="EmployeePlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
@@ -1331,32 +1610,32 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Favorites_Employee_EmployeeId">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
-          <End Role="Favorites" Type="Self.Favorite" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Favorite" Role="Favorite" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Favorites">
+            <Dependent Role="Favorite">
               <PropertyRef Name="EmployeeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Favorites_Employee_LinkedEmployeeId">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
-          <End Role="Favorites" Type="Self.Favorite" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Favorite" Role="Favorite" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="Favorites">
+            <Dependent Role="Favorite">
               <PropertyRef Name="LinkedEmployeeId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SpecificStaff_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="0..1" />
-          <End Role="SpecificStaff" Type="Self.SpecificStaff" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.SpecificStaff" Role="SpecificStaff" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
@@ -1367,8 +1646,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Staff_Employee">
-          <End Role="Employee" Type="Self.Employee" Multiplicity="1" />
-          <End Role="Staff" Type="Self.Staff" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Employee" Role="Employee" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Staff" Role="Staff" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Employee">
               <PropertyRef Name="Id" />
@@ -1379,8 +1658,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EmployeePlace_Location">
-          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
-          <End Role="EmployeePlace" Type="Self.EmployeePlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.EmployeePlace" Role="EmployeePlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Location">
               <PropertyRef Name="Id" />
@@ -1391,8 +1670,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_EmployeePlace_PhoneType">
-          <End Role="PhoneType" Type="Self.PhoneType" Multiplicity="1" />
-          <End Role="EmployeePlace" Type="Self.EmployeePlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.PhoneType" Role="PhoneType" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.EmployeePlace" Role="EmployeePlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PhoneType">
               <PropertyRef Name="Id" />
@@ -1403,8 +1682,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Location_Locality">
-          <End Role="Locality" Type="Self.Locality" Multiplicity="1" />
-          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Locality" Role="Locality" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Locality">
               <PropertyRef Name="Id" />
@@ -1415,8 +1694,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Location_PhoneZoneInt">
-          <End Role="PhoneZoneInt" Type="Self.PhoneZoneInt" Multiplicity="0..1" />
-          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.PhoneZoneInt" Role="PhoneZoneInt" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PhoneZoneInt">
               <PropertyRef Name="Id" />
@@ -1427,8 +1706,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Location_Territory">
-          <End Role="Territory" Type="Self.Territory" Multiplicity="0..1" />
-          <End Role="Location" Type="Self.Location" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Territory" Role="Territory" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Territory">
               <PropertyRef Name="Id" />
@@ -1439,8 +1718,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SpecificStaffPlace_Location">
-          <End Role="Location" Type="Self.Location" Multiplicity="0..1" />
-          <End Role="SpecificStaffPlace" Type="Self.SpecificStaffPlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Location" Role="Location" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.SpecificStaffPlace" Role="SpecificStaffPlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Location">
               <PropertyRef Name="Id" />
@@ -1451,8 +1730,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PhoneMatrixInt_PhoneZoneInt_FromId">
-          <End Role="PhoneZoneInt" Type="Self.PhoneZoneInt" Multiplicity="1" />
-          <End Role="PhoneMatrixInt" Type="Self.PhoneMatrixInt" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.PhoneZoneInt" Role="PhoneZoneInt" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.PhoneMatrixInt" Role="PhoneMatrixInt" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PhoneZoneInt">
               <PropertyRef Name="Id" />
@@ -1463,8 +1742,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PhoneMatrixInt_PhoneZoneInt_ToId">
-          <End Role="PhoneZoneInt" Type="Self.PhoneZoneInt" Multiplicity="1" />
-          <End Role="PhoneMatrixInt" Type="Self.PhoneMatrixInt" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.PhoneZoneInt" Role="PhoneZoneInt" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.PhoneMatrixInt" Role="PhoneMatrixInt" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PhoneZoneInt">
               <PropertyRef Name="Id" />
@@ -1475,8 +1754,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SpecificStaffPlace_PhoneType">
-          <End Role="PhoneType" Type="Self.PhoneType" Multiplicity="1" />
-          <End Role="SpecificStaffPlace" Type="Self.SpecificStaffPlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.PhoneType" Role="PhoneType" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.SpecificStaffPlace" Role="SpecificStaffPlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="PhoneType">
               <PropertyRef Name="Id" />
@@ -1487,8 +1766,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_PositionState_Position">
-          <End Role="Position" Type="Self.Position" Multiplicity="1" />
-          <End Role="PositionState" Type="Self.PositionState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Position" Role="Position" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.PositionState" Role="PositionState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Position">
               <PropertyRef Name="Id" />
@@ -1499,8 +1778,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Staff_Position">
-          <End Role="Position" Type="Self.Position" Multiplicity="0..1" />
-          <End Role="Staff" Type="Self.Staff" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Position" Role="Position" Multiplicity="0..1" />
+          <End Type="KSS.Server.Entities.Staff" Role="Staff" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Position">
               <PropertyRef Name="Id" />
@@ -1511,8 +1790,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SpecificStaffPlace_SpecificStaff">
-          <End Role="SpecificStaff" Type="Self.SpecificStaff" Multiplicity="1" />
-          <End Role="SpecificStaffPlace" Type="Self.SpecificStaffPlace" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.SpecificStaff" Role="SpecificStaff" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.SpecificStaffPlace" Role="SpecificStaffPlace" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SpecificStaff">
               <PropertyRef Name="Id" />
@@ -1523,8 +1802,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_TerritoryState_Territory">
-          <End Role="Territory" Type="Self.Territory" Multiplicity="1" />
-          <End Role="TerritoryState" Type="Self.TerritoryState" Multiplicity="*" />
+          <End Type="KSS.Server.Entities.Territory" Role="Territory" Multiplicity="1" />
+          <End Type="KSS.Server.Entities.TerritoryState" Role="TerritoryState" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Territory">
               <PropertyRef Name="Id" />
@@ -1534,159 +1813,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="CompanyBaseModel" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="Decreases" EntityType="Self.Decrease" />
-          <EntitySet Name="Departments" EntityType="Self.Department" />
-          <EntitySet Name="DepartmentStates" EntityType="Self.DepartmentState" />
-          <EntitySet Name="Divisions" EntityType="Self.Division" />
-          <EntitySet Name="DivisionPhoneCodes" EntityType="Self.DivisionPhoneCode" />
-          <EntitySet Name="DivisionStates" EntityType="Self.DivisionState" />
-          <EntitySet Name="Employees" EntityType="Self.Employee" />
-          <EntitySet Name="EmployeePlaces" EntityType="Self.EmployeePlace" />
-          <EntitySet Name="Favorites" EntityType="Self.Favorite" />
-          <EntitySet Name="HistoryUsers" EntityType="Self.HistoryUser" />
-          <EntitySet Name="Localities" EntityType="Self.Locality" />
-          <EntitySet Name="Locations" EntityType="Self.Location" />
-          <EntitySet Name="Operators" EntityType="Self.Operator" />
-          <EntitySet Name="Options" EntityType="Self.Option" />
-          <EntitySet Name="PhoneMatrixInts" EntityType="Self.PhoneMatrixInt" />
-          <EntitySet Name="PhoneMatrixIntFulls" EntityType="Self.PhoneMatrixIntFull" />
-          <EntitySet Name="PhoneTypes" EntityType="Self.PhoneType" />
-          <EntitySet Name="PhoneZoneInts" EntityType="Self.PhoneZoneInt" />
-          <EntitySet Name="Positions" EntityType="Self.Position" />
-          <EntitySet Name="PositionStates" EntityType="Self.PositionState" />
-          <EntitySet Name="SpecificStaffs" EntityType="Self.SpecificStaff" />
-          <EntitySet Name="SpecificStaffPlaces" EntityType="Self.SpecificStaffPlace" />
-          <EntitySet Name="Staffs" EntityType="Self.Staff" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
-          <EntitySet Name="Territories" EntityType="Self.Territory" />
-          <EntitySet Name="TerritoryStates" EntityType="Self.TerritoryState" />
-          <AssociationSet Name="FK_DepartmentState_Department" Association="Self.FK_DepartmentState_Department">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="DepartmentState" EntitySet="DepartmentStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DepartmentState_Department1" Association="Self.FK_DepartmentState_Department1">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="DepartmentState" EntitySet="DepartmentStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Position_Department" Association="Self.FK_Position_Department">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="Position" EntitySet="Positions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SpecificStaff_Department" Association="Self.FK_SpecificStaff_Department">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Staff_Department" Association="Self.FK_Staff_Department">
-            <End Role="Department" EntitySet="Departments" />
-            <End Role="Staff" EntitySet="Staffs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DepartmentState_Division" Association="Self.FK_DepartmentState_Division">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="DepartmentState" EntitySet="DepartmentStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DepartmentState_Employee" Association="Self.FK_DepartmentState_Employee">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="DepartmentState" EntitySet="DepartmentStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DivisionPhoneCode_Division" Association="Self.FK_DivisionPhoneCode_Division">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="DivisionPhoneCode" EntitySet="DivisionPhoneCodes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DivisionPhoneCode_Division1" Association="Self.FK_DivisionPhoneCode_Division1">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="DivisionPhoneCode" EntitySet="DivisionPhoneCodes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DivisionState_Division" Association="Self.FK_DivisionState_Division">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="DivisionState" EntitySet="DivisionStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_DivisionState_Division1" Association="Self.FK_DivisionState_Division1">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="DivisionState" EntitySet="DivisionStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Location_Division" Association="Self.FK_Location_Division">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="Location" EntitySet="Locations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TerritoryState_Division" Association="Self.FK_TerritoryState_Division">
-            <End Role="Division" EntitySet="Divisions" />
-            <End Role="TerritoryState" EntitySet="TerritoryStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EmployeePlace_Employee" Association="Self.FK_EmployeePlace_Employee">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Favorites_Employee_EmployeeId" Association="Self.FK_Favorites_Employee_EmployeeId">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="Favorites" EntitySet="Favorites" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Favorites_Employee_LinkedEmployeeId" Association="Self.FK_Favorites_Employee_LinkedEmployeeId">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="Favorites" EntitySet="Favorites" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SpecificStaff_Employee" Association="Self.FK_SpecificStaff_Employee">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Staff_Employee" Association="Self.FK_Staff_Employee">
-            <End Role="Employee" EntitySet="Employees" />
-            <End Role="Staff" EntitySet="Staffs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EmployeePlace_Location" Association="Self.FK_EmployeePlace_Location">
-            <End Role="Location" EntitySet="Locations" />
-            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_EmployeePlace_PhoneType" Association="Self.FK_EmployeePlace_PhoneType">
-            <End Role="PhoneType" EntitySet="PhoneTypes" />
-            <End Role="EmployeePlace" EntitySet="EmployeePlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Location_Locality" Association="Self.FK_Location_Locality">
-            <End Role="Locality" EntitySet="Localities" />
-            <End Role="Location" EntitySet="Locations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Location_PhoneZoneInt" Association="Self.FK_Location_PhoneZoneInt">
-            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
-            <End Role="Location" EntitySet="Locations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Location_Territory" Association="Self.FK_Location_Territory">
-            <End Role="Territory" EntitySet="Territories" />
-            <End Role="Location" EntitySet="Locations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SpecificStaffPlace_Location" Association="Self.FK_SpecificStaffPlace_Location">
-            <End Role="Location" EntitySet="Locations" />
-            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PhoneMatrixInt_PhoneZoneInt_FromId" Association="Self.FK_PhoneMatrixInt_PhoneZoneInt_FromId">
-            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
-            <End Role="PhoneMatrixInt" EntitySet="PhoneMatrixInts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PhoneMatrixInt_PhoneZoneInt_ToId" Association="Self.FK_PhoneMatrixInt_PhoneZoneInt_ToId">
-            <End Role="PhoneZoneInt" EntitySet="PhoneZoneInts" />
-            <End Role="PhoneMatrixInt" EntitySet="PhoneMatrixInts" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SpecificStaffPlace_PhoneType" Association="Self.FK_SpecificStaffPlace_PhoneType">
-            <End Role="PhoneType" EntitySet="PhoneTypes" />
-            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_PositionState_Position" Association="Self.FK_PositionState_Position">
-            <End Role="Position" EntitySet="Positions" />
-            <End Role="PositionState" EntitySet="PositionStates" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Staff_Position" Association="Self.FK_Staff_Position">
-            <End Role="Position" EntitySet="Positions" />
-            <End Role="Staff" EntitySet="Staffs" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SpecificStaffPlace_SpecificStaff" Association="Self.FK_SpecificStaffPlace_SpecificStaff">
-            <End Role="SpecificStaff" EntitySet="SpecificStaffs" />
-            <End Role="SpecificStaffPlace" EntitySet="SpecificStaffPlaces" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TerritoryState_Territory" Association="Self.FK_TerritoryState_Territory">
-            <End Role="Territory" EntitySet="Territories" />
-            <End Role="TerritoryState" EntitySet="TerritoryStates" />
-          </AssociationSet>
-        </EntityContainer>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -1695,285 +1822,298 @@
           <EntitySetMapping Name="Decreases">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Decrease">
               <MappingFragment StoreEntitySet="Decrease">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Original" ColumnName="Original" />
-                <ScalarProperty Name="Brief" ColumnName="Brief" />
                 <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="Brief" ColumnName="Brief" />
+                <ScalarProperty Name="Original" ColumnName="Original" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Departments">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Department">
               <MappingFragment StoreEntitySet="Department">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
-                <ScalarProperty Name="Number" ColumnName="Number" />
-                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
                 <ScalarProperty Name="RossetiCode" ColumnName="RossetiCode" />
+                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+                <ScalarProperty Name="Number" ColumnName="Number" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DepartmentSpecificStates">
+            <EntityTypeMapping TypeName="KSS.Server.Entities.DepartmentSpecificState">
+              <MappingFragment StoreEntitySet="DepartmentSpecificState">
+                <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DepartmentStates">
             <EntityTypeMapping TypeName="KSS.Server.Entities.DepartmentState">
               <MappingFragment StoreEntitySet="DepartmentState">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
-                <ScalarProperty Name="ChiefId" ColumnName="ChiefId" />
-                <ScalarProperty Name="Department" ColumnName="Department" />
-                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="Department" ColumnName="Department" />
+                <ScalarProperty Name="ChiefId" ColumnName="ChiefId" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Divisions">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Division">
               <MappingFragment StoreEntitySet="Division">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
                 <ScalarProperty Name="Essential" ColumnName="Essential" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DivisionPhoneCodes">
             <EntityTypeMapping TypeName="KSS.Server.Entities.DivisionPhoneCode">
               <MappingFragment StoreEntitySet="DivisionPhoneCode">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="DivisionFromId" ColumnName="DivisionFromId" />
-                <ScalarProperty Name="DivisionToId" ColumnName="DivisionToId" />
                 <ScalarProperty Name="IntPhoneCode" ColumnName="IntPhoneCode" />
+                <ScalarProperty Name="DivisionToId" ColumnName="DivisionToId" />
+                <ScalarProperty Name="DivisionFromId" ColumnName="DivisionFromId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="DivisionStates">
             <EntityTypeMapping TypeName="KSS.Server.Entities.DivisionState">
               <MappingFragment StoreEntitySet="DivisionState">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
-                <ScalarProperty Name="Division" ColumnName="Division" />
-                <ScalarProperty Name="DivisionBrief" ColumnName="DivisionBrief" />
-                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="DivisionBrief" ColumnName="DivisionBrief" />
+                <ScalarProperty Name="Division" ColumnName="Division" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Employees">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Employee">
               <MappingFragment StoreEntitySet="Employee">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Sex" ColumnName="Sex" />
-                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
-                <ScalarProperty Name="ITN" ColumnName="ITN" />
-                <ScalarProperty Name="SeriesPas" ColumnName="SeriesPas" />
-                <ScalarProperty Name="NumberPas" ColumnName="NumberPas" />
-                <ScalarProperty Name="PasDepart" ColumnName="PasDepart" />
-                <ScalarProperty Name="PasIssue" ColumnName="PasIssue" />
-                <ScalarProperty Name="EMail" ColumnName="EMail" />
-                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
-                <ScalarProperty Name="AccountControl" ColumnName="AccountControl" />
-                <ScalarProperty Name="Updated" ColumnName="Updated" />
-                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
-                <ScalarProperty Name="PhotoDate" ColumnName="PhotoDate" />
-                <ScalarProperty Name="PhotoFile" ColumnName="PhotoFile" />
-                <ScalarProperty Name="PhotoAllowed" ColumnName="PhotoAllowed" />
-                <ScalarProperty Name="PhotoUpdated" ColumnName="PhotoUpdated" />
-                <ScalarProperty Name="PhotoManualInput" ColumnName="PhotoManualInput" />
-                <ScalarProperty Name="AdState" ColumnName="AdState" />
-                <ScalarProperty Name="isAdministrator" ColumnName="isAdministrator" />
-                <ScalarProperty Name="RossetiCode" ColumnName="RossetiCode" />
-                <ScalarProperty Name="Photo" ColumnName="Photo" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
                 <ScalarProperty Name="IsMemberOfHeadquarter" ColumnName="IsMemberOfHeadquarter" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="RossetiCode" ColumnName="RossetiCode" />
+                <ScalarProperty Name="isAdministrator" ColumnName="isAdministrator" />
+                <ScalarProperty Name="AdState" ColumnName="AdState" />
+                <ScalarProperty Name="PhotoManualInput" ColumnName="PhotoManualInput" />
+                <ScalarProperty Name="PhotoUpdated" ColumnName="PhotoUpdated" />
+                <ScalarProperty Name="PhotoAllowed" ColumnName="PhotoAllowed" />
+                <ScalarProperty Name="PhotoFile" ColumnName="PhotoFile" />
+                <ScalarProperty Name="PhotoDate" ColumnName="PhotoDate" />
+                <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+                <ScalarProperty Name="Updated" ColumnName="Updated" />
+                <ScalarProperty Name="AccountControl" ColumnName="AccountControl" />
+                <ScalarProperty Name="AccountName" ColumnName="AccountName" />
+                <ScalarProperty Name="EMail" ColumnName="EMail" />
+                <ScalarProperty Name="PasIssue" ColumnName="PasIssue" />
+                <ScalarProperty Name="PasDepart" ColumnName="PasDepart" />
+                <ScalarProperty Name="NumberPas" ColumnName="NumberPas" />
+                <ScalarProperty Name="SeriesPas" ColumnName="SeriesPas" />
+                <ScalarProperty Name="ITN" ColumnName="ITN" />
+                <ScalarProperty Name="BirthDay" ColumnName="BirthDay" />
+                <ScalarProperty Name="Sex" ColumnName="Sex" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="PersonId" ColumnName="PersonId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="EmployeePlaces">
             <EntityTypeMapping TypeName="KSS.Server.Entities.EmployeePlace">
               <MappingFragment StoreEntitySet="EmployeePlace">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
-                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Favorites">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Favorite">
               <MappingFragment StoreEntitySet="Favorites">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
                 <ScalarProperty Name="LinkedEmployeeId" ColumnName="LinkedEmployeeId" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="HistoryUsers">
             <EntityTypeMapping TypeName="KSS.Server.Entities.HistoryUser">
               <MappingFragment StoreEntitySet="HistoryUsers">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="dateIn" ColumnName="dateIn" />
                 <ScalarProperty Name="info" ColumnName="info" />
+                <ScalarProperty Name="dateIn" ColumnName="dateIn" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Localities">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Locality">
               <MappingFragment StoreEntitySet="Locality">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Locality1" ColumnName="Locality" />
-                <ScalarProperty Name="Region" ColumnName="Region" />
-                <ScalarProperty Name="Country" ColumnName="Country" />
                 <ScalarProperty Name="CityPhoneCode" ColumnName="CityPhoneCode" />
+                <ScalarProperty Name="Country" ColumnName="Country" />
+                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Locality1" ColumnName="Locality" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Locations">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Location">
               <MappingFragment StoreEntitySet="Location">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
-                <ScalarProperty Name="LocalityId" ColumnName="LocalityId" />
-                <ScalarProperty Name="TerritoryId" ColumnName="TerritoryId" />
-                <ScalarProperty Name="Street" ColumnName="Street" />
-                <ScalarProperty Name="Edifice" ColumnName="Edifice" />
-                <ScalarProperty Name="Building" ColumnName="Building" />
                 <ScalarProperty Name="PhoneZoneId" ColumnName="PhoneZoneId" />
+                <ScalarProperty Name="Building" ColumnName="Building" />
+                <ScalarProperty Name="Edifice" ColumnName="Edifice" />
+                <ScalarProperty Name="Street" ColumnName="Street" />
+                <ScalarProperty Name="TerritoryId" ColumnName="TerritoryId" />
+                <ScalarProperty Name="LocalityId" ColumnName="LocalityId" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Operators">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Operator">
               <MappingFragment StoreEntitySet="Operator">
-                <ScalarProperty Name="Oid" ColumnName="Oid" />
-                <ScalarProperty Name="SecondName" ColumnName="SecondName" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="ThirdName" ColumnName="ThirdName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="SecondName" ColumnName="SecondName" />
+                <ScalarProperty Name="Oid" ColumnName="Oid" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Options">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Option">
               <MappingFragment StoreEntitySet="Options">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="DefaultPicture" ColumnName="DefaultPicture" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PhoneMatrixInts">
             <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneMatrixInt">
               <MappingFragment StoreEntitySet="PhoneMatrixInt">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="FromId" ColumnName="FromId" />
-                <ScalarProperty Name="ToId" ColumnName="ToId" />
                 <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
+                <ScalarProperty Name="ToId" ColumnName="ToId" />
+                <ScalarProperty Name="FromId" ColumnName="FromId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PhoneMatrixIntFulls">
             <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneMatrixIntFull">
               <MappingFragment StoreEntitySet="PhoneMatrixIntFull">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="FromId" ColumnName="FromId" />
-                <ScalarProperty Name="ToId" ColumnName="ToId" />
-                <ScalarProperty Name="IdPath" ColumnName="IdPath" />
-                <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
                 <ScalarProperty Name="Level" ColumnName="Level" />
+                <ScalarProperty Name="PhoneCode" ColumnName="PhoneCode" />
+                <ScalarProperty Name="IdPath" ColumnName="IdPath" />
+                <ScalarProperty Name="ToId" ColumnName="ToId" />
+                <ScalarProperty Name="FromId" ColumnName="FromId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PhoneTypes">
             <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneType">
               <MappingFragment StoreEntitySet="PhoneType">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Category" ColumnName="Category" />
                 <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PhoneZoneInts">
             <EntityTypeMapping TypeName="KSS.Server.Entities.PhoneZoneInt">
               <MappingFragment StoreEntitySet="PhoneZoneInt">
-                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Positions">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Position">
               <MappingFragment StoreEntitySet="Position">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Code" ColumnName="Code" />
-                <ScalarProperty Name="TitleId" ColumnName="TitleId" />
-                <ScalarProperty Name="TitleCode" ColumnName="TitleCode" />
-                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
-                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
-                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
                 <ScalarProperty Name="ManualInput" ColumnName="ManualInput" />
+                <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="DepartmentCode" ColumnName="DepartmentCode" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="TitleCode" ColumnName="TitleCode" />
+                <ScalarProperty Name="TitleId" ColumnName="TitleId" />
+                <ScalarProperty Name="Code" ColumnName="Code" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="PositionStates">
             <EntityTypeMapping TypeName="KSS.Server.Entities.PositionState">
               <MappingFragment StoreEntitySet="PositionState">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SpecificStaffs">
             <EntityTypeMapping TypeName="KSS.Server.Entities.SpecificStaff">
               <MappingFragment StoreEntitySet="SpecificStaff">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
-                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
-                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="DepartmentSpecificId" ColumnName="DepartmentSpecificId" />
                 <ScalarProperty Name="Ranking" ColumnName="Ranking" />
+                <ScalarProperty Name="Position" ColumnName="Position" />
+                <ScalarProperty Name="EmployeeId" ColumnName="EmployeeId" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="SpecificStaffPlaces">
             <EntityTypeMapping TypeName="KSS.Server.Entities.SpecificStaffPlace">
               <MappingFragment StoreEntitySet="SpecificStaffPlace">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="SpecificStaffId" ColumnName="SpecificStaffId" />
-                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
-                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
                 <ScalarProperty Name="Office" ColumnName="Office" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="PhoneTypeId" ColumnName="PhoneTypeId" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="SpecificStaffId" ColumnName="SpecificStaffId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Staffs">
             <EntityTypeMapping TypeName="KSS.Server.Entities.Staff">
               <MappingFragment StoreEntitySet="Staff">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
-                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
-                <ScalarProperty Name="HolidayStartDate" ColumnName="HolidayStartDate" />
-                <ScalarProperty Name="HolidayEndDate" ColumnName="HolidayEndDate" />
-                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="HolidayEndDate" ColumnName="HolidayEndDate" />
+                <ScalarProperty Name="HolidayStartDate" ColumnName="HolidayStartDate" />
+                <ScalarProperty Name="PositionId" ColumnName="PositionId" />
+                <ScalarProperty Name="DepartmentId" ColumnName="DepartmentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="KSS.Server.Entities.sysdiagram">
               <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1987,11 +2127,11 @@
           <EntitySetMapping Name="TerritoryStates">
             <EntityTypeMapping TypeName="KSS.Server.Entities.TerritoryState">
               <MappingFragment StoreEntitySet="TerritoryState">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
-                <ScalarProperty Name="Territory" ColumnName="Territory" />
-                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
+                <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
+                <ScalarProperty Name="Territory" ColumnName="Territory" />
+                <ScalarProperty Name="DivisionId" ColumnName="DivisionId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

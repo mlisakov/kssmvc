@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Drawing.Imaging;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Cache;
-using System.Text;
 using KSS.Models;
 using KSS.Properties;
 using KSS.Server.Entities;
@@ -276,7 +272,7 @@ namespace KSS.Helpers
                     select divS).FirstOrDefault();
                 if (dState != null)
                     return dState;
-                return new DivisionState {Division = "-"};
+                return new DivisionState {Division = "-", Id = Guid.Empty};
             }
             catch (Exception ex)
             {
@@ -284,7 +280,7 @@ namespace KSS.Helpers
                     "Ошибка при получении дивизиона, в котором работает указанный сотрудник. GetEmployeeDivision.", ex);
 
             }
-            return new DivisionState {Division = "Не удалось получить данные!"};
+            return new DivisionState {Division = "Не удалось получить данные!", Id = Guid.Empty};
         }
 
         /// <summary>
@@ -457,7 +453,7 @@ namespace KSS.Helpers
         /// <summary>
         /// Проверяет избранных на наличие адекватных значений поля Position. Упорядочивает, если необходимо
         /// </summary>
-        /// <param name="guid"></param>
+        /// <param name="employeeGuid"></param>
         public static void CheckAndOrderFavorites(Guid employeeGuid)
         {
             try
@@ -603,7 +599,6 @@ namespace KSS.Helpers
             catch (Exception ex)
             {
                 LogHelper.WriteLog("Ошибка. GetNextFavorites.", ex);
-                throw;
             }
             return new List<Employee>();
         }
@@ -1207,16 +1202,63 @@ namespace KSS.Helpers
                 var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
                 var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
 
-                if (locality != null && placeWithLocation != null)
+                if (locality != null )
                 {
-                    placeWithLocation.Location.Street = street;
-                    placeWithLocation.Location.Edifice = edifice;
-                    placeWithLocation.Location.LocalityId = city;
-
-                    foreach (EmployeePlace place in places)
+                    if (placeWithLocation != null)
                     {
-                        place.Office = office;
-                        place.LocationId = placeWithLocation.Location.Id;
+                        placeWithLocation.Location.Street = street;
+                        placeWithLocation.Location.Edifice = edifice;
+                        placeWithLocation.Location.LocalityId = city;
+
+                        foreach (EmployeePlace place in places)
+                        {
+                            place.Office = office;
+                            place.LocationId = placeWithLocation.Location.Id;
+                        }
+                    }
+                    else
+                    {
+                        //create location
+
+                        var personDivision = GetEmployeeDivision(employee);
+
+                        if (personDivision.Id != Guid.Empty)
+                        {
+                            var newLocation = new Location
+                            {
+                                Id = Guid.NewGuid(),
+                                DivisionId = personDivision.Id,
+                                LocalityId = city,
+                                Street = street,
+                                Edifice = edifice
+                            };
+
+                            BaseModel.AddToLocations(newLocation);
+
+                            BaseModel.SaveChanges();
+
+                            if (places.Count == 0)
+                            {
+                                //create empty place
+                                var newPlace = new EmployeePlace
+                                {
+                                    Id = Guid.NewGuid(),
+                                    EmployeeId = employee,
+                                    LocationId = newLocation.Id,
+                                    PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                                    PhoneNumber = "_",
+                                    Office = office
+                                };
+
+                                BaseModel.AddToEmployeePlaces(newPlace);
+                            }
+                            else
+                                foreach (EmployeePlace place in places)
+                                {
+                                    place.Office = office;
+                                    place.LocationId = newLocation.Id;
+                                }
+                        }
                     }
 
                     BaseModel.SaveChanges();
@@ -1446,6 +1488,172 @@ namespace KSS.Helpers
                 LogHelper.WriteLog("Ошибка. GetPersonsInDivision.", ex);
             }
             return new List<Employee>();
+        }
+
+        public static void SavePersonForSpecificCard(Guid id, Guid employeeId)
+        {
+            try
+            {
+                var specific = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == id);
+                if (specific != null)
+                {
+                    specific.EmployeeId = employeeId == Guid.Empty ? (Guid?) null : employeeId;
+
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. SavePersonForSpecificCard.", ex);
+            }
+        }
+
+        public static void UpdateLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
+        {
+            try
+            {
+                var specificStaf = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == specificStaffId);
+                var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
+                var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
+
+                if (locality != null && specificStaf != null)
+                {
+                    var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+                    if (placeWithLocation != null)
+                    {
+                        placeWithLocation.Location.Street = street;
+                        placeWithLocation.Location.Edifice = edifice;
+                        placeWithLocation.Location.LocalityId = city;
+
+                        foreach (SpecificStaffPlace place in places)
+                        {
+                            place.Office = office;
+                            place.LocationId = placeWithLocation.Location.Id;
+                        }
+                        BaseModel.SaveChanges();
+                    }
+                    else
+                    {
+                        //create location
+                        if (specificStaf.EmployeeId == null)
+                        {
+                            return;
+                        }
+
+                        var personDivision = GetEmployeeDivision(specificStaf.EmployeeId.Value);
+
+                        if (personDivision.Id != Guid.Empty)
+                        {
+                            var newLocation = new Location
+                            {
+                                Id = Guid.NewGuid(),
+                                DivisionId = personDivision.Id,
+                                LocalityId = city,
+                                Street = street,
+                                Edifice = edifice
+                            };
+
+                            BaseModel.AddToLocations(newLocation);
+
+                            if (places.Count == 0)
+                            {
+                                //create empty place
+                                var newPlace = new SpecificStaffPlace
+                                {
+                                    Id = Guid.NewGuid(),
+                                    SpecificStaffId = specificStaffId,
+                                    LocationId = newLocation.Id,
+                                    PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                                    PhoneNumber = "_",
+                                    Office = office
+                                };
+
+                                BaseModel.AddToSpecificStaffPlaces(newPlace);
+                            }
+                            else
+                                foreach (SpecificStaffPlace place in places)
+                                {
+                                    place.Office = office;
+                                    place.LocationId = newLocation.Id;
+                                }
+
+                            BaseModel.SaveChanges();
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateLocationForSpecificCard.", ex);
+            }
+        }
+
+        public static void DeleteSpecificPhone(Guid specificStaffPlaceId)
+        {
+            try
+            {
+                var place = BaseModel.SpecificStaffPlaces.FirstOrDefault(t => t.Id == specificStaffPlaceId);
+                if (place != null)
+                {
+                    BaseModel.DeleteObject(place);
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. DeleteSpecificPhone.", ex);
+            }
+        }
+
+        public static void UpdateSpecificPhone(Guid specificStaffId, Guid? specificStaffPlaceId, Guid? phoneType, string phone)
+        {
+            try
+            {
+                var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
+
+                if (specificStaffPlaceId.HasValue)
+                {
+                    //update
+                    var specificPlace = places.FirstOrDefault(t => t.Id == specificStaffPlaceId.Value);
+
+                    if (specificPlace != null)
+                    {
+                        specificPlace.PhoneNumber = phone;
+                        BaseModel.SaveChanges();
+                    }
+                }
+                else
+                {
+                    //create
+
+                    var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
+
+                    if (phoneType.HasValue)
+                    {
+
+                        var entity = new SpecificStaffPlace
+                        {
+                            Id = Guid.NewGuid(),
+                            SpecificStaffId = specificStaffId,
+                            PhoneTypeId = phoneType.Value,
+                            PhoneNumber = phone,
+                        };
+
+                        if (placeWithLocation != null)
+                        {
+                            entity.LocationId = placeWithLocation.LocationId;
+                            entity.Office = placeWithLocation.Office;
+                        }
+
+                        BaseModel.AddToSpecificStaffPlaces(entity);
+                        BaseModel.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateSpecificPhone.", ex);
+            }
         }
     }
 }

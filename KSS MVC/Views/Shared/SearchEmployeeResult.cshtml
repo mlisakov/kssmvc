@@ -24,7 +24,6 @@
             </div>
             <div class="innerPersonLayout">
                 <h5 class="personName">
-                    @*                    <a href='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>*@
                     <a class="emploeeLink" data-url='@Url.Action("Index", "Employee", new {id = employee.Employee.Id})'>@employee.Employee.Name</a>                    
                 </h5>
                 <a class="personCardAddToFavoriteLinkInline personCardAddToFavoriteLink " data-url='@Url.Action("ChangeFavoriteStatusInline", "Employee", new { id = employee.Employee.Id })'>
@@ -38,22 +37,28 @@
                     }
                 </a>
 
-@*                <p class="personDepartment"> @employee.DepartmentState.Department</p>*@
                 <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
                 <p class="personJob">@employee.PositionState.Title</p>
                 <div class="phonesLine">
-                    @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
+                    @for (int i = 0, j = 0; i < employee.EmployeePlaces.Count; i++)
                     {
-                        if (i == 0)
+                        if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber) || employee.EmployeePlaces[i].PhoneNumber == "_")
+                        {
+                            continue;
+                        }
+
+                        if (j == 0)
                         {
                             <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                            j++;
                         }
                         else
                         {
                             <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                            j++;
                         }
                     }
-                    @if (employee.EmployeePlaces.Count == 0)
+                    @if (employee.EmployeePlaces.All(t => string.IsNullOrEmpty(t.PhoneNumber) || t.PhoneNumber == "_"))
                     {
                         <p class="personMail" style="margin-left:0">@employee.Employee.EMail</p>
                     }
@@ -62,14 +67,6 @@
                         <p class="personMail">@employee.Employee.EMail</p>
                     }
                 </div>
-@*                <div class="phonesLine">*@
-@*                    @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)*@
-@*                    {*@
-@*                        <p class="personCityPhone">33-24;</p>*@
-@*                        <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p> *@
-@*                            $1$<p class="personMail">titov.german@rossety.com</p>#1#*@
-@*                    }*@
-@*                </div>*@
             </div>
         </li>
     }

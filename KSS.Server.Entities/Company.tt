@@ -26,7 +26,7 @@ DefineMetadata();
 UserSettings userSettings =
     new UserSettings
     {
-        SourceCsdlPath = @"CompanyBaseModel.edmx",
+        SourceCsdlPath = @"Company.edmx",
         ReferenceCsdlPaths = new string[] {},
         FullyQualifySystemTypes = true,
         CreateContextAddToMethods = true,

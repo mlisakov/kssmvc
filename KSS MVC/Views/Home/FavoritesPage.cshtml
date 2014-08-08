@@ -5,9 +5,8 @@
 }
 
 @using KSS.Models
-@using KSS.Server.Entities
 @model List<EmployeeModel>
-@*<input id="editListBtn" type="button" class="departmentSearchButton editListButton" value="редактировать порядок" data-edit="1"/>        *@
+
 <div class="centralResultPanel" style="margin-top: 30px">
     <ul class="personUL">
         @foreach (EmployeeModel employee in Model)
@@ -42,18 +41,25 @@ else
             <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
             <p class="personJob">@employee.PositionState.Title</p>
             <div class="phonesLine">
-                @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
+                @for (int i = 0, j=0; i < employee.EmployeePlaces.Count; i++)
                 {
-                    if (i == 0)
+                    if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber) || employee.EmployeePlaces[i].PhoneNumber == "_")
+                    {
+                        continue;
+                    }
+
+                    if (j == 0)
                     {
                         <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                        j++;
                     }
                     else
                     {
                         <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                        j++;
                     }
                 }
-                @if (employee.EmployeePlaces.Count == 0)
+                @if (employee.EmployeePlaces.All(t=>string.IsNullOrEmpty(t.PhoneNumber) || t.PhoneNumber== "_"))
                 {
                     <p class="personMail" style="margin-left:0">@employee.Employee.EMail</p>
                 }
@@ -62,13 +68,6 @@ else
                     <p class="personMail">@employee.Employee.EMail</p>
                 }
             </div>
-@*            <div class="phonesLine">*@
-@*                @foreach (SpecificStaffPlace specEmpPlace in employee.SpecificStaffPlaces)*@
-@*                {*@
-@*                    <p class="personCityPhone">33-24;</p>*@
-@*                    <p class="personMobilePhone">@specEmpPlace.PhoneNumber;</p>*@
-@*                }*@
-@*            </div>*@
         </div>
 
         <div class="editPositionPanel">
@@ -92,7 +91,6 @@ else
             </div>
         </div>
 
-        @*                <img class="favorite" data-url="@Url.Action("RemoveFavorite", "Home", new {id = employee.Employee.Id})" title="Убрать" />*@
     </li>
 }
     </ul>
@@ -208,33 +206,6 @@ else
                     }
                 });
         });
-
-//        $('#editListBtn').on('click', function(e) {
-//            var target = $('#editListBtn');
-//
-//            if (target.data('edit') == "1") {
-//                //меняем кнопку
-//                target.data('edit', '0');
-//                target.attr('value', 'сохранить');
-//
-//                //меняем стили у лист-айтемов
-//                $('.listItem').addClass('editListItem');
-//                //освобождаем у лист-айтемов правый край
-//                $('.listItem .innerPersonLayout').css('margin-right', '140px');
-//
-//                //показываем панель редактирования
-//                $('.editPositionPanel').toggle();
-//
-//            } else {
-//                target.data('edit', '1');
-//                target.attr('value', 'редактировать порядок');
-//                $('.listItem').removeClass('editListItem');
-//
-//                $('.listItem .innerPersonLayout').css('margin-right', '0');
-//
-//                $('.editPositionPanel').toggle();
-//            }
-//        });
 
         $('.pageNmbr, .paginationNavigationLink, .emploeeLink, .personDepartment').on('click', function (e) {
             var currentPageItem = $(e.target);

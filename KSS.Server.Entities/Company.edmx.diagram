@@ -5,63 +5,67 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="f7960fda39bc410fa382963cf62ce08b" Name="Diagram1">
-        <EntityTypeShape EntityType="KSS.Server.Entities.Decrease" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Department" Width="1.5" PointX="0.75" PointY="3.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.DepartmentState" Width="1.5" PointX="3" PointY="8" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Division" Width="1.5" PointX="0.75" PointY="10" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.DivisionPhoneCode" Width="1.5" PointX="3" PointY="12.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.DivisionState" Width="1.5" PointX="3" PointY="15.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Employee" Width="1.5" PointX="0.75" PointY="14.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.EmployeePlace" Width="1.5" PointX="8.25" PointY="10.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Favorite" Width="1.5" PointX="3" PointY="22.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.HistoryUser" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Locality" Width="1.5" PointX="3.75" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Location" Width="1.5" PointX="6" PointY="9.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Operator" Width="1.5" PointX="5.75" PointY="3.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Option" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneMatrixInt" Width="1.5" PointX="6" PointY="21.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneMatrixIntFull" Width="1.5" PointX="9.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneType" Width="1.5" PointX="6" PointY="14.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneZoneInt" Width="1.5" PointX="3.75" PointY="19" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Position" Width="1.5" PointX="3.75" PointY="25.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.PositionState" Width="1.5" PointX="6" PointY="26" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.SpecificStaff" Width="1.5" PointX="9" PointY="6.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.SpecificStaffPlace" Width="1.5" PointX="11.25" PointY="10.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Staff" Width="1.5" PointX="6" PointY="17.625" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.sysdiagram" Width="1.5" PointX="11.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.Territory" Width="1.5" PointX="3.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="KSS.Server.Entities.TerritoryState" Width="1.5" PointX="6" PointY="6.375" IsExpanded="true" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Department" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Department1" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Position_Department" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaff_Department" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Department" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Division" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Employee" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division1" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionState_Division" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionState_Division1" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Division" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_TerritoryState_Division" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_Employee" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Favorites_Employee_EmployeeId" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Favorites_Employee_LinkedEmployeeId" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaff_Employee" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Employee" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_Location" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_PhoneType" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Locality" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Location_PhoneZoneInt" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Territory" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_Location" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_FromId" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_ToId" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_PhoneType" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_PositionState_Position" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Position" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_SpecificStaff" ManuallyRouted="false" />
-        <AssociationConnector Association="KSS.Server.Entities.FK_TerritoryState_Territory" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Decrease" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Department" Width="1.5" PointX="3.75" PointY="30.125" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.DepartmentSpecificState" Width="1.5" PointX="3" PointY="19.5" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.DepartmentState" Width="1.5" PointX="6" PointY="7.125" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Division" Width="1.5" PointX="0.75" PointY="11" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.DivisionPhoneCode" Width="1.5" PointX="3" PointY="23.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.DivisionState" Width="1.5" PointX="3" PointY="26.125" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Employee" Width="1.5" PointX="3.75" PointY="2" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.EmployeePlace" Width="1.5" PointX="8.25" PointY="11.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Favorite" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.HistoryUser" Width="1.5" PointX="0.75" PointY="4.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Locality" Width="1.5" PointX="0.75" PointY="15.375" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Location" Width="1.5" PointX="3" PointY="10.875" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Operator" Width="1.5" PointX="8.75" PointY="1.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Option" Width="1.5" PointX="8.75" PointY="4.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneMatrixInt" Width="1.5" PointX="3" PointY="16.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneMatrixIntFull" Width="1.5" PointX="8.75" PointY="7.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneType" Width="1.5" PointX="6" PointY="3.625" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.PhoneZoneInt" Width="1.5" PointX="0.75" PointY="18.375" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Position" Width="1.5" PointX="5.75" PointY="24.125" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.PositionState" Width="1.5" PointX="8" PointY="24.75" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.SpecificStaff" Width="1.5" PointX="5.25" PointY="19.5" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.SpecificStaffPlace" Width="1.5" PointX="7.5" PointY="15.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Staff" Width="1.5" PointX="8" PointY="19.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.sysdiagram" Width="1.5" PointX="10.75" PointY="1.25" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.Territory" Width="1.5" PointX="0.75" PointY="8" />
+        <EntityTypeShape EntityType="KSS.Server.Entities.TerritoryState" Width="1.5" PointX="6" PointY="11.5" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Department" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Department1" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Position_Department" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaff_Department" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Department" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentSpecificState_DepartmentSpecificState" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentSpecificState_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaff_DepartmentSpecificState" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DepartmentState_Employee" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionPhoneCode_Division1" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionState_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_DivisionState_Division1" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_TerritoryState_Division" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_Employee" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Favorites_Employee_EmployeeId" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Favorites_Employee_LinkedEmployeeId" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaff_Employee" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Employee" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_Location" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_EmployeePlace_PhoneType" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Locality" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Location_PhoneZoneInt" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Location_Territory" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_Location" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_FromId" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_PhoneMatrixInt_PhoneZoneInt_ToId" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_PhoneType" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_PositionState_Position" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_Staff_Position" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_SpecificStaffPlace_SpecificStaff" />
+        <AssociationConnector Association="KSS.Server.Entities.FK_TerritoryState_Territory" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

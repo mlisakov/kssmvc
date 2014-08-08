@@ -1,13 +1,5 @@
 ﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 <link href="~/Content/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
-@*<script src="~/Scripts/jquery-ui.min.js"></script>*@
-
-@*<script type="text/javascript" src="~/Scripts/jquery-ui.js"></script>*@
-@*<script type="text/javascript" src="~/Scripts/jquery.ui.datepicker-ru.js"></script>*@
-@*<script src="@Url.Content("~/Scripts/jquery-ui.min.js")" type="text/javascript"></script>*@
-@*<script src="@Url.Content("~/Scripts/jquery-ui.js")" type="text/javascript"></script>*@
-@*<script src="@Url.Content("~/Scripts/jquery.ui.datepicker-ru.js")" type="text/javascript"></script>*@
-
 
 @using KSS.Models
 @using KSS.Server.Entities
@@ -182,24 +174,31 @@
                         <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
                         <p class="personJob">@employee.PositionState.Title</p>
                         <div class="phonesLine">
-                            @for (int i = 0; i < employee.EmployeePlaces.Count; i++)
+                            @for (int i = 0, j = 0; i < employee.EmployeePlaces.Count; i++)
                             {
-                                if (i == 0)
+                                if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber) || employee.EmployeePlaces[i].PhoneNumber == "_")
+                                {
+                                    continue;
+                                }
+
+                                if (j == 0)
                                 {
                                     <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                                    j++;
                                 }
                                 else
                                 {
                                     <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+                                    j++;
                                 }
                             }
-                            @if (employee.EmployeePlaces.Count == 0)
+                            @if (employee.EmployeePlaces.All(t => string.IsNullOrEmpty(t.PhoneNumber) || t.PhoneNumber == "_"))
                             {
-                                <p class="personMail" style="margin-left:0">@employee.Employee.EMail</p> 
+                                <p class="personMail" style="margin-left:0">@employee.Employee.EMail</p>
                             }
                             else
                             {
-                                <p class="personMail">@employee.Employee.EMail</p>                                
+                                <p class="personMail">@employee.Employee.EMail</p>
                             }
                             
                         </div>
@@ -426,16 +425,6 @@
                     resultDiv.append(data);
                 }
             });
-
-        //
-        //        $.get(url, function(data) {
-        //            var resultDiv = $('#searchResult');
-        //            if (resultDiv != null) {
-        //                $('.searchProgress').hide();
-        //                resultDiv.empty();
-        //                resultDiv.append(data);
-        //            }
-        //        });
     };
 
     $('#Divisions').change(function() {
