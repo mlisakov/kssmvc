@@ -1016,6 +1016,13 @@ namespace KSS.Helpers
         {
             try
             {
+                if (divisionId == Guid.Empty)
+                    divisionId = null;
+                if (placeId == Guid.Empty)
+                    placeId = null;
+                if (departmentId == Guid.Empty)
+                    departmentId = null;      
+
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName, ignoreIsMember);
 
@@ -1048,6 +1055,13 @@ namespace KSS.Helpers
         {
             try
             {
+                if (divisionId == Guid.Empty)
+                    divisionId = null;
+                if (placeId == Guid.Empty)
+                    placeId = null;
+                if (departmentId == Guid.Empty)
+                    departmentId = null;      
+
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName, ignoreIsMember);
                 return query.DistinctBy(t => t.Id).Count();                

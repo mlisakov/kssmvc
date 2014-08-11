@@ -570,6 +570,24 @@ ul {
 	font-weight: normal;
 }
 
+.toolBoxDiv {
+	margin: 15px 0 0 500px;
+	display: inline-block;
+}
+
+	.toolBoxDiv form {
+		display: inline-block;
+	}
+
+		.toolBoxDiv form input {			
+			font-size: 14px;
+			color: #4988b9;			
+			background: none;
+			border: none;
+		    text-decoration: underline;
+			cursor: pointer;
+		}
+
 .shortSearch {
 	width: 820px;
 	height: 36px;
@@ -675,8 +693,8 @@ ul {
 	font-size: 14px;
 	color: #4988b9;
 	margin: 15px 0 0 30px;
-	display: block;
-	width: 140px;
+	display: inline-block;
+	width: 140px;	
 }
 
 	.advancedSearch span {

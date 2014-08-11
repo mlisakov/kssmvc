@@ -138,6 +138,18 @@
     </div>
         
     <a class="advancedSearch">Расширенный поиск <span>↓</span></a>
+    @*    <a class="exportLink" data-url='@Url.Action("Export","Home")'>Экспорт</a>*@
+    
+    <div class="toolBoxDiv">
+        @using (Html.BeginForm("Export", "Home", FormMethod.Get))
+        {
+            <input type="submit" value="экспорт" class="exportExcelLink" />
+        }
+        @using (Html.BeginForm("Print", "Home", FormMethod.Get))
+        {
+            <input type="submit" value="печать" class="printLink" />
+        }
+    </div>
     
     <div id="searchResult" class="centralResultPanel">
         <ul class="personUL">
@@ -406,7 +418,7 @@
                 arrow.text('↓');
         }
 
-    });
+            });
     });
     
 

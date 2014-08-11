@@ -49,6 +49,10 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\iTextSharp.5.5.2\lib\itextsharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
@@ -242,6 +246,7 @@
     <Content Include="Fonts\PTS56F_W.TTF" />
     <Content Include="Fonts\PTS75F_W.TTF" />
     <Content Include="Fonts\PTS76F_W.TTF" />
+    <Content Include="Fonts\ARIAL.TTF" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Images\dafaultpic.jpg" />
     <Content Include="Images\logoMRSK.png" />

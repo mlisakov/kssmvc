@@ -1,7 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.UI;
+using System.Web.UI.WebControls;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 using KSS.Helpers;
 using KSS.Models;
 
@@ -36,8 +44,7 @@ namespace KSS.Controllers
             view.ViewBag.SearchPhoneNumber = "";            
             view.ViewBag.SearchDateStart = "";
             view.ViewBag.SearchDateEnd = "";
-            view.ViewBag.SearchJob = "";
-
+            view.ViewBag.SearchJob = "";            
 
             Session["BackLink"] = Url.Action("SearchView", "Home", new { id = id });
             return view;
@@ -130,8 +137,14 @@ namespace KSS.Controllers
             view.ViewBag.IsAdvanced = false;
             view.ViewBag.Search = employeeName;
 
-            Session["BackLink"] = Url.Action("SearchEmployees", "Home",
+
+            var action = Url.Action("SearchEmployees", "Home",
                 new {employeeName = employeeName, startIndex = startIndex});
+
+
+            //создаем вручную ссылку, т.к. иначе мы сохраним кириллицу в виде символов вида %0D
+            action = "/Home/SearchEmployees?employeeName=" + employeeName + "&startIndex=" + startIndex;
+            Session["BackLink"] = action;
             return view;
         }
 
@@ -169,20 +182,34 @@ namespace KSS.Controllers
             view.ViewBag.SearchJob = job;
 
 
-            Session["BackLink"] = Url.Action("SearchEmployeesAdvanced", "Home",
-                new
-                {
-                    divisionId = divisionId,
-                    placeId = placeId,
-                    isMemberOfHeadquarter = isMemberOfHeadquarter,
-                    phoneNumber = phoneNumber,
-                    departmentId = departmentId,
-                    dateStart = dateStart,
-                    dateEnd = dateEnd,
-                    job = job,
-                    employeeName = employeeName,
-                    startIndex = startIndex,
-                });
+            var action = "/Home/SearchEmployeesAdvanced?divisionId=" + divisionId +
+                         "&startIndex=" + startIndex +
+                         "&placeId=" + placeId +
+                         "&isMemberOfHeadquarter=" + isMemberOfHeadquarter +
+                         "&phoneNumber=" + phoneNumber +
+                         "&departmentId=" + departmentId +
+                         "&dateStart=" + dateStart +
+                         "&dateEnd=" + dateEnd +
+                         "&job=" + job +
+                         "&employeeName=" + employeeName +
+                         "&startIndex=" + startIndex;
+
+//            Session["BackLink"] = Url.Action("SearchEmployeesAdvanced", "Home",
+//                new
+//                {
+//                    divisionId = divisionId,
+//                    placeId = placeId,
+//                    isMemberOfHeadquarter = isMemberOfHeadquarter,
+//                    phoneNumber = phoneNumber,
+//                    departmentId = departmentId,
+//                    dateStart = dateStart,
+//                    dateEnd = dateEnd,
+//                    job = job,
+//                    employeeName = employeeName,
+//                    startIndex = startIndex,
+//                });
+
+            Session["BackLink"] = action;
             return view;
         }
 
@@ -248,6 +275,383 @@ namespace KSS.Controllers
             DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
 
             return SpecificCard(specificStaffId);
+        }
+
+        public ActionResult Export()
+        {
+
+            var searchLink = Session["BackLink"].ToString();
+            var employees = new List<EmployeeModel>();
+            var guid = new Guid(Session["CurrentUser"].ToString());
+
+
+            if (searchLink.Contains("SearchEmployeesAdvanced"))
+            {
+                var parameters = searchLink.Substring(searchLink.IndexOf('?') + 1);
+                var paramArra = parameters.Split('&');
+
+                Guid? divisionId = null;
+                Guid? placeId = null;
+                bool isMemberOfHeadquarter = false;
+                string phoneNumber = string.Empty;
+                Guid? departmentId = null;
+                string dateStart = string.Empty;
+                string dateEnd = string.Empty;
+                string job = string.Empty;
+                string employeeName = string.Empty;
+                const int startIndex = 0;
+
+                foreach (var item in paramArra)
+                {
+                    if (item.Contains("divisionId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        divisionId = temp;
+                    }
+                    else if (item.Contains("placeId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        placeId = temp;
+                    }
+                    else if (item.Contains("isMemberOfHeadquarter"))
+                    {
+                        isMemberOfHeadquarter = Convert.ToBoolean(item.Split('=')[1]);
+                    }
+                    else if (item.Contains("phoneNumber"))
+                    {
+                        phoneNumber = item.Split('=')[1];
+                    }
+                    else if (item.Contains("departmentId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        departmentId = temp;
+                    }
+                    else if (item.Contains("dateStart"))
+                    {
+                        dateStart = item.Split('=')[1];
+                    }
+                    else if (item.Contains("dateEnd"))
+                    {
+                        dateEnd = item.Split('=')[1];
+                    }
+                    else if (item.Contains("job"))
+                    {
+                        job = item.Split('=')[1];
+                    }
+                    else if (item.Contains("employeeName"))
+                    {
+                        employeeName = item.Split('=')[1];
+                    }
+                }
+
+
+                var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter,
+                    phoneNumber,
+                    departmentId,
+                    dateStart, dateEnd, job, employeeName, false);
+
+                itemsCount = itemsCount > 500 ? 500 : itemsCount;
+
+                employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
+                    departmentId,
+                    dateStart, dateEnd, job, employeeName, itemsCount, false, guid);
+            }
+            else
+            {
+                if (searchLink.Contains("SearchEmployees"))
+                {
+                    var parameters = searchLink.Substring(searchLink.IndexOf('?') + 1);
+                    var paramArra = parameters.Split('&');
+
+                    var employeeName = "";
+                    if (parameters.Length > 1)
+                    {
+                        employeeName = paramArra[0].Split('=')[1];
+                    }
+
+                    var itemsCount = DBHelper.GetSearchResultCount(employeeName);
+
+                    itemsCount = itemsCount > 500 ? 500 : itemsCount;
+                    employees = DBHelper.Search(guid, employeeName, itemsCount, 0);
+                }
+            }
+
+
+            var dataTable = new DataTable("teste");
+            dataTable.Columns.Add("ФИО", typeof (string));
+            dataTable.Columns.Add("Подразделение", typeof(string));
+            dataTable.Columns.Add("Должность", typeof(string));
+            dataTable.Columns.Add("Рабочий телефон", typeof(string));
+            dataTable.Columns.Add("Специальный телефон", typeof(string));
+            dataTable.Columns.Add("Почта", typeof(string));
+
+            foreach (var employee in employees)
+            {
+                string phone =
+                    employee.EmployeePlaces.Where(
+                        place => !string.IsNullOrEmpty(place.PhoneNumber) && place.PhoneNumber != "_")
+                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+
+                string specificPhone =
+                    employee.SpecificStaffPlaces.Where(
+                        t => !string.IsNullOrEmpty(t.PhoneNumber) && t.PhoneNumber != "_")
+                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+
+                dataTable.Rows.Add(employee.Employee.Name,
+                    employee.DepartmentState.Department,
+                    employee.PositionState.Title,
+                    phone, specificPhone, employee.Employee.EMail);
+            }
+
+            if (employees.Count == 0)
+            {
+                string empt = "<пусто>";
+                dataTable.Rows.Add(empt, empt, empt, empt, empt, empt);
+            }
+
+            var grid = new GridView();
+            grid.DataSource = dataTable;
+            grid.DataBind();
+
+            Response.ClearContent();
+            Response.Buffer = true;
+            Response.AddHeader("content-disposition", "attachment; filename=Report_KCC.xls");
+            Response.ContentType = "application/ms-excel";
+
+            Response.Charset = "";
+            StringWriter sw = new StringWriter();
+            HtmlTextWriter htw = new HtmlTextWriter(sw);
+
+            grid.RenderControl(htw);
+
+            Response.Output.Write(sw.ToString());
+            Response.Flush();
+            Response.End();
+
+            return View("Help");
+
+        }
+
+
+        public ActionResult Print()
+        {
+
+            var searchLink = Session["BackLink"].ToString();
+            var employees = new List<EmployeeModel>();
+            var guid = new Guid(Session["CurrentUser"].ToString());
+
+
+            if (searchLink.Contains("SearchEmployeesAdvanced"))
+            {
+                var parameters = searchLink.Substring(searchLink.IndexOf('?') + 1);
+                var paramArra = parameters.Split('&');
+
+                Guid? divisionId = null;
+                Guid? placeId = null;
+                bool isMemberOfHeadquarter = false;
+                string phoneNumber = string.Empty;
+                Guid? departmentId = null;
+                string dateStart = string.Empty;
+                string dateEnd = string.Empty;
+                string job = string.Empty;
+                string employeeName = string.Empty;
+                const int startIndex = 0;
+
+                foreach (var item in paramArra)
+                {
+                    if (item.Contains("divisionId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        divisionId = temp;
+                    }
+                    else if (item.Contains("placeId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        placeId = temp;
+                    }
+                    else if (item.Contains("isMemberOfHeadquarter"))
+                    {
+                        isMemberOfHeadquarter = Convert.ToBoolean(item.Split('=')[1]);
+                    }
+                    else if (item.Contains("phoneNumber"))
+                    {
+                        phoneNumber = item.Split('=')[1];
+                    }
+                    else if (item.Contains("departmentId"))
+                    {
+                        Guid temp;
+                        Guid.TryParse(item.Split('=')[1], out temp);
+                        departmentId = temp;
+                    }
+                    else if (item.Contains("dateStart"))
+                    {
+                        dateStart = item.Split('=')[1];
+                    }
+                    else if (item.Contains("dateEnd"))
+                    {
+                        dateEnd = item.Split('=')[1];
+                    }
+                    else if (item.Contains("job"))
+                    {
+                        job = item.Split('=')[1];
+                    }
+                    else if (item.Contains("employeeName"))
+                    {
+                        employeeName = item.Split('=')[1];
+                    }
+                }
+
+
+                var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter,
+                    phoneNumber,
+                    departmentId,
+                    dateStart, dateEnd, job, employeeName, false);
+
+                itemsCount = itemsCount > 500 ? 500 : itemsCount;
+
+                employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
+                    departmentId,
+                    dateStart, dateEnd, job, employeeName, itemsCount, false, guid);
+            }
+            else
+            {
+                if (searchLink.Contains("SearchEmployees"))
+                {
+                    var parameters = searchLink.Substring(searchLink.IndexOf('?') + 1);
+                    var paramArra = parameters.Split('&');
+
+                    var employeeName = "";
+                    if (parameters.Length > 1)
+                    {
+                        employeeName = paramArra[0].Split('=')[1];
+                        //                    employeeName = Encoding.Default.GetString(Encoding.Default.GetBytes(employeeName));
+                    }
+
+                    var itemsCount = DBHelper.GetSearchResultCount(employeeName);
+
+                    itemsCount = itemsCount > 500 ? 500 : itemsCount;
+                    employees = DBHelper.Search(guid, employeeName, itemsCount, 0);
+                }
+            }
+
+
+//            var dataTable = new DataTable("teste");
+//            dataTable.Columns.Add("ФИО", typeof(string));
+//            dataTable.Columns.Add("Подразделение", typeof(string));
+//            dataTable.Columns.Add("Должность", typeof(string));
+//            dataTable.Columns.Add("Рабочий телефон", typeof(string));
+//            dataTable.Columns.Add("Специальный телефон", typeof(string));
+//            dataTable.Columns.Add("Почта", typeof(string));
+
+//            foreach (var employee in employees)
+//            {
+//                string phone =
+//                    employee.EmployeePlaces.Where(
+//                        place => !string.IsNullOrEmpty(place.PhoneNumber) && place.PhoneNumber != "_")
+//                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+//
+//                string specificPhone =
+//                    employee.SpecificStaffPlaces.Where(
+//                        t => !string.IsNullOrEmpty(t.PhoneNumber) && t.PhoneNumber != "_")
+//                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+//
+//                dataTable.Rows.Add(employee.Employee.Name,
+//                    employee.DepartmentState.Department,
+//                    employee.PositionState.Title,
+//                    phone, specificPhone, employee.Employee.EMail);
+//            }
+
+//            if (employees.Count == 0)
+//            {
+//                string empt = "-";
+//                dataTable.Rows.Add(empt, empt, empt, empt, empt, empt);
+//            }
+
+//            var grid = new GridView();
+//            grid.DataSource = dataTable;
+//            grid.DataBind();
+
+
+//            Response.ClearContent();
+//            Response.Buffer = true;
+//            Response.AddHeader("content-disposition", "attachment; filename=Report_KCC.pdf");
+//            Response.ContentType = "application/pdf";
+
+//            Response.Charset = "";
+//            StringWriter sw = new StringWriter();
+//            HtmlTextWriter htw = new HtmlTextWriter(sw);
+
+//            grid.RenderControl(htw);
+
+//            Response.Output.Write(sw.ToString());
+//            Response.Flush();
+//            Response.End();
+
+            Response.Clear();
+            Response.ContentType = "application/pdf";
+            Response.AddHeader("content-disposition", "attachment;filename=\"Report.pdf\"");
+            Byte[] fileBuffer = CreatePDFDocument(employees).ToArray();
+            Response.BinaryWrite(fileBuffer);
+            Response.End();
+
+            return View("Help");
+
+        }
+
+        private MemoryStream CreatePDFDocument(List<EmployeeModel> employees)
+        {
+            var pdfDoc = new Document();
+            var str = new MemoryStream();
+            PdfWriter.GetInstance(pdfDoc, str);
+            pdfDoc.Open();
+            var table = new PdfPTable(1) { HorizontalAlignment = 0 };
+            string path = Server.MapPath("~/Fonts/Arial.ttf");
+            BaseFont baseFont = BaseFont.CreateFont(path, BaseFont.IDENTITY_H, BaseFont.NOT_EMBEDDED);
+            var font = new Font(baseFont, 11, Font.NORMAL);            
+
+            foreach (var employee in employees)
+            {
+                string phone =
+                    employee.EmployeePlaces.Where(
+                        place => !string.IsNullOrEmpty(place.PhoneNumber) && place.PhoneNumber != "_")
+                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+
+                string specificPhone =
+                    employee.SpecificStaffPlaces.Where(
+                        t => !string.IsNullOrEmpty(t.PhoneNumber) && t.PhoneNumber != "_")
+                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
+
+                table.AddCell(
+                    new PdfPCell(
+                        new Phrase("ФИО:" + employee.Employee.Name + Environment.NewLine +
+                                   "Подразделение:" + employee.DepartmentState.Department + Environment.NewLine +
+                                   "Должность:" + employee.PositionState.Title + Environment.NewLine +
+                                   "Личный телефон:" + phone + Environment.NewLine +
+                                   "Рабочий телефон:" + specificPhone +
+                                   Environment.NewLine +
+                                   "Почта:" + employee.Employee.EMail, font)) { HorizontalAlignment = 0 });
+            }
+
+            if (employees.Count == 0)
+            {
+                table.AddCell(
+                    new PdfPCell(
+                        new Phrase("ФИО: -" + Environment.NewLine +
+                                   "Подразделение: - " + Environment.NewLine +
+                                   "Должность: -" + Environment.NewLine +
+                                   "Личный телефон: -" + Environment.NewLine +
+                                   "Рабочий телефон: -" + Environment.NewLine +
+                                   "Почта: - ", font)) {HorizontalAlignment = 0});
+            }
+
+            pdfDoc.Add(table);
+            pdfDoc.Close();
+            return str;
         }
     }
 }
