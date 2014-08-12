@@ -902,7 +902,7 @@ div.rightItem p {
 	position: absolute;
 }
 
-.lyncStatusDiv img{
+.lyncStatusDiv img, .lyncStatusDiv div{
 	width: inherit;
 	height: inherit;
 }

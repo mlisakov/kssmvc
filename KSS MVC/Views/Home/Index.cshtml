@@ -278,6 +278,8 @@
                     parent.find('input.dataPicker').each(function () {                        
                         $(this).datepicker();
                     });
+
+                    initLyncStatuses();
                 }
             });
     }
@@ -292,5 +294,11 @@
             }
             _isLoading = false;
         });
+    }
+
+    var x = new Lync();
+    function initLyncStatuses() {
+//        alert('init lync');
+        x.InsertLyncs();
     }
 </script>

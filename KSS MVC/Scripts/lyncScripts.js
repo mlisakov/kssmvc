@@ -15,7 +15,8 @@ function lyncImageClicked(img) {
 
 function lyncImageLoaded(img) {
 	if (img != null) {
-		var mail = $(img).data('email');		
+		var mail = $(img).data('email');
+		
 		showLyncStatus(mail, img);
 	}
 }
@@ -115,7 +116,7 @@ function getId(userName) {
 }
 
 //В зависимости от статуса пользователя - выставляем картинку
-
+var i = 1;
 function showLyncStatus(uri, img) {
 
 	InializeActiveX();
@@ -124,11 +125,16 @@ function showLyncStatus(uri, img) {
 
 		var status = "";
 		try {
-			status = getLyncPresenceString(nameCtrl.GetStatus(uri, "lyncspan"));
-			
+			status = getLyncPresenceString(nameCtrl.GetStatus(uri, "1"));
+			console.log(i + ")   " + uri + "        " + img.src + "                  ;         " + status);
+//			i++;
+//			status = getLyncPresenceString(nameCtrl.GetStatus(uri, "lyncspan"));
+//			console.log(i + ")   " + uri + "        " + img.src + "                  ;         " + status);
+
 		} catch (e) {
 			console.log(e);			
-		}		
+		}
+		i++;
 
 		switch (status) {
 			case "":
@@ -152,6 +158,7 @@ function showLyncStatus(uri, img) {
 					$(img).attr("src", "/Images/LyncStatuses/away.png");
 				break;
 			case "busy":
+			case "inacall":
 				if ($(img).attr("src") != "/Images/LyncStatuses/busy.png")
 					$(img).attr("src", "/Images/LyncStatuses/busy.png");
 				break;

@@ -14,10 +14,10 @@
     <li class="listItem editListItem" data-id="@employee.Employee.Id" data-position="@employee.Employee.Code">
         <div class="lyncStatusDiv">
             
-            <img src="~/Images/LyncStatuses/empty.png" data-email="@employee.Employee.EMail" onload="lyncImageLoaded(this);"
-                 onclick="lyncImageClicked(this);"
-                 onmouseout="lyncImageMouseOut();" />
-
+@*            <img src="~/Images/LyncStatuses/empty.png" data-email="@employee.Employee.EMail" onload="lyncImageLoaded(this);"*@
+@*                 onclick="lyncImageClicked(this);"*@
+@*                 onmouseout="lyncImageMouseOut();" />*@
+            <div class="author" data-user-id="@employee.Employee.EMail"> </div>    
         </div>
         <div class="personIMGLayout">
             <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
@@ -194,9 +194,9 @@ else
             var url = currentPageItem.data('url');
 
             $.ajax({
-                url: url,
-                cache: false
-            })
+                    url: url,
+                    cache: false
+                })
                 .done(function (data) {
                     var img = currentPageItem.find('img');
                     if (data == 'True') {

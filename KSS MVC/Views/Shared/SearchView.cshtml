@@ -91,7 +91,7 @@
             </select>
 
             <select id="Places" class="field rightItem">
-                 <option class="comboBoxItem" value="-1">выберите местоположение</option>
+                <option class="comboBoxItem" value="-1">выберите местоположение</option>
                 @foreach (KeyValuePair<Guid,String> locality in Model.GetCustomLocality())
                 {
                     <option class="comboBoxItem" value='@locality.Key'>@locality.Value</option>
@@ -158,10 +158,13 @@
             {
                 <li>
                     <div class="lyncStatusDiv">
-                        <img src="~/Images/LyncStatuses/empty.png" data-email="@employee.Employee.EMail" onload="lyncImageLoaded(this);"
-                             onclick="lyncImageClicked(this);"
-                             onmouseout="lyncImageMouseOut();" />
+@*                        <img src="~/Images/LyncStatuses/empty.png" data-email="@employee.Employee.EMail" onload="lyncImageLoaded(this);"*@
+@*                             onclick="lyncImageClicked(this);"*@
+@*                             onmouseout="lyncImageMouseOut();" />*@
+                        <div class="author" data-user-id="@employee.Employee.EMail"> </div>    
                     </div>
+                    
+
 
                     <div class="personIMGLayout">
                         <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
@@ -182,7 +185,7 @@
                             }
                         </a>
 
-@*                        <p class="personDepartment"> @employee.DepartmentState.Department</p>*@
+                        @*                        <p class="personDepartment"> @employee.DepartmentState.Department</p>*@
                         <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
                         <p class="personJob">@employee.PositionState.Title</p>
                         <div class="phonesLine">
@@ -227,18 +230,18 @@
                     if (ViewBag.IsAdvanced)
                     {
                         <a class='paginationNavigationLink linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
-                                                                  {
-                                                                      divisionId = Model.DivisionID,
-                                                                      placeId = ViewBag.SearchPlace,
-                                                                      isMemberOfHeadquarter = ViewBag.SearchIsMember,
-                                                                      phoneNumber = ViewBag.SearchPhoneNumber,
-                                                                      departmentId = Model.DepartmentID,
-                                                                      dateStart = ViewBag.SearchDateStart,
-                                                                      dateEnd = ViewBag.SearchDateEnd,
-                                                                      job = ViewBag.SearchJob,
-                                                                      employeeName = ViewBag.Search,
-                                                                      startIndex = ViewBag.StartIndex - 1
-                                                                  })'>
+                                                                                       {
+                                                                                           divisionId = Model.DivisionID,
+                                                                                           placeId = ViewBag.SearchPlace,
+                                                                                           isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                                                           phoneNumber = ViewBag.SearchPhoneNumber,
+                                                                                           departmentId = Model.DepartmentID,
+                                                                                           dateStart = ViewBag.SearchDateStart,
+                                                                                           dateEnd = ViewBag.SearchDateEnd,
+                                                                                           job = ViewBag.SearchJob,
+                                                                                           employeeName = ViewBag.Search,
+                                                                                           startIndex = ViewBag.StartIndex - 1
+                                                                                       })'>
                             Назад
                         </a>
                     }
@@ -246,7 +249,7 @@
                 else
                 {
                     <p class="paginationArrow" style="visibility: collapse">←</p>
-    <a class="paginationNavigationLink linkInSearchPage" style="visibility: collapse">Назад</a>
+                    <a class="paginationNavigationLink linkInSearchPage" style="visibility: collapse">Назад</a>
                 }
 
                 if (ViewBag.StartIndex + 1 < Model.PageCount)
@@ -254,18 +257,18 @@
                     if (ViewBag.IsAdvanced)
                     {
                         <a class='paginationNavigationLink forwardLink linkInSearchPage' data-url='@Url.Action("SearchEmployeesAdvanced", "Home", new
-                                                                              {
-                                                                                  divisionId = Model.DivisionID,
-                                                                                  placeId = "",
-                                                                                  isMemberOfHeadquarter = ViewBag.SearchIsMember,
-                                                                                  phoneNumber = ViewBag.SearchPhoneNumber,
-                                                                                  departmentId = Model.DepartmentID,
-                                                                                  dateStart = ViewBag.SearchDateStart,
-                                                                                  dateEnd = ViewBag.SearchDateEnd,
-                                                                                  job = ViewBag.SearchJob,
-                                                                                  employeeName = ViewBag.Search,
-                                                                                  startIndex = ViewBag.StartIndex + 1
-                                                                              })'>
+                                                                                                   {
+                                                                                                       divisionId = Model.DivisionID,
+                                                                                                       placeId = "",
+                                                                                                       isMemberOfHeadquarter = ViewBag.SearchIsMember,
+                                                                                                       phoneNumber = ViewBag.SearchPhoneNumber,
+                                                                                                       departmentId = Model.DepartmentID,
+                                                                                                       dateStart = ViewBag.SearchDateStart,
+                                                                                                       dateEnd = ViewBag.SearchDateEnd,
+                                                                                                       job = ViewBag.SearchJob,
+                                                                                                       employeeName = ViewBag.Search,
+                                                                                                       startIndex = ViewBag.StartIndex + 1
+                                                                                                   })'>
                             Вперед
                         </a>
                     }
@@ -318,6 +321,11 @@
     
 
 </div>
+
+
+
+
+
 
 
 <script type="text/javascript">
@@ -420,7 +428,7 @@
 
             });
     });
-    
+
 
     function loadSearchPageResult(url, p) {
 
@@ -436,7 +444,8 @@
                     resultDiv.empty();
                     resultDiv.append(data);
                 }
-            });
+            initLyncStatuses();
+        });
     };
 
     $('#Divisions').change(function() {

@@ -148,6 +148,5 @@ namespace KSS.Models
                 GetFullDepartmentName(departments, department.ParentId);
             }
         }
-
     }
 }
