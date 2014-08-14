@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
@@ -1126,6 +1127,35 @@ namespace KSS.Helpers
             return new List<string>();
         }
 
+       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="division"></param>
+        /// <param name="territory"></param>
+        /// <returns></returns>
+        public static List<string> GetRegions(Guid division, Guid? territory)
+        {
+            try
+            {
+                var query = BaseModel.Locations.Where(t => t.DivisionId == division);
+
+
+                query = territory.HasValue
+                    ? query.Where(t => t.TerritoryId == territory)
+                    : query.Where(t => t.TerritoryId == null);
+
+                return query.Select(t => t.Locality.Region).DistinctBy(t => t).OrderBy(t => t).ToList();
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetRegions(Guid division, Guid? territory).", ex);
+            }
+
+            return new List<string>();
+        }
+
         /// <summary>
         /// Поиск населенных пункто по стране и региону
         /// </summary>
@@ -1668,6 +1698,170 @@ namespace KSS.Helpers
             {
                 LogHelper.WriteLog("Ошибка. UpdateSpecificPhone.", ex);
             }
+        }
+
+        /// <summary>
+        /// Create new Location/localy
+        /// </summary>
+        /// <param name="newDivisionName"></param>
+        /// <param name="parentDivisionGuid"></param>
+        /// <param name="existedDivision"></param>
+        /// <param name="newRegion"></param>
+        /// <param name="existedRegion"></param>
+        /// <param name="existedTerritory"></param>
+        /// <param name="city"></param>
+        /// <param name="innerPhoneCode"></param>
+        /// <param name="outerPhoneCode"></param>
+        /// <param name="street"></param>
+        /// <param name="house"></param>
+        /// <param name="pavilion"></param>
+        /// <param name="newTerritory"></param>
+        public static void CreateNewLocation(string newDivisionName, Guid? parentDivisionGuid,
+            Guid? existedDivision, string newRegion, string existedRegion,string newTerritory, Guid? existedTerritory, string city, string innerPhoneCode,
+            string outerPhoneCode, string street, string house, string pavilion)
+        {
+            try
+            {
+
+                //division
+                var divisionId = Guid.Empty;
+                if (!existedDivision.HasValue)
+                {
+                    var division = new Division
+                    {
+                        Id = Guid.NewGuid(),
+                        Code = "000000000",
+                        Ranking = "000001",
+                        Essential = true
+                    };
+
+                    BaseModel.AddToDivisions(division);
+
+                    var divisionState = new DivisionState {Id = division.Id};
+                    if (parentDivisionGuid.HasValue)
+                        divisionState.ParentId = parentDivisionGuid;
+                    divisionState.Division = newDivisionName;
+                    divisionState.ValidationDate = DateTime.Today;
+
+                    BaseModel.AddToDivisionStates(divisionState);
+
+                    divisionId = division.Id;
+                }
+                else
+                    divisionId = existedDivision.Value;
+
+                var locality = new Locality
+                {
+                    Id = Guid.NewGuid(),
+                    Locality1 = city,
+                    Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
+                    Country = "Россия",
+                    CityPhoneCode = innerPhoneCode
+                };
+
+                BaseModel.AddToLocalities(locality);
+
+
+                var terrotoryId = Guid.Empty;
+                if (!existedTerritory.HasValue)
+                {
+                    var territory = new Territory {Id = Guid.NewGuid()};
+
+                    BaseModel.AddToTerritories(territory);
+
+                    var territoryState = new TerritoryState
+                    {
+                        Id = territory.Id,
+                        DivisionId = divisionId,
+                        Territory = newTerritory,
+                        ValidationDate = DateTime.Now
+                    };
+
+                    BaseModel.AddToTerritoryStates(territoryState);
+
+                    terrotoryId = territory.Id;
+                }
+                else
+                    terrotoryId = existedTerritory.Value;
+
+
+                var location = new Location();
+                location.Id = Guid.NewGuid();
+                location.DivisionId = divisionId;
+                location.LocalityId = locality.Id;
+                location.TerritoryId = terrotoryId;
+                location.Street = street;
+                location.Edifice = house;
+                location.Building = pavilion;
+
+                BaseModel.AddToLocations(location);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. CreateNewLocation.", ex);
+            }
+        }
+
+        public static List<TerritoryState> GetTerritories(Guid division)
+        {
+            try
+            {
+                return
+                    BaseModel.TerritoryStates.Where(t => t.DivisionId == division && t.ExpirationDate == null)
+                        .OrderBy(t => t.Territory)
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetTerritories.", ex);
+            }
+            return new List<TerritoryState>();
+        }
+
+        public static List<KeyValuePair<Guid, string>> GetStreets(Guid locality)
+        {
+            try
+            {
+                return
+                    BaseModel.Locations.Where(t => t.LocalityId == locality).
+                        DistinctBy(t => t.Street).
+                        OrderBy(t => t.Street)
+                        .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Street))
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetStreets.", ex);
+            }
+            return new List<KeyValuePair<Guid, string>>();
+        }
+
+        public static List<KeyValuePair<Guid, string>> GetHouses(Guid? locality, Guid? street)
+        {
+            try
+            {
+                IQueryable<Location> query = BaseModel.Locations;
+
+                if (locality.HasValue)
+                    query = query.Where(t => t.LocalityId == locality.Value);
+
+                if (street.HasValue)
+                {
+                    var streetName = BaseModel.Locations.First(t => t.Id == street.Value);
+                    query = query.Where(t => t.Street == streetName.Street);
+                }
+
+                return query.DistinctBy(t => t.Edifice)
+                    .OrderBy(t => t.Edifice)
+                    .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Edifice))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetHouses.", ex);
+            }
+            return new List<KeyValuePair<Guid, string>>();
         }
     }
 }

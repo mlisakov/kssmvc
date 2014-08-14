@@ -148,5 +148,16 @@ namespace KSS.Models
                 GetFullDepartmentName(departments, department.ParentId);
             }
         }
+
+
+        private List<string> _regions = null;
+        public List<string> GetRegions(string countryName)
+        {
+            if (_regions == null)
+            {
+                _regions = DBHelper.GetRegions(countryName);
+            }
+            return _regions;
+        }
     }
 }
