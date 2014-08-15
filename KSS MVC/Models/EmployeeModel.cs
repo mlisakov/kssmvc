@@ -149,15 +149,10 @@ namespace KSS.Models
             }
         }
 
-
-        private List<string> _regions = null;
-        public List<string> GetRegions(string countryName)
+        
+        public List<string> GetRegions()
         {
-            if (_regions == null)
-            {
-                _regions = DBHelper.GetRegions(countryName);
-            }
-            return _regions;
+            return DBHelper.GetRegions(DivisionState.Id);
         }
     }
 }

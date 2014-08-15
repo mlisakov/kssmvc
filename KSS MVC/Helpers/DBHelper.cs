@@ -768,9 +768,8 @@ namespace KSS.Helpers
             catch (Exception ex)
             {
                 LogHelper.WriteLog("Ошибка. CheckBirthdaysAtDay.", ex);
-                throw;
             }
-
+            return false;
         }
 
         public static List<EmployeeModel> GetBirthdayPeople(string guid)
@@ -1097,27 +1096,28 @@ namespace KSS.Helpers
 
 
         /// <summary>
-        /// Поиск регионов по стране
+        /// Поиск регионов по дивизиону
         /// </summary>
-        /// <param name="country"></param>
+        /// <param name="divisionId"></param>
         /// <returns></returns>
-        public static List<string> GetRegions(string country)
+        public static List<string> GetRegions(Guid? divisionId)
         {
             try
             {
-                if (string.IsNullOrEmpty(country))
-                    //возвращаем всех
-                    return
-                        BaseModel.Localities.DistinctBy(t => t.Region)
-                            .OrderBy(t => t.Region)
-                            .Select(t => t.Region)
-                            .ToList();
+                if (divisionId.HasValue && divisionId.Value != Guid.Empty)
+                {
+                    return BaseModel.Locations
+                        .DistinctBy(t => t.LocalityId)
+                        .Select(t => t.Locality.Region)
+                        .Distinct()
+                        .OrderBy(t => t).ToList();
 
-                return BaseModel.Localities.Where(t => string.Equals(t.Country, country))
-                    .DistinctBy(t => t.Region)
-                    .OrderBy(t => t.Region)
-                    .Select(t => t.Region)
-                    .ToList();
+//                    return BaseModel.Locations.Where(t => t.DivisionId == divisionId)
+//                        .DistinctBy(t => t.LocalityId)
+//                        .Select(t => t.Locality.Region)
+//                        .Distinct()
+//                        .OrderBy(t => t).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -1234,79 +1234,78 @@ namespace KSS.Helpers
         /// </summary>
         /// <param name="employee">Гуид сотрудника</param>
         /// <param name="city">гуид населенного пункта</param>
-        /// <param name="street">Улица</param>
         /// <param name="edifice">Здание</param>
+        /// <param name="pavillion">номер корпуса</param>
         /// <param name="office">Номер офиса</param>
-        public static void UpdateEmployeePlaces(Guid employee, Guid city, string street, string edifice, string office)
+        public static void UpdateEmployeePlaces(Guid employee, Guid city, Guid edifice, string pavillion,string office)
         {
             try
             {
                 var places = GetEmployeePlaces(employee);
 
-                var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
+                var locality = BaseModel.Localities.First(t => t.Id.Equals(city));
                 var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
 
-                if (locality != null )
-                {
-                    if (placeWithLocation != null)
-                    {
-                        placeWithLocation.Location.Street = street;
-                        placeWithLocation.Location.Edifice = edifice;
-                        placeWithLocation.Location.LocalityId = city;
+                var location = BaseModel.Locations.First(t => t.Id.Equals(edifice));
 
+                pavillion = string.IsNullOrEmpty(pavillion) ? "" : pavillion;
+
+                if (placeWithLocation != null)
+                {
+                    placeWithLocation.Location.Street = location.Street;
+                    placeWithLocation.Location.Edifice = location.Edifice;
+                    placeWithLocation.Location.LocalityId = city;
+                    placeWithLocation.Location.Building = pavillion;
+
+                    foreach (EmployeePlace place in places)
+                    {
+                        place.Office = office;
+                        place.LocationId = placeWithLocation.Location.Id;
+                    }
+                }
+                else
+                {
+                    //create location
+
+                    var newLocation = new Location
+                    {
+                        Id = Guid.NewGuid(),
+                        DivisionId = location.DivisionId,
+                        LocalityId = city,
+                        Street = location.Street,
+                        Edifice = location.Edifice,
+                        Building = pavillion
+                    };
+
+                    BaseModel.AddToLocations(newLocation);
+
+                    BaseModel.SaveChanges();
+
+                    if (places.Count == 0)
+                    {
+                        //create empty place
+                        var newPlace = new EmployeePlace
+                        {
+                            Id = Guid.NewGuid(),
+                            EmployeeId = employee,
+                            LocationId = newLocation.Id,
+                            PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                            PhoneNumber = "_",
+                            Office = office
+                        };
+
+                        BaseModel.AddToEmployeePlaces(newPlace);
+                    }
+                    else
                         foreach (EmployeePlace place in places)
                         {
                             place.Office = office;
-                            place.LocationId = placeWithLocation.Location.Id;
+                            place.LocationId = newLocation.Id;
                         }
-                    }
-                    else
-                    {
-                        //create location
 
-                        var personDivision = GetEmployeeDivision(employee);
-
-                        if (personDivision.Id != Guid.Empty)
-                        {
-                            var newLocation = new Location
-                            {
-                                Id = Guid.NewGuid(),
-                                DivisionId = personDivision.Id,
-                                LocalityId = city,
-                                Street = street,
-                                Edifice = edifice
-                            };
-
-                            BaseModel.AddToLocations(newLocation);
-
-                            BaseModel.SaveChanges();
-
-                            if (places.Count == 0)
-                            {
-                                //create empty place
-                                var newPlace = new EmployeePlace
-                                {
-                                    Id = Guid.NewGuid(),
-                                    EmployeeId = employee,
-                                    LocationId = newLocation.Id,
-                                    PhoneTypeId = BaseModel.PhoneTypes.First().Id,
-                                    PhoneNumber = "_",
-                                    Office = office
-                                };
-
-                                BaseModel.AddToEmployeePlaces(newPlace);
-                            }
-                            else
-                                foreach (EmployeePlace place in places)
-                                {
-                                    place.Office = office;
-                                    place.LocationId = newLocation.Id;
-                                }
-                        }
-                    }
-
-                    BaseModel.SaveChanges();
                 }
+
+                BaseModel.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -1710,15 +1709,19 @@ namespace KSS.Helpers
         /// <param name="existedRegion"></param>
         /// <param name="existedTerritory"></param>
         /// <param name="city"></param>
+        /// <param name="existedCity"></param>
         /// <param name="innerPhoneCode"></param>
         /// <param name="outerPhoneCode"></param>
         /// <param name="street"></param>
+        /// <param name="existedStreet"></param>
         /// <param name="house"></param>
+        /// <param name="existedHouse"></param>
         /// <param name="pavilion"></param>
         /// <param name="newTerritory"></param>
         public static void CreateNewLocation(string newDivisionName, Guid? parentDivisionGuid,
-            Guid? existedDivision, string newRegion, string existedRegion,string newTerritory, Guid? existedTerritory, string city, string innerPhoneCode,
-            string outerPhoneCode, string street, string house, string pavilion)
+            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,
+            string city, Guid? existedCity, string innerPhoneCode, string outerPhoneCode, string street,
+            Guid? existedStreet, string house, Guid? existedHouse, string pavilion)
         {
             try
             {
@@ -1750,22 +1753,11 @@ namespace KSS.Helpers
                 else
                     divisionId = existedDivision.Value;
 
-                var locality = new Locality
-                {
-                    Id = Guid.NewGuid(),
-                    Locality1 = city,
-                    Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
-                    Country = "Россия",
-                    CityPhoneCode = innerPhoneCode
-                };
-
-                BaseModel.AddToLocalities(locality);
-
-
-                var terrotoryId = Guid.Empty;
+                //territory
+                Guid territoryId;
                 if (!existedTerritory.HasValue)
                 {
-                    var territory = new Territory {Id = Guid.NewGuid()};
+                    var territory = new Territory { Id = Guid.NewGuid() };
 
                     BaseModel.AddToTerritories(territory);
 
@@ -1779,23 +1771,55 @@ namespace KSS.Helpers
 
                     BaseModel.AddToTerritoryStates(territoryState);
 
-                    terrotoryId = territory.Id;
+                    territoryId = territory.Id;
                 }
                 else
-                    terrotoryId = existedTerritory.Value;
+                    territoryId = existedTerritory.Value;
+
+                //city
+                Guid localityId;
+                if (!existedCity.HasValue)
+                {
+                    var locality = new Locality
+                    {
+                        Id = Guid.NewGuid(),
+                        Locality1 = city,
+                        Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
+                        Country = "Россия",
+                        CityPhoneCode = innerPhoneCode
+                    };
+                    BaseModel.AddToLocalities(locality);
+
+                    localityId = locality.Id;
+                }
+                else
+                    localityId = existedCity.Value;
+
+                //street
+                string streetName = existedStreet.HasValue ? BaseModel.Locations.First(t => t.Id == existedStreet.Value).Street : street;
 
 
-                var location = new Location();
-                location.Id = Guid.NewGuid();
-                location.DivisionId = divisionId;
-                location.LocalityId = locality.Id;
-                location.TerritoryId = terrotoryId;
-                location.Street = street;
-                location.Edifice = house;
-                location.Building = pavilion;
+                //house
+                string houseNumber = existedHouse.HasValue
+                    ? BaseModel.Locations.First(t => t.Id == existedHouse.Value).Edifice
+                    : house;
+
+
+
+                var location = new Location
+                {
+                    Id = Guid.NewGuid(),
+                    DivisionId = divisionId,
+                    LocalityId = localityId,
+                    TerritoryId = territoryId,
+                    Street = streetName,
+                    Edifice = houseNumber,
+                    Building = pavilion
+                };
 
                 BaseModel.AddToLocations(location);
 
+                BaseModel.SaveChanges();
             }
             catch (Exception ex)
             {
@@ -1825,7 +1849,8 @@ namespace KSS.Helpers
             {
                 return
                     BaseModel.Locations.Where(t => t.LocalityId == locality).
-                        DistinctBy(t => t.Street).
+                    Where(t=>!string.IsNullOrEmpty(t.Street))
+                        .DistinctBy(t => t.Street).
                         OrderBy(t => t.Street)
                         .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Street))
                         .ToList();
@@ -1852,7 +1877,7 @@ namespace KSS.Helpers
                     query = query.Where(t => t.Street == streetName.Street);
                 }
 
-                return query.DistinctBy(t => t.Edifice)
+                return query.Where(t => !string.IsNullOrEmpty(t.Edifice)).DistinctBy(t => t.Edifice)
                     .OrderBy(t => t.Edifice)
                     .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Edifice))
                     .ToList();
@@ -1862,6 +1887,33 @@ namespace KSS.Helpers
                 LogHelper.WriteLog("Ошибка. GetHouses.", ex);
             }
             return new List<KeyValuePair<Guid, string>>();
+        }
+
+
+        public static List<string> GetPavillions(Guid? locality, Guid edifice)
+        {
+            try
+            {
+                IQueryable<Location> query = BaseModel.Locations;
+
+                if (locality.HasValue)
+                    query = query.Where(t => t.LocalityId == locality.Value);
+
+                var location = BaseModel.Locations.First(t => t.Id == edifice);
+                query = query.Where(t => t.Street == location.Street && t.Edifice == location.Edifice);
+
+                return
+                    query.Where(t => !string.IsNullOrEmpty(t.Building))
+                        .Select(t => t.Building)
+                        .Distinct()
+                        .OrderBy(t => t)
+                        .ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetHouses.", ex);
+            }
+            return new List<string>();
         }
     }
 }

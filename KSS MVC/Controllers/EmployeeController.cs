@@ -56,9 +56,9 @@ namespace KSS.Controllers
             return sb.ToString();
         }
 
-        public ActionResult SaveLocation(Guid employee, Guid city, string street, string edifice, string office)
+        public ActionResult SaveLocation(Guid employee, Guid city, Guid edifice, string pavillion, string office)
         {
-            DBHelper.UpdateEmployeePlaces(employee, city, street, edifice, office);
+            DBHelper.UpdateEmployeePlaces(employee, city, edifice, pavillion, office);
 
             return Index(employee);
         }
@@ -96,12 +96,14 @@ namespace KSS.Controllers
 
 
         public ActionResult CreateNewLocation(Guid employee, string newDivisionName, Guid? parentDivisionGuid,
-            Guid? existedDivision, string newRegion, string existedRegion,string newTerritory, Guid? existedTerritory,
-            string city, string innerPhoneCode, string outerPhoneCode, string street, string house, string pavilion)
+            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,
+            string city, Guid? existedCity, string innerPhoneCode, string outerPhoneCode, string street,
+            Guid? existedStreet, string house, Guid? existedHouse, string pavilion)
         {
             DBHelper.CreateNewLocation(newDivisionName, parentDivisionGuid,
-                existedDivision, newRegion, existedRegion, newTerritory, existedTerritory,
-                city, innerPhoneCode, outerPhoneCode, street, house, pavilion);
+           existedDivision,  newRegion,  existedRegion,  newTerritory,  existedTerritory,
+             city,  existedCity,  innerPhoneCode,  outerPhoneCode,  street,
+           existedStreet,  house,  existedHouse,  pavilion);
 
             return Index(employee);
         }
@@ -147,6 +149,9 @@ namespace KSS.Controllers
             sb.Append("<option value=\"\" selected>не выбран</option>");
             foreach (var locality in DBHelper.GetLocalities("Россия", region))
             {
+                if(string.IsNullOrEmpty(locality.Value))
+                    continue;
+                
                 sb.Append("<option value=\"");
                 sb.Append(locality.Key);
                 sb.Append("\">");
@@ -164,6 +169,8 @@ namespace KSS.Controllers
             if(locality.HasValue)
                 foreach (var street in DBHelper.GetStreets(locality.Value))
                 {
+                    if (string.IsNullOrEmpty(street.Value))
+                        continue;
                     sb.Append("<option value=\"");
                     sb.Append(street.Key);
                     sb.Append("\">");
@@ -180,10 +187,30 @@ namespace KSS.Controllers
             sb.Append("<option value=\"\" selected>не выбран</option>");
             foreach (var item in DBHelper.GetHouses(locality, street))
             {
+                if (string.IsNullOrEmpty(item.Value))
+                    continue;
                 sb.Append("<option value=\"");
                 sb.Append(item.Key);
                 sb.Append("\">");
                 sb.Append(item.Value);
+                sb.Append("</option>");
+            }
+            return sb.ToString();
+        }
+
+        [HttpGet]
+        public string GetPavillions(Guid? locality, Guid edifice)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<option value=\"\" selected>не выбран</option>");
+            foreach (var item in DBHelper.GetPavillions(locality, edifice))
+            {
+                if (string.IsNullOrEmpty(item))
+                    continue;
+                sb.Append("<option value=\"");
+                sb.Append(item);
+                sb.Append("\">");
+                sb.Append(item);
                 sb.Append("</option>");
             }
             return sb.ToString();
