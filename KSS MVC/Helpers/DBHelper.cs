@@ -755,15 +755,27 @@ namespace KSS.Helpers
             return new List<EmployeeModel>();
         }
 
-        public static bool CheckBirthdaysAtDay(DateTime date)
+        public static bool CheckBirthdaysAtDay(DateTime date, string guid)
         {
             try
             {
-                return
-                    BaseModel.Employees.Any(
-                        t =>
-                            t.BirthDay.HasValue && t.BirthDay.Value.Day == date.Day &&
-                            t.BirthDay.Value.Month == date.Month);
+                var division = new Guid(guid);
+                var result = (from employee in BaseModel.Employees
+                              join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
+                              where employee.BirthDay.HasValue && employee.BirthDay.Value.Day == date.Day && employee.BirthDay.Value.Month == date.Month
+
+
+                              from m in employeeStaff.DefaultIfEmpty()
+                              where m.ExpirationDate == null
+
+                              join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                  depState
+
+                              from ds in depState.DefaultIfEmpty()
+                              where ds.DivisionId == division && ds.ExpirationDate == null
+                              select employee.Id).Any();
+                return result;
             }
             catch (Exception ex)
             {
@@ -786,21 +798,26 @@ namespace KSS.Helpers
 
                 var result = (from employee in BaseModel.Employees
                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+
                     where
                         employee.BirthDay.HasValue &&
                         ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
                          (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
 
+
                     from m in employeeStaff.DefaultIfEmpty()
+                    where m.ExpirationDate == null                 
+
                     join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
                         depState
 
                     from ds in depState.DefaultIfEmpty()
-                    where ds.DivisionId.Equals(division) && ds.ExpirationDate == null
-                    select employee.Id).ToList();
+                    where ds.DivisionId == division && ds.ExpirationDate == null
+                    select employee.Id)
+                    .ToList();
 
                 return
-                    result.Select(t => new EmployeeModel(t, true, false, true, false, false))
+                    result.Distinct().Select(t => new EmployeeModel(t, true, false, true, false, false))
                         .OrderBy(t => t.Employee.BirthDay.Value.Month)
                         .ThenBy(t => t.Employee.BirthDay.Value.Day)
                         .ToList();
@@ -849,8 +866,8 @@ namespace KSS.Helpers
             return 0;
         }
 
-        public static IQueryable<Employee> QueryAdvancedSearch(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, bool ignoreIsMember)
+        public static IQueryable<Employee> QueryAdvancedSearch(Guid? divisionId, Guid? placeId, bool? isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName)
         {
             phoneNumber = string.IsNullOrEmpty(phoneNumber) ? string.Empty : phoneNumber;
             job = string.IsNullOrEmpty(job) ? string.Empty : job;
@@ -957,13 +974,13 @@ namespace KSS.Helpers
                          select employee);
             }
 
-            if (!ignoreIsMember)
+            if (isMemberOfHeadquarter.HasValue)
                 query =
                     query.Where(
                         e =>
                             e.IsMemberOfHeadquarter == null
-                                ? !isMemberOfHeadquarter
-                                : e.IsMemberOfHeadquarter.Value == isMemberOfHeadquarter);
+                                ? !isMemberOfHeadquarter.Value
+                                : e.IsMemberOfHeadquarter.Value == isMemberOfHeadquarter.Value);
 
 
             if (!hasStartDate)
@@ -1011,8 +1028,8 @@ namespace KSS.Helpers
             return query;
         }        
 
-        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, bool ignoreIsMember, Guid currentUser,int startIndex = 0 )
+        public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool? isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, Guid currentUser,int startIndex = 0 )
         {
             try
             {
@@ -1024,7 +1041,7 @@ namespace KSS.Helpers
                     departmentId = null;      
 
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
-                    dateStart, dateEnd, job, employeeName, ignoreIsMember);
+                    dateStart, dateEnd, job, employeeName);
 
                 List<Employee> employees = (from employee in query
                     join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
@@ -1050,8 +1067,8 @@ namespace KSS.Helpers
         }
 
 
-        public static int GetAdvancedSearchResultCount(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, bool ignoreIsMember)
+        public static int GetAdvancedSearchResultCount(Guid? divisionId, Guid? placeId, bool? isMemberOfHeadquarter,
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName)
         {
             try
             {
@@ -1063,7 +1080,7 @@ namespace KSS.Helpers
                     departmentId = null;      
 
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
-                    dateStart, dateEnd, job, employeeName, ignoreIsMember);
+                    dateStart, dateEnd, job, employeeName);
                 return query.DistinctBy(t => t.Id).Count();                
             }
             catch (Exception ex)

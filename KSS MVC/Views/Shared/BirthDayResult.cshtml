@@ -110,6 +110,14 @@
             }
 
             loadSearchPage(url);
+            
+
+
+            var comboBox = $('.birthDayComboBox');
+            comboBox.removeClass('activeBirthDayComboBox');
+            comboBox.find('.plus').removeClass('activePlus');
+
+            $('.birthDayLayout').hide();
         });
 
         $('.tabHeader').on('click', function (e) {
@@ -130,6 +138,7 @@
 
                 $(tabItem).toggleClass('selectedTabItemContent');
             }
+            e.stopPropagation();
         });
     });
 

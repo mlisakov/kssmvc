@@ -76,10 +76,8 @@ namespace KSS
 
             LogHelper.WriteLog("Autorisation. Debug mode.");
             Session["CurrentUser"] = "B88F6C02-77F2-41B7-9C66-098A7262EE12";
-            Session["CurrentUserDepartment"] =
-                DBHelper.GetEmployeeDepartment(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
-            Session["CurrentUserDivision"] =
-                DBHelper.GetEmployeeDivision(new Guid("B88F6C02-77F2-41B7-9C66-098A7262EE12")).Id;
+            Session["CurrentUserDepartment"] = new Guid("adc120c1-ec07-4220-801a-adcb41a27320");
+            Session["CurrentUserDivision"] = new Guid("A96D9501-2358-4B41-B0E5-E197F6DC0771");
             Session["UserName"] = "Неопознанный пользователь";
             Session["IsAdministrator"] = true;
             Session["BackLink"] = "";

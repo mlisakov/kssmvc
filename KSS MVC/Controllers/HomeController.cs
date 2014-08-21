@@ -148,20 +148,20 @@ namespace KSS.Controllers
             return view;
         }
 
-        public ActionResult SearchEmployeesAdvanced(Guid? divisionId, Guid? placeId, bool isMemberOfHeadquarter,
+        public ActionResult SearchEmployeesAdvanced(Guid? divisionId, Guid? placeId, bool? isMemberOfHeadquarter,
             string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int startIndex = 0)
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
 
             var employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
-                dateStart, dateEnd, job, employeeName, PageSize, false, guid, startIndex);
+                dateStart, dateEnd, job, employeeName, PageSize, guid, startIndex);
 
             ViewResult view = View("SearchEmployeeResult", employees);
 
             var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
-                dateStart, dateEnd, job, employeeName, false);
+                dateStart, dateEnd, job, employeeName);
             var pagesCount = itemsCount/PageSize;
 
             if ((itemsCount % PageSize) != 0)
@@ -292,7 +292,7 @@ namespace KSS.Controllers
 
                 Guid? divisionId = null;
                 Guid? placeId = null;
-                bool isMemberOfHeadquarter = false;
+                bool? isMemberOfHeadquarter = null;
                 string phoneNumber = string.Empty;
                 Guid? departmentId = null;
                 string dateStart = string.Empty;
@@ -303,47 +303,53 @@ namespace KSS.Controllers
 
                 foreach (var item in paramArra)
                 {
+                    var split = item.Split('=');
+                    if (split.Length == 1)
+                        continue;
+
                     if (item.Contains("divisionId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         divisionId = temp;
                     }
                     else if (item.Contains("placeId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         placeId = temp;
                     }
                     else if (item.Contains("isMemberOfHeadquarter"))
                     {
-                        isMemberOfHeadquarter = Convert.ToBoolean(item.Split('=')[1]);
+                        bool t;
+                        if (bool.TryParse(split[1], out t))
+                            isMemberOfHeadquarter = t;
                     }
                     else if (item.Contains("phoneNumber"))
                     {
-                        phoneNumber = item.Split('=')[1];
+                        phoneNumber = split[1];
                     }
                     else if (item.Contains("departmentId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         departmentId = temp;
                     }
                     else if (item.Contains("dateStart"))
                     {
-                        dateStart = item.Split('=')[1];
+                        dateStart = split[1];
                     }
                     else if (item.Contains("dateEnd"))
                     {
-                        dateEnd = item.Split('=')[1];
+                        dateEnd = split[1];
                     }
                     else if (item.Contains("job"))
                     {
-                        job = item.Split('=')[1];
+                        job = split[1];
                     }
                     else if (item.Contains("employeeName"))
                     {
-                        employeeName = item.Split('=')[1];
+                        employeeName = split[1];
                     }
                 }
 
@@ -351,13 +357,13 @@ namespace KSS.Controllers
                 var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter,
                     phoneNumber,
                     departmentId,
-                    dateStart, dateEnd, job, employeeName, false);
+                    dateStart, dateEnd, job, employeeName);
 
                 itemsCount = itemsCount > 500 ? 500 : itemsCount;
 
                 employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                     departmentId,
-                    dateStart, dateEnd, job, employeeName, itemsCount, false, guid);
+                    dateStart, dateEnd, job, employeeName, itemsCount, guid);
             }
             else
             {
@@ -451,7 +457,7 @@ namespace KSS.Controllers
 
                 Guid? divisionId = null;
                 Guid? placeId = null;
-                bool isMemberOfHeadquarter = false;
+                bool? isMemberOfHeadquarter = null;
                 string phoneNumber = string.Empty;
                 Guid? departmentId = null;
                 string dateStart = string.Empty;
@@ -462,47 +468,53 @@ namespace KSS.Controllers
 
                 foreach (var item in paramArra)
                 {
+                    var split = item.Split('=');
+                    if (split.Length == 1)
+                        continue;
+
                     if (item.Contains("divisionId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         divisionId = temp;
                     }
                     else if (item.Contains("placeId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         placeId = temp;
                     }
                     else if (item.Contains("isMemberOfHeadquarter"))
                     {
-                        isMemberOfHeadquarter = Convert.ToBoolean(item.Split('=')[1]);
+                        bool t;
+                        if (bool.TryParse(split[1], out t))
+                            isMemberOfHeadquarter = t;
                     }
                     else if (item.Contains("phoneNumber"))
                     {
-                        phoneNumber = item.Split('=')[1];
+                        phoneNumber = split[1];
                     }
                     else if (item.Contains("departmentId"))
                     {
                         Guid temp;
-                        Guid.TryParse(item.Split('=')[1], out temp);
+                        Guid.TryParse(split[1], out temp);
                         departmentId = temp;
                     }
                     else if (item.Contains("dateStart"))
                     {
-                        dateStart = item.Split('=')[1];
+                        dateStart = split[1];
                     }
                     else if (item.Contains("dateEnd"))
                     {
-                        dateEnd = item.Split('=')[1];
+                        dateEnd = split[1];
                     }
                     else if (item.Contains("job"))
                     {
-                        job = item.Split('=')[1];
+                        job = split[1];
                     }
                     else if (item.Contains("employeeName"))
                     {
-                        employeeName = item.Split('=')[1];
+                        employeeName = split[1];
                     }
                 }
 
@@ -510,13 +522,13 @@ namespace KSS.Controllers
                 var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, placeId, isMemberOfHeadquarter,
                     phoneNumber,
                     departmentId,
-                    dateStart, dateEnd, job, employeeName, false);
+                    dateStart, dateEnd, job, employeeName);
 
                 itemsCount = itemsCount > 500 ? 500 : itemsCount;
 
                 employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                     departmentId,
-                    dateStart, dateEnd, job, employeeName, itemsCount, false, guid);
+                    dateStart, dateEnd, job, employeeName, itemsCount, guid);
             }
             else
             {

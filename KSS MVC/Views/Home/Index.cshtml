@@ -69,7 +69,7 @@
     var _lastObject = null;
     var _isLoading = false;
 
-    $(document).ready(function () {
+    $(document).ready(function() {
 
         LoadCentralPartInitialy();
 
@@ -78,7 +78,7 @@
             var clickedItem = $('#mainMenuItem0');
             $('.selectedPage').removeClass('selectedPage');
             clickedItem.addClass('selectedPage');
-            
+
             $('#centralPart').empty();
 
             var url = '@Url.Action("SearchView", "Home", new { id = Guid.Empty })';
@@ -89,7 +89,7 @@
         }
 
         //клик по имени пользователя
-        $('.userLabel').on('click', function (e) {
+        $('.userLabel').on('click', function(e) {
 
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
@@ -115,8 +115,27 @@
                 ChangeSelectedPage(idItem);
         });
 
+        $('.birthDayLayout').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        $('body').on('click', function(e) {
+            hideBithdays();
+        });
+
+        function hideBithdays() {
+            var comboBox = $('.birthDayComboBox');
+            comboBox.removeClass('activeBirthDayComboBox');
+            comboBox.find('.plus').removeClass('activePlus');
+
+            $('.birthDayLayout').hide();
+        }
+
+
         //клик по комбобоксу с днями рождений
         $('.birthDayComboBox').on('click', function (e) {
+            e.stopPropagation();
+
             var comboBox = $('.birthDayComboBox');
             comboBox.toggleClass('activeBirthDayComboBox');
             comboBox.find('.plus').toggleClass('activePlus');
@@ -132,12 +151,24 @@
             }
         });
 
+
         //клик по пункту дерева
-        $('#divTree').on('click', function(e) {
+        $('#divTree').on('click', function (e) {            
             var target = $(e.target);
             var isSpan = $(e.target).is('span');
 
             if (isSpan) {
+
+                //если открыта вкладка "специальные телефоны" и кликнули по дивизиону - отменяем все действия
+                if (target.hasClass('DivisionState')) {
+
+                    if ($('#mainMenuItem3').hasClass('selectedPage')) {
+                        e.stopPropagation();
+                        return;
+                    }
+                }
+
+
                 //reload central part
                 var ids = target.attr('id');
 

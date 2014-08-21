@@ -46,7 +46,7 @@ namespace KSS.Models
 
         public bool CheckBirthdaysAtDay(DateTime date)
         {
-            return DBHelper.CheckBirthdaysAtDay(date);
+            return DBHelper.CheckBirthdaysAtDay(date, _session["CurrentUserDivision"].ToString());
         }
 
         public bool RemoveFromFavorite(Guid id)

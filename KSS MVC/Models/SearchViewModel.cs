@@ -97,16 +97,19 @@ namespace KSS.Models
                 var divisionId = DivisionID;
                 var departmentID = DepartmentID;
 
-                var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), false, string.Empty,
-                    departmentID, string.Empty, string.Empty, string.Empty, string.Empty, true);
+                if (!departmentID.HasValue)
+                    return new List<EmployeeModel>();
+
+                var itemsCount = DBHelper.GetAdvancedSearchResultCount(divisionId, new Guid?(), null, string.Empty,
+                    departmentID, string.Empty, string.Empty, string.Empty, string.Empty);
 
                 _pageCount = itemsCount / 5;
 
                 if ((itemsCount % 5) != 0)
                     _pageCount++;
 
-                return DBHelper.SearchAdvanced(divisionId, new Guid?(), false, string.Empty, departmentID, string.Empty,
-                    string.Empty, string.Empty, string.Empty, 5, true, guid);
+                return DBHelper.SearchAdvanced(divisionId, new Guid?(), null, string.Empty, departmentID, string.Empty,
+                    string.Empty, string.Empty, string.Empty, 5, guid);
             }
 
             _pageCount = 0;
