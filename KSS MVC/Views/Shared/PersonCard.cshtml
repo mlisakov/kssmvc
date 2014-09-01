@@ -144,7 +144,7 @@
             <p class="personCardChangePlaceDialogSimpleLabel">существующий филиал</p>
             <select id="existedDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
                 <option value="" selected>не выбран</option>
-                @foreach (var reg in DBHelper.GetDivisionStates())
+                @foreach (var reg in DBHelper.GetLastDivisionStates())
                 {
                     <option value="@reg.Id">@reg.Division</option>
                 }

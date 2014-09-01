@@ -141,6 +141,27 @@ namespace KSS.Helpers
         }
 
         /// <summary>
+        /// Получение списка конечных дивизионов
+        /// </summary>
+        /// <returns></returns>
+        public static List<DivisionState> GetLastDivisionStates()
+        {
+            try
+            {
+                var items = BaseModel.DivisionStates.Where(t => t.ParentId != null && t.ExpirationDate == null &&
+                                                                (!BaseModel.DivisionStates.Any(d => d.ParentId == t.Id))).OrderBy(t=>t.Division).ToList();
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка при получении списка конечных дивизионов. GetLastDivisionStates.", ex);
+            }
+
+            return new List<DivisionState>();
+        }
+
+        /// <summary>
         /// Получение списка всех департаментов
         /// </summary>
         /// <returns></returns>
