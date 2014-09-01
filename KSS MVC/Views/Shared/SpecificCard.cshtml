@@ -14,7 +14,7 @@
 
     <div style="margin-top: 10px">
         <div style="float:left">            
-            <img class="personIMG" src="data:image;base64, @Model.GetImage()" />            
+            <img class="personIMG" src="data:image/png;base64, @Model.GetImage()" />            
         </div>
 
 
@@ -156,15 +156,18 @@
             </select>
         
             <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
-            <select id="personCardRegionComboBoxControl" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">                
-                @foreach (var reg in DBHelper.GetRegions("Россия"))
+            <select id="personCardRegionComboBoxControl" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                @if (Model.SpecificStaffLocation != null)
                 {
-                    if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Region, reg))
-                    {
-                        <option value="@reg" selected="selected">@reg</option>
-                        continue;
-                    }
-                    <option value="@reg">@reg</option>
+                    foreach (var reg in DBHelper.GetRegions(Model.SpecificStaffLocation.DivisionId))
+                     {
+                         if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Region, reg))
+                         {
+                             <option value="@reg" selected="selected">@reg</option>
+                             continue;
+                         }
+                         <option value="@reg">@reg</option>
+                     }
                 }
             </select>
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -11,11 +12,12 @@ using Microsoft.Ajax.Utilities;
 
 namespace KSS.Helpers
 {
-// ReSharper disable once InconsistentNaming
+    // ReSharper disable once InconsistentNaming
     public class DBHelper
     {
-        private static CompanyBaseModel _baseModel;
+        private static object _lockObject = new object();
 
+        private static CompanyBaseModel _baseModel;
         private static CompanyBaseModel BaseModel
         {
             get { return _baseModel ?? (_baseModel = new CompanyBaseModel()); }
@@ -69,10 +71,10 @@ namespace KSS.Helpers
             try
             {
                 List<PositionState> t = (from posState in BaseModel.PositionStates
-                    join pos in BaseModel.Positions on posState.Id equals pos.Id into positionState
-                    from m in positionState.DefaultIfEmpty()
-                    where m.DepartmentId == id
-                    select posState).ToList();
+                                         join pos in BaseModel.Positions on posState.Id equals pos.Id into positionState
+                                         from m in positionState.DefaultIfEmpty()
+                                         where m.DepartmentId == id
+                                         select posState).ToList();
                 return t;
 
             }
@@ -146,7 +148,7 @@ namespace KSS.Helpers
         {
             try
             {
-                return BaseModel.DepartmentStates.Where(t=>t.ExpirationDate == null).OrderBy(t => t.Department).ToList();
+                return BaseModel.DepartmentStates.Where(t => t.ExpirationDate == null).OrderBy(t => t.Department).ToList();
             }
             catch (Exception ex)
             {
@@ -203,16 +205,16 @@ namespace KSS.Helpers
             try
             {
                 List<PositionState> list = (from staff in BaseModel.Staffs
-                    join position in BaseModel.PositionStates on staff.PositionId equals position.Id into posInfo
+                                            join position in BaseModel.PositionStates on staff.PositionId equals position.Id into posInfo
 
-                    from pos in posInfo.DefaultIfEmpty()
+                                            from pos in posInfo.DefaultIfEmpty()
 
-                    where pos != null && staff.ExpirationDate == null && pos.ExpirationDate == null
+                                            where pos != null && staff.ExpirationDate == null && pos.ExpirationDate == null
 
-                    select pos
+                                            select pos
                     ).Distinct().OrderBy(t => t.Title).ToList();
 
-                return list.Select(t => new PositionState {Id = t.Id, Title = t.Title}).ToList();
+                return list.Select(t => new PositionState { Id = t.Id, Title = t.Title }).ToList();
             }
             catch (Exception ex)
             {
@@ -232,23 +234,23 @@ namespace KSS.Helpers
             try
             {
                 DepartmentState depSt = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join depState in BaseModel.DepartmentStates on m.DepartmentId equals depState.Id into
-                        departmentState
-                    from ds in departmentState.DefaultIfEmpty()
-                    where employee.Id == userGuid && m.ExpirationDate == null
-                    select ds).FirstOrDefault();
+                                         join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                         from m in employeeStaff.DefaultIfEmpty()
+                                         join depState in BaseModel.DepartmentStates on m.DepartmentId equals depState.Id into
+                                             departmentState
+                                         from ds in departmentState.DefaultIfEmpty()
+                                         where employee.Id == userGuid && m.ExpirationDate == null
+                                         select ds).FirstOrDefault();
                 if (depSt != null)
                     return depSt;
-                return new DepartmentState {Department = "-"};
+                return new DepartmentState { Department = "-" };
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog(
                     "Ошибка при получении департамента, в котором работает указанный сотрудник. GetEmployeeDepartment.", ex);
             }
-            return new DepartmentState {Department = "-"};
+            return new DepartmentState { Department = "-" };
         }
 
         /// <summary>
@@ -261,19 +263,19 @@ namespace KSS.Helpers
             try
             {
                 DivisionState dState = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                        depState
-                    from ds in depState.DefaultIfEmpty()
-                    join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                        divState
-                    from divS in divState.DefaultIfEmpty()
-                    where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
-                    select divS).FirstOrDefault();
+                                        join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                        from m in employeeStaff.DefaultIfEmpty()
+                                        join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                            depState
+                                        from ds in depState.DefaultIfEmpty()
+                                        join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                            divState
+                                        from divS in divState.DefaultIfEmpty()
+                                        where employee.Id == userGuid && m.ExpirationDate == null && ds.ExpirationDate == null
+                                        select divS).FirstOrDefault();
                 if (dState != null)
                     return dState;
-                return new DivisionState {Division = "-", Id = Guid.Empty};
+                return new DivisionState { Division = "-", Id = Guid.Empty };
             }
             catch (Exception ex)
             {
@@ -281,7 +283,7 @@ namespace KSS.Helpers
                     "Ошибка при получении дивизиона, в котором работает указанный сотрудник. GetEmployeeDivision.", ex);
 
             }
-            return new DivisionState {Division = "Не удалось получить данные!", Id = Guid.Empty};
+            return new DivisionState { Division = "Не удалось получить данные!", Id = Guid.Empty };
         }
 
         /// <summary>
@@ -294,8 +296,8 @@ namespace KSS.Helpers
             try
             {
                 var t = from employee in BaseModel.Employees
-                    where employee.AccountName.Equals(userLogin)
-                    select new {employee.Id, employee.Name};
+                        where employee.AccountName.Equals(userLogin)
+                        select new { employee.Id, employee.Name };
                 return t.Any()
                     ? new Tuple<Guid, string>(t.First().Id, t.First().Name)
                     : new Tuple<Guid, string>(Guid.Empty, string.Empty);
@@ -319,8 +321,8 @@ namespace KSS.Helpers
             try
             {
                 return (from employee in BaseModel.Employees
-                    where employee.Id.Equals(employeeGuid)
-                    select employee).FirstOrDefault(); 
+                        where employee.Id.Equals(employeeGuid)
+                        select employee).FirstOrDefault();
             }
             catch (Exception ex)
             {
@@ -334,23 +336,23 @@ namespace KSS.Helpers
             try
             {
                 PositionState pState = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join posState in BaseModel.PositionStates on m.PositionId equals posState.Id into positionState
-                    from ps in positionState.DefaultIfEmpty()
-                    where employee.Id == employeeGuid
-                    select ps
+                                        join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                        from m in employeeStaff.DefaultIfEmpty()
+                                        join posState in BaseModel.PositionStates on m.PositionId equals posState.Id into positionState
+                                        from ps in positionState.DefaultIfEmpty()
+                                        where employee.Id == employeeGuid
+                                        select ps
                     ).FirstOrDefault();
                 if (pState != null)
                     return pState;
-                return new PositionState {Title = "-"};
+                return new PositionState { Title = "-" };
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("Ошибка при получении профессии сотрудника. GetEmployeePositionState.", ex);
             }
 
-            return new PositionState {Title = "-"};
+            return new PositionState { Title = "-" };
         }
 
         public static List<SpecificStaffPlace> GetEmployeeSpecificStaffPlaces(Guid employeeGuid)
@@ -358,15 +360,15 @@ namespace KSS.Helpers
             try
             {
                 IQueryable<SpecificStaffPlace> sSP = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join ss in BaseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
-                    from specStaff in specificStaff.DefaultIfEmpty()
-                    join ssp in BaseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
-                        specificStaffPlace
-                    from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
-                    where employee.Id == employeeGuid
-                    select specStaffPlace
+                                                      join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                                      from m in employeeStaff.DefaultIfEmpty()
+                                                      join ss in BaseModel.SpecificStaffs on m.Id equals ss.EmployeeId into specificStaff
+                                                      from specStaff in specificStaff.DefaultIfEmpty()
+                                                      join ssp in BaseModel.SpecificStaffPlaces on specStaff.Id equals ssp.SpecificStaffId into
+                                                          specificStaffPlace
+                                                      from specStaffPlace in specificStaffPlace.DefaultIfEmpty()
+                                                      where employee.Id == employeeGuid
+                                                      select specStaffPlace
                     );
                 if (sSP != null)
                     return sSP.Where(i => i != null).ToList();
@@ -384,11 +386,11 @@ namespace KSS.Helpers
             try
             {
                 IQueryable<EmployeePlace> eP = (from employee in BaseModel.Employees
-                    join ep in BaseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
-                    from empPlace in employeePlase.DefaultIfEmpty()
-                    where employee.Id == employeeGuid
-                    select empPlace
-                    );                
+                                                join ep in BaseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
+                                                from empPlace in employeePlase.DefaultIfEmpty()
+                                                where employee.Id == employeeGuid
+                                                select empPlace
+                    );
                 return eP.Where(i => i != null).ToList();
             }
             catch (Exception ex)
@@ -410,11 +412,11 @@ namespace KSS.Helpers
             {
                 return
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid
-                        orderby e.Position
-                        select e.Id).Count();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid
+                     orderby e.Position
+                     select e.Id).Count();
             }
             catch (Exception ex)
             {
@@ -436,11 +438,11 @@ namespace KSS.Helpers
             {
                 List<Guid> favorites =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == currentUser
-                        orderby e.Position
-                        select e.Id).Skip(pageSize*startIndex).Take(pageSize).ToList();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == currentUser
+                     orderby e.Position
+                     select e.Id).Skip(pageSize * startIndex).Take(pageSize).ToList();
 
                 return favorites.Select(i => new EmployeeModel(i, currentUser)).ToList();
             }
@@ -461,10 +463,10 @@ namespace KSS.Helpers
             {
                 List<Employee> favoritesWithZero =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid && e.Position == 0
-                        select e).ToList();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid && e.Position == 0
+                     select e).ToList();
 
                 if (favoritesWithZero.Count > 1)
                 {
@@ -508,16 +510,16 @@ namespace KSS.Helpers
             {
                 return
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid
-                        select e.Position).Max();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid
+                     select e.Position).Max();
             }
             catch (Exception ex)
             {
                 LogHelper.WriteLog("Ошибка. GetFavoritesMaxPosition.", ex);
                 throw;
-            }            
+            }
         }
 
         private static Employee GetFavoriteOnNextPosition(Guid employeeGuid, int position)
@@ -526,11 +528,11 @@ namespace KSS.Helpers
             {
                 var guids =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid && e.Position > position
-                        orderby e.Position
-                        select e.Id);
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid && e.Position > position
+                     orderby e.Position
+                     select e.Id);
                 if (guids.Any())
                     return GetEmployee(guids.First());
             }
@@ -548,11 +550,11 @@ namespace KSS.Helpers
             {
                 var guids =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid && e.Position < position
-                        orderby e.Position
-                        select e.Id).ToList();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid && e.Position < position
+                     orderby e.Position
+                     select e.Id).ToList();
                 if (guids.Any())
                     return GetEmployee(guids.Last());
             }
@@ -570,11 +572,11 @@ namespace KSS.Helpers
             {
                 var guids =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid && e.Position < position
-                        orderby e.Position
-                        select e.Id).ToList().ConvertAll(GetEmployee);
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid && e.Position < position
+                     orderby e.Position
+                     select e.Id).ToList().ConvertAll(GetEmployee);
                 return guids;
             }
             catch (Exception ex)
@@ -590,11 +592,11 @@ namespace KSS.Helpers
             {
                 var guids =
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        from e in employees.DefaultIfEmpty()
-                        where fe.EmployeeId == employeeGuid && e.Position > position
-                        orderby e.Position
-                        select e.Id).ToList().ConvertAll(GetEmployee);
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     from e in employees.DefaultIfEmpty()
+                     where fe.EmployeeId == employeeGuid && e.Position > position
+                     orderby e.Position
+                     select e.Id).ToList().ConvertAll(GetEmployee);
                 return guids;
             }
             catch (Exception ex)
@@ -667,9 +669,11 @@ namespace KSS.Helpers
 
             try
             {
-
-                if (hasChanges)
-                    BaseModel.SaveChanges();
+                lock (_lockObject)
+                {
+                    if (hasChanges)
+                        BaseModel.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
@@ -681,23 +685,26 @@ namespace KSS.Helpers
         {
             try
             {
-                var maxPosition = GetFavoritesMaxPosition(idCurrentUser);
-
-                //add favorites
-                var favoriteEmp = new Favorite
+                lock (_lockObject)
                 {
-                    EmployeeId = idCurrentUser,
-                    LinkedEmployeeId = idFavoriteUser,
-                    Id = Guid.NewGuid()
-                };
-                BaseModel.AddToFavorites(favoriteEmp);
-                
-                //set position
-                var favoritePerson = BaseModel.Employees.First(e => e.Id == idFavoriteUser);
-                favoritePerson.Position = maxPosition + 1;
+                    var maxPosition = GetFavoritesMaxPosition(idCurrentUser);
 
-                BaseModel.SaveChanges();
-                return true;
+                    //add favorites
+                    var favoriteEmp = new Favorite
+                    {
+                        EmployeeId = idCurrentUser,
+                        LinkedEmployeeId = idFavoriteUser,
+                        Id = Guid.NewGuid()
+                    };
+                    BaseModel.AddToFavorites(favoriteEmp);
+
+                    //set position
+                    var favoritePerson = BaseModel.Employees.First(e => e.Id == idFavoriteUser);
+                    favoritePerson.Position = maxPosition + 1;
+
+                    BaseModel.SaveChanges();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -710,14 +717,16 @@ namespace KSS.Helpers
         {
             try
             {
-                Favorite favoriteEmp =
-                    BaseModel.Favorites.First(
-                        j => j.EmployeeId == idCurrentUset && j.LinkedEmployeeId == idFavoriteUser);
+                lock (_lockObject)
+                {
+                    Favorite favoriteEmp =
+                        BaseModel.Favorites.First(
+                            j => j.EmployeeId == idCurrentUset && j.LinkedEmployeeId == idFavoriteUser);
 
-                BaseModel.Favorites.DeleteObject(favoriteEmp);
-//                BaseModel.Favorites.Remove(favoriteEmp);
-                BaseModel.SaveChanges();
-                return true;
+                    BaseModel.Favorites.DeleteObject(favoriteEmp);
+                    BaseModel.SaveChanges();
+                    return true;
+                }
             }
             catch (Exception ex)
             {
@@ -734,14 +743,14 @@ namespace KSS.Helpers
                     employeeName = string.Empty;
 
                 List<Employee> employees = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    where
-                        m.ExpirationDate == null && employee.Name.Contains(employeeName)
+                                            join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                            from m in employeeStaff.DefaultIfEmpty()
+                                            where
+                                                m.ExpirationDate == null && employee.Name.Contains(employeeName)
 
-                    orderby m.Position.Ranking
-                    select employee
-                    ).OrderBy(j => j.Name).Skip(pageSize*startIndex).Take(pageSize).ToList();
+                                            orderby m.Position.Ranking
+                                            select employee
+                    ).OrderBy(j => j.Name).Skip(pageSize * startIndex).Take(pageSize).ToList();
                 var t = employees.Select(i => new EmployeeModel(i.Id, currentUser)).ToList();
                 return t;
             }
@@ -797,23 +806,23 @@ namespace KSS.Helpers
                 var division = new Guid(guid);
 
                 var result = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                              join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
-                    where
-                        employee.BirthDay.HasValue &&
-                        ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
-                         (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
+                              where
+                                  employee.BirthDay.HasValue &&
+                                  ((employee.BirthDay.Value.Month == today.Month && employee.BirthDay.Value.Day >= today.Day) ||
+                                   (employee.BirthDay.Value.Month == tommorow.Month && employee.BirthDay.Value.Day <= tommorow.Day))
 
 
-                    from m in employeeStaff.DefaultIfEmpty()
-                    where m.ExpirationDate == null                 
+                              from m in employeeStaff.DefaultIfEmpty()
+                              where m.ExpirationDate == null
 
-                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                        depState
+                              join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                  depState
 
-                    from ds in depState.DefaultIfEmpty()
-                    where ds.DivisionId == division && ds.ExpirationDate == null
-                    select employee.Id)
+                              from ds in depState.DefaultIfEmpty()
+                              where ds.DivisionId == division && ds.ExpirationDate == null
+                              select employee.Id)
                     .ToList();
 
                 return
@@ -835,9 +844,9 @@ namespace KSS.Helpers
             {
                 return
                     (from fe in BaseModel.Favorites
-                        join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
-                        where fe.EmployeeId == currentUser && fe.LinkedEmployeeId == employeeGuid
-                        select fe.Id).Any();
+                     join emp in BaseModel.Employees on fe.LinkedEmployeeId equals emp.Id into employees
+                     where fe.EmployeeId == currentUser && fe.LinkedEmployeeId == employeeGuid
+                     select fe.Id).Any();
 
             }
             catch (Exception ex)
@@ -852,11 +861,11 @@ namespace KSS.Helpers
             try
             {
                 return (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    where
-                        m.ExpirationDate == null && employee.Name.Contains(employeeName)
-                    select employee
+                        join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                        from m in employeeStaff.DefaultIfEmpty()
+                        where
+                            m.ExpirationDate == null && employee.Name.Contains(employeeName)
+                        select employee
                     ).Count();
             }
             catch (Exception ex)
@@ -890,6 +899,7 @@ namespace KSS.Helpers
             {
                 if (departmentId.HasValue)
                 {
+
                     query = (from employee in query
                              join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
@@ -955,13 +965,13 @@ namespace KSS.Helpers
             {
                 //c местом и номером телефона
                 query = (from employee in query
-                    join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
-                        employeePlace.EmployeeId into ep
-                    from empPlace in ep.DefaultIfEmpty()
-                    where
-                        empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value &&
-                        empPlace.PhoneNumber.Contains(phoneNumber)
-                    select employee);
+                         join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
+                             employeePlace.EmployeeId into ep
+                         from empPlace in ep.DefaultIfEmpty()
+                         where !ep.Any() ||
+                             empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value &&
+                             empPlace.PhoneNumber.Contains(phoneNumber)
+                         select employee);
             }
             else
             {
@@ -970,7 +980,7 @@ namespace KSS.Helpers
                          join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
                              employeePlace.EmployeeId into ep
                          from empPlace in ep.DefaultIfEmpty()
-                         where empPlace.PhoneNumber.Contains(phoneNumber)
+                         where empPlace.PhoneNumber.Contains(phoneNumber) || !ep.Any()
                          select employee);
             }
 
@@ -1023,13 +1033,13 @@ namespace KSS.Helpers
                 }
             }
 
-        
+
 
             return query;
-        }        
+        }
 
         public static List<EmployeeModel> SearchAdvanced(Guid? divisionId, Guid? placeId, bool? isMemberOfHeadquarter,
-            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, Guid currentUser,int startIndex = 0 )
+            string phoneNumber, Guid? departmentId, string dateStart, string dateEnd, string job, string employeeName, int pageSize, Guid currentUser, int startIndex = 0)
         {
             try
             {
@@ -1038,21 +1048,21 @@ namespace KSS.Helpers
                 if (placeId == Guid.Empty)
                     placeId = null;
                 if (departmentId == Guid.Empty)
-                    departmentId = null;      
+                    departmentId = null;
 
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName);
 
                 List<Employee> employees = (from employee in query
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                            join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
 
-                    from m in employeeStaff.DefaultIfEmpty()
+                                            from m in employeeStaff.DefaultIfEmpty()
 
-                    where
-                        m.ExpirationDate == null
+                                            where
+                                                m.ExpirationDate == null
 
-                    orderby m.Position.Ranking
-                    select employee).DistinctBy(i => i.Id).Skip(pageSize*startIndex)
+                                            orderby m.Position.Ranking
+                                            select employee).DistinctBy(i => i.Id).Skip(pageSize * startIndex)
                     .Take(pageSize).ToList();
 
                 var t = employees.Select(i => new EmployeeModel(i.Id, currentUser)).ToList();
@@ -1077,11 +1087,11 @@ namespace KSS.Helpers
                 if (placeId == Guid.Empty)
                     placeId = null;
                 if (departmentId == Guid.Empty)
-                    departmentId = null;      
+                    departmentId = null;
 
                 var query = QueryAdvancedSearch(divisionId, placeId, isMemberOfHeadquarter, phoneNumber, departmentId,
                     dateStart, dateEnd, job, employeeName);
-                return query.DistinctBy(t => t.Id).Count();                
+                return query.DistinctBy(t => t.Id).Count();
             }
             catch (Exception ex)
             {
@@ -1129,11 +1139,11 @@ namespace KSS.Helpers
                         .Distinct()
                         .OrderBy(t => t).ToList();
 
-//                    return BaseModel.Locations.Where(t => t.DivisionId == divisionId)
-//                        .DistinctBy(t => t.LocalityId)
-//                        .Select(t => t.Locality.Region)
-//                        .Distinct()
-//                        .OrderBy(t => t).ToList();
+                    //                    return BaseModel.Locations.Where(t => t.DivisionId == divisionId)
+                    //                        .DistinctBy(t => t.LocalityId)
+                    //                        .Select(t => t.Locality.Region)
+                    //                        .Distinct()
+                    //                        .OrderBy(t => t).ToList();
                 }
             }
             catch (Exception ex)
@@ -1144,7 +1154,7 @@ namespace KSS.Helpers
             return new List<string>();
         }
 
-       
+
         /// <summary>
         /// 
         /// </summary>
@@ -1228,16 +1238,20 @@ namespace KSS.Helpers
         /// </summary>
         /// <param name="employee">Гуид сотрудника</param>
         /// <param name="isMember">Является ли членом штаба</param>
-        public static void UpdateMemberOfHeadquarter(Guid employee, bool isMember )
+        public static void UpdateMemberOfHeadquarter(Guid employee, bool isMember)
         {
             try
             {
-                var user = GetEmployee(employee);
-                if (user != null)
+                lock (_lockObject)
                 {
-                    user.IsMemberOfHeadquarter = isMember;
-                    BaseModel.SaveChanges();
+                    var user = GetEmployee(employee);
+                    if (user != null)
+                    {
+                        user.IsMemberOfHeadquarter = isMember;
+                        BaseModel.SaveChanges();
+                    }
                 }
+
             }
             catch (Exception ex)
             {
@@ -1254,78 +1268,95 @@ namespace KSS.Helpers
         /// <param name="edifice">Здание</param>
         /// <param name="pavillion">номер корпуса</param>
         /// <param name="office">Номер офиса</param>
-        public static void UpdateEmployeePlaces(Guid employee, Guid city, Guid edifice, string pavillion,string office)
+        public static void UpdateEmployeePlaces(Guid employee, Guid city, Guid edifice, string pavillion, string office)
         {
             try
             {
-                var places = GetEmployeePlaces(employee);
-
-                var locality = BaseModel.Localities.First(t => t.Id.Equals(city));
-                var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
-
-                var location = BaseModel.Locations.First(t => t.Id.Equals(edifice));
-
-                pavillion = string.IsNullOrEmpty(pavillion) ? "" : pavillion;
-
-                if (placeWithLocation != null)
+                lock (_lockObject)
                 {
-                    placeWithLocation.Location.Street = location.Street;
-                    placeWithLocation.Location.Edifice = location.Edifice;
-                    placeWithLocation.Location.LocalityId = city;
-                    placeWithLocation.Location.Building = pavillion;
 
-                    foreach (EmployeePlace place in places)
+
+                    LogHelper.WriteLog("UpdateEmployeePlaces. " +
+                   string.Format("{0},{1},{2},{3},{4}", employee, city, edifice, pavillion, office));
+
+                    var places = GetEmployeePlaces(employee);
+
+                    //                    var locality = BaseModel.Localities.First(t => t.Id.Equals(city));
+                    var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+
+                    var location = BaseModel.Locations.First(t => t.Id.Equals(edifice));
+
+                    pavillion = string.IsNullOrEmpty(pavillion) ? "" : pavillion;
+
+                    if (placeWithLocation != null)
                     {
-                        place.Office = office;
-                        place.LocationId = placeWithLocation.Location.Id;
-                    }
-                }
-                else
-                {
-                    //create location
+                        LogHelper.WriteLog("UpdateEmployeePlaces. Update existed places");
+                        placeWithLocation.Location.Street = location.Street;
+                        placeWithLocation.Location.Edifice = location.Edifice;
+                        placeWithLocation.Location.LocalityId = city;
+                        placeWithLocation.Location.Building = pavillion;
 
-                    var newLocation = new Location
-                    {
-                        Id = Guid.NewGuid(),
-                        DivisionId = location.DivisionId,
-                        LocalityId = city,
-                        Street = location.Street,
-                        Edifice = location.Edifice,
-                        Building = pavillion
-                    };
-
-                    BaseModel.AddToLocations(newLocation);
-
-                    BaseModel.SaveChanges();
-
-                    if (places.Count == 0)
-                    {
-                        //create empty place
-                        var newPlace = new EmployeePlace
-                        {
-                            Id = Guid.NewGuid(),
-                            EmployeeId = employee,
-                            LocationId = newLocation.Id,
-                            PhoneTypeId = BaseModel.PhoneTypes.First().Id,
-                            PhoneNumber = "_",
-                            Office = office
-                        };
-
-                        BaseModel.AddToEmployeePlaces(newPlace);
-                    }
-                    else
                         foreach (EmployeePlace place in places)
                         {
                             place.Office = office;
-                            place.LocationId = newLocation.Id;
+                            place.LocationId = placeWithLocation.Location.Id;
+                        }
+                    }
+                    else
+                    {
+                        //create location
+
+//                        LogHelper.WriteLog("UpdateEmployeePlaces. create location places");
+//                        var newLocation = new Location
+//                        {
+//                            Id = Guid.NewGuid(),
+//                            DivisionId = location.DivisionId,
+//                            LocalityId = city,
+//                            Street = location.Street,
+//                            Edifice = location.Edifice,
+//                            Building = pavillion
+//                        };
+
+//                        BaseModel.AddToLocations(newLocation);
+
+                        
+
+
+                        if (places.Count == 0)
+                        {
+                            //create empty place
+                            LogHelper.WriteLog("UpdateEmployeePlaces. create empty place");
+                            var newPlace = new EmployeePlace
+                            {
+                                Id = Guid.NewGuid(),
+                                EmployeeId = employee,
+                                LocationId = edifice,
+                                PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                                PhoneNumber = "_",
+                                Office = office
+                            };
+
+                            BaseModel.AddToEmployeePlaces(newPlace);
+                        }
+                        else
+                        {
+                            LogHelper.WriteLog("UpdateEmployeePlaces. update  places");
+                            foreach (EmployeePlace place in places)
+                            {
+                                place.Office = office;
+                                place.LocationId = edifice;
+                            }
                         }
 
-                }
 
-                BaseModel.SaveChanges();
+                    }
+
+                    BaseModel.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
+                _baseModel = new CompanyBaseModel();
                 LogHelper.WriteLog("Ошибка. UpdateEmployeePlaces.", ex);
             }
 
@@ -1342,48 +1373,55 @@ namespace KSS.Helpers
         {
             try
             {
-                var places = GetEmployeePlaces(employee);
-
-                if (place != null)
+                LogHelper.WriteLog("UpdateEmployeePhone. " +
+                                   string.Format("{0},{1},{2},{3}", employee, place, phoneType, phone));
+                lock (_lockObject)
                 {
-                    //update
-                    var employeePlace = places.FirstOrDefault(t => t.Id == place);
+                    var places = GetEmployeePlaces(employee);
 
-                    if (employeePlace != null)
+                    if (place != null)
                     {
-                        employeePlace.PhoneNumber = phone;
-                        BaseModel.SaveChanges();
-                    }
-                }
-                else
-                {
-                    //create
+                        //update
+                        LogHelper.WriteLog("UpdateEmployeePhone.update place");
+                        var employeePlace = places.FirstOrDefault(t => t.Id == place);
 
-                    var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
-
-                    if (phoneType.HasValue)
-                    {
-                        var entity = new EmployeePlace
+                        if (employeePlace != null)
                         {
-                            EmployeeId = employee,
-                            PhoneTypeId = phoneType.Value,
-                            PhoneNumber = phone,
-                            Id = Guid.NewGuid()
-                        };
-
-                        if (placeWithLocation != null)
-                        {
-                            entity.LocationId = placeWithLocation.LocationId;
-                            entity.Office = placeWithLocation.Office;
+                            employeePlace.PhoneNumber = phone;
+                            BaseModel.SaveChanges();
                         }
+                    }
+                    else
+                    {
+                        //create
+                        LogHelper.WriteLog("UpdateEmployeePhone.create place");
+                        var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
 
-                        BaseModel.AddToEmployeePlaces(entity);
-                        BaseModel.SaveChanges();
+                        if (phoneType.HasValue)
+                        {
+                            var entity = new EmployeePlace
+                            {
+                                EmployeeId = employee,
+                                PhoneTypeId = phoneType.Value,
+                                PhoneNumber = phone,
+                                Id = Guid.NewGuid()
+                            };
+
+                            if (placeWithLocation != null)
+                            {
+                                entity.LocationId = placeWithLocation.LocationId;
+                                entity.Office = placeWithLocation.Office;
+                            }
+
+                            BaseModel.AddToEmployeePlaces(entity);
+                            BaseModel.SaveChanges();
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
+                _baseModel = new CompanyBaseModel();
                 LogHelper.WriteLog("Ошибка. UpdateEmployeePhone.", ex);
             }
         }
@@ -1407,12 +1445,12 @@ namespace KSS.Helpers
             try
             {
                 byte[] data = null;
-                
+
                 if (id != Guid.Empty)
                 {
-                    data = BaseModel.Employees.First(t => t.Id == id).Photo;    
+                    data = BaseModel.Employees.First(t => t.Id == id).Photo;
                 }
-                
+
                 if (data == null)
                 {
                     var bmp = Resources.dafaultpic;
@@ -1423,7 +1461,7 @@ namespace KSS.Helpers
                         data = stream.ToArray();
                     }
                 }
-                
+
                 return Convert.ToBase64String(data);
             }
             catch (Exception ex)
@@ -1438,16 +1476,19 @@ namespace KSS.Helpers
         {
             try
             {
-                var user = BaseModel.Employees.FirstOrDefault(t => t.Id == employee);
-                if (user != null && !string.IsNullOrEmpty(image))
+                lock (_lockObject)
                 {
-                    image = image.Substring(image.IndexOf(',') + 1);
-                    byte[] imageBytes = Convert.FromBase64String(image);
-                    user.Photo = imageBytes;
+                    var user = BaseModel.Employees.FirstOrDefault(t => t.Id == employee);
+                    if (user != null && !string.IsNullOrEmpty(image))
+                    {
+                        image = image.Substring(image.IndexOf(',') + 1);
+                        byte[] imageBytes = Convert.FromBase64String(image);
+                        user.Photo = imageBytes;
 
-                    BaseModel.SaveChanges();
+                        BaseModel.SaveChanges();
 
-                    return true;
+                        return true;
+                    }
                 }
             }
             catch (Exception ex)
@@ -1462,12 +1503,16 @@ namespace KSS.Helpers
         {
             try
             {
-                var place = BaseModel.EmployeePlaces.FirstOrDefault(t => t.Id == employPlaceId);
-                if (place != null)
+                lock (_lockObject)
                 {
-                    BaseModel.DeleteObject(place);
-                    BaseModel.SaveChanges();
+                    var place = BaseModel.EmployeePlaces.FirstOrDefault(t => t.Id == employPlaceId);
+                    if (place != null)
+                    {
+                        BaseModel.DeleteObject(place);
+                        BaseModel.SaveChanges();
+                    }
                 }
+
             }
             catch (Exception ex)
             {
@@ -1497,7 +1542,7 @@ namespace KSS.Helpers
         {
             try
             {
-                return BaseModel.SpecificStaffs.Count(t => t.DepartmentSpecificId == id);                
+                return BaseModel.SpecificStaffs.Count(t => t.DepartmentSpecificId == id);
             }
             catch (Exception ex)
             {
@@ -1512,9 +1557,9 @@ namespace KSS.Helpers
             {
                 var items =
                     BaseModel.SpecificStaffs.Where(t => t.DepartmentSpecificId == id)
-                        .OrderBy(t => t.Ranking).Skip(pageSize*startIndex)
+                        .OrderBy(t => t.Ranking).Skip(pageSize * startIndex)
                         .Take(pageSize).ToList();
-                return items.Select(t => new SpecificStaffModel(t.Id)).ToList();                
+                return items.Select(t => new SpecificStaffModel(t.Id)).ToList();
             }
             catch (Exception ex)
             {
@@ -1528,18 +1573,18 @@ namespace KSS.Helpers
             try
             {
                 var employes = (from employee in BaseModel.Employees
-                    join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
-                    from m in employeeStaff.DefaultIfEmpty()
-                    join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
-                        depState
-                    from ds in depState.DefaultIfEmpty()
-                    join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
-                        divState
-                    from divS in divState.DefaultIfEmpty()
-                    where
-                        m.ExpirationDate == null && ds.ExpirationDate == null && divS.ExpirationDate == null &&
-                        divS.Id == divisionId
-                    select employee).DistinctBy(t => t.Id).OrderBy(t => t.Name).ToList();
+                                join staff in BaseModel.Staffs on employee.Id equals staff.Id into employeeStaff
+                                from m in employeeStaff.DefaultIfEmpty()
+                                join departmentState in BaseModel.DepartmentStates on m.DepartmentId equals departmentState.Id into
+                                    depState
+                                from ds in depState.DefaultIfEmpty()
+                                join divisionState in BaseModel.DivisionStates on ds.DivisionId equals divisionState.Id into
+                                    divState
+                                from divS in divState.DefaultIfEmpty()
+                                where
+                                    m.ExpirationDate == null && ds.ExpirationDate == null && divS.ExpirationDate == null &&
+                                    divS.Id == divisionId
+                                select employee).DistinctBy(t => t.Id).OrderBy(t => t.Name).ToList();
 
                 return employes;
             }
@@ -1554,12 +1599,15 @@ namespace KSS.Helpers
         {
             try
             {
-                var specific = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == id);
-                if (specific != null)
+                lock (_lockObject)
                 {
-                    specific.EmployeeId = employeeId == Guid.Empty ? (Guid?) null : employeeId;
+                    var specific = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == id);
+                    if (specific != null)
+                    {
+                        specific.EmployeeId = employeeId == Guid.Empty ? (Guid?)null : employeeId;
 
-                    BaseModel.SaveChanges();
+                        BaseModel.SaveChanges();
+                    }
                 }
             }
             catch (Exception ex)
@@ -1572,72 +1620,77 @@ namespace KSS.Helpers
         {
             try
             {
-                var specificStaf = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == specificStaffId);
-                var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
-                var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
-
-                if (locality != null && specificStaf != null)
+                lock (_lockObject)
                 {
-                    var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
-                    if (placeWithLocation != null)
+
+
+                    var specificStaf = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == specificStaffId);
+                    var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
+                    var locality = BaseModel.Localities.FirstOrDefault(t => t.Id.Equals(city));
+
+                    if (locality != null && specificStaf != null)
                     {
-                        placeWithLocation.Location.Street = street;
-                        placeWithLocation.Location.Edifice = edifice;
-                        placeWithLocation.Location.LocalityId = city;
-
-                        foreach (SpecificStaffPlace place in places)
+                        var placeWithLocation = places.FirstOrDefault(t => t.Location != null);
+                        if (placeWithLocation != null)
                         {
-                            place.Office = office;
-                            place.LocationId = placeWithLocation.Location.Id;
-                        }
-                        BaseModel.SaveChanges();
-                    }
-                    else
-                    {
-                        //create location
-                        if (specificStaf.EmployeeId == null)
-                        {
-                            return;
-                        }
+                            placeWithLocation.Location.Street = street;
+                            placeWithLocation.Location.Edifice = edifice;
+                            placeWithLocation.Location.LocalityId = city;
 
-                        var personDivision = GetEmployeeDivision(specificStaf.EmployeeId.Value);
-
-                        if (personDivision.Id != Guid.Empty)
-                        {
-                            var newLocation = new Location
+                            foreach (SpecificStaffPlace place in places)
                             {
-                                Id = Guid.NewGuid(),
-                                DivisionId = personDivision.Id,
-                                LocalityId = city,
-                                Street = street,
-                                Edifice = edifice
-                            };
-
-                            BaseModel.AddToLocations(newLocation);
-
-                            if (places.Count == 0)
+                                place.Office = office;
+                                place.LocationId = placeWithLocation.Location.Id;
+                            }
+                            BaseModel.SaveChanges();
+                        }
+                        else
+                        {
+                            //create location
+                            if (specificStaf.EmployeeId == null)
                             {
-                                //create empty place
-                                var newPlace = new SpecificStaffPlace
+                                return;
+                            }
+
+                            var personDivision = GetEmployeeDivision(specificStaf.EmployeeId.Value);
+
+                            if (personDivision.Id != Guid.Empty)
+                            {
+                                var newLocation = new Location
                                 {
                                     Id = Guid.NewGuid(),
-                                    SpecificStaffId = specificStaffId,
-                                    LocationId = newLocation.Id,
-                                    PhoneTypeId = BaseModel.PhoneTypes.First().Id,
-                                    PhoneNumber = "_",
-                                    Office = office
+                                    DivisionId = personDivision.Id,
+                                    LocalityId = city,
+                                    Street = street,
+                                    Edifice = edifice
                                 };
 
-                                BaseModel.AddToSpecificStaffPlaces(newPlace);
-                            }
-                            else
-                                foreach (SpecificStaffPlace place in places)
-                                {
-                                    place.Office = office;
-                                    place.LocationId = newLocation.Id;
-                                }
+                                BaseModel.AddToLocations(newLocation);
 
-                            BaseModel.SaveChanges();
+                                if (places.Count == 0)
+                                {
+                                    //create empty place
+                                    var newPlace = new SpecificStaffPlace
+                                    {
+                                        Id = Guid.NewGuid(),
+                                        SpecificStaffId = specificStaffId,
+                                        LocationId = newLocation.Id,
+                                        PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                                        PhoneNumber = "_",
+                                        Office = office
+                                    };
+
+                                    BaseModel.AddToSpecificStaffPlaces(newPlace);
+                                }
+                                else
+                                    foreach (SpecificStaffPlace place in places)
+                                    {
+                                        place.Office = office;
+                                        place.LocationId = newLocation.Id;
+                                    }
+
+                                BaseModel.SaveChanges();
+                            }
                         }
                     }
                 }
@@ -1652,12 +1705,16 @@ namespace KSS.Helpers
         {
             try
             {
-                var place = BaseModel.SpecificStaffPlaces.FirstOrDefault(t => t.Id == specificStaffPlaceId);
-                if (place != null)
+                lock (_lockObject)
                 {
-                    BaseModel.DeleteObject(place);
-                    BaseModel.SaveChanges();
+                    var place = BaseModel.SpecificStaffPlaces.FirstOrDefault(t => t.Id == specificStaffPlaceId);
+                    if (place != null)
+                    {
+                        BaseModel.DeleteObject(place);
+                        BaseModel.SaveChanges();
+                    }
                 }
+
             }
             catch (Exception ex)
             {
@@ -1669,44 +1726,47 @@ namespace KSS.Helpers
         {
             try
             {
-                var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
-
-                if (specificStaffPlaceId.HasValue)
+                lock (_lockObject)
                 {
-                    //update
-                    var specificPlace = places.FirstOrDefault(t => t.Id == specificStaffPlaceId.Value);
+                    var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
 
-                    if (specificPlace != null)
+                    if (specificStaffPlaceId.HasValue)
                     {
-                        specificPlace.PhoneNumber = phone;
-                        BaseModel.SaveChanges();
-                    }
-                }
-                else
-                {
-                    //create
+                        //update
+                        var specificPlace = places.FirstOrDefault(t => t.Id == specificStaffPlaceId.Value);
 
-                    var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
-
-                    if (phoneType.HasValue)
-                    {
-
-                        var entity = new SpecificStaffPlace
+                        if (specificPlace != null)
                         {
-                            Id = Guid.NewGuid(),
-                            SpecificStaffId = specificStaffId,
-                            PhoneTypeId = phoneType.Value,
-                            PhoneNumber = phone,
-                        };
-
-                        if (placeWithLocation != null)
-                        {
-                            entity.LocationId = placeWithLocation.LocationId;
-                            entity.Office = placeWithLocation.Office;
+                            specificPlace.PhoneNumber = phone;
+                            BaseModel.SaveChanges();
                         }
+                    }
+                    else
+                    {
+                        //create
 
-                        BaseModel.AddToSpecificStaffPlaces(entity);
-                        BaseModel.SaveChanges();
+                        var placeWithLocation = places.FirstOrDefault(t => t.LocationId != null);
+
+                        if (phoneType.HasValue)
+                        {
+
+                            var entity = new SpecificStaffPlace
+                            {
+                                Id = Guid.NewGuid(),
+                                SpecificStaffId = specificStaffId,
+                                PhoneTypeId = phoneType.Value,
+                                PhoneNumber = phone,
+                            };
+
+                            if (placeWithLocation != null)
+                            {
+                                entity.LocationId = placeWithLocation.LocationId;
+                                entity.Office = placeWithLocation.Office;
+                            }
+
+                            BaseModel.AddToSpecificStaffPlaces(entity);
+                            BaseModel.SaveChanges();
+                        }
                     }
                 }
             }
@@ -1743,103 +1803,118 @@ namespace KSS.Helpers
             try
             {
 
-                //division
-                var divisionId = Guid.Empty;
-                if (!existedDivision.HasValue)
+                lock (_lockObject)
                 {
-                    var division = new Division
+
+                    LogHelper.WriteLog("CreateNewLocation. " +
+                                       string.Format(
+                                           "{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15}",
+                                           newDivisionName, parentDivisionGuid,
+                                           existedDivision, newRegion, existedRegion, newTerritory, existedTerritory,
+                                           city, existedCity, innerPhoneCode, outerPhoneCode, street,
+                                           existedStreet, house, existedHouse, pavilion));
+
+
+
+                    //division
+                    var divisionId = Guid.Empty;
+                    if (!existedDivision.HasValue)
+                    {
+                        var division = new Division
+                        {
+                            Id = Guid.NewGuid(),
+                            Code = "000000000",
+                            Ranking = "000001",
+                            Essential = true
+                        };
+
+                        BaseModel.AddToDivisions(division);
+
+                        var divisionState = new DivisionState { Id = division.Id };
+                        if (parentDivisionGuid.HasValue)
+                            divisionState.ParentId = parentDivisionGuid;
+                        divisionState.Division = newDivisionName;
+                        divisionState.ValidationDate = DateTime.Today;
+
+                        BaseModel.AddToDivisionStates(divisionState);
+
+                        divisionId = division.Id;
+                    }
+                    else
+                        divisionId = existedDivision.Value;
+
+                    //territory
+                    Guid territoryId;
+                    if (!existedTerritory.HasValue)
+                    {
+                        var territory = new Territory { Id = Guid.NewGuid() };
+
+                        BaseModel.AddToTerritories(territory);
+
+                        var territoryState = new TerritoryState
+                        {
+                            Id = territory.Id,
+                            DivisionId = divisionId,
+                            Territory = newTerritory,
+                            ValidationDate = DateTime.Now
+                        };
+
+                        BaseModel.AddToTerritoryStates(territoryState);
+
+                        territoryId = territory.Id;
+                    }
+                    else
+                        territoryId = existedTerritory.Value;
+
+                    //city
+                    Guid localityId;
+                    if (!existedCity.HasValue)
+                    {
+                        var locality = new Locality
+                        {
+                            Id = Guid.NewGuid(),
+                            Locality1 = city,
+                            Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
+                            Country = "Россия",
+                            CityPhoneCode = innerPhoneCode
+                        };
+                        BaseModel.AddToLocalities(locality);
+
+                        localityId = locality.Id;
+                    }
+                    else
+                        localityId = existedCity.Value;
+
+                    //street
+                    string streetName = existedStreet.HasValue ? BaseModel.Locations.First(t => t.Id == existedStreet.Value).Street : street;
+
+
+                    //house
+                    string houseNumber = existedHouse.HasValue
+                        ? BaseModel.Locations.First(t => t.Id == existedHouse.Value).Edifice
+                        : house;
+
+
+                    LogHelper.WriteLog("CreateNewLocation. Create location");
+                    var location = new Location
                     {
                         Id = Guid.NewGuid(),
-                        Code = "000000000",
-                        Ranking = "000001",
-                        Essential = true
-                    };
-
-                    BaseModel.AddToDivisions(division);
-
-                    var divisionState = new DivisionState {Id = division.Id};
-                    if (parentDivisionGuid.HasValue)
-                        divisionState.ParentId = parentDivisionGuid;
-                    divisionState.Division = newDivisionName;
-                    divisionState.ValidationDate = DateTime.Today;
-
-                    BaseModel.AddToDivisionStates(divisionState);
-
-                    divisionId = division.Id;
-                }
-                else
-                    divisionId = existedDivision.Value;
-
-                //territory
-                Guid territoryId;
-                if (!existedTerritory.HasValue)
-                {
-                    var territory = new Territory { Id = Guid.NewGuid() };
-
-                    BaseModel.AddToTerritories(territory);
-
-                    var territoryState = new TerritoryState
-                    {
-                        Id = territory.Id,
                         DivisionId = divisionId,
-                        Territory = newTerritory,
-                        ValidationDate = DateTime.Now
+                        LocalityId = localityId,
+                        TerritoryId = territoryId,
+                        Street = streetName,
+                        Edifice = houseNumber,
+                        Building = pavilion
                     };
 
-                    BaseModel.AddToTerritoryStates(territoryState);
+                    BaseModel.AddToLocations(location);
 
-                    territoryId = territory.Id;
+                    BaseModel.SaveChanges();
                 }
-                else
-                    territoryId = existedTerritory.Value;
-
-                //city
-                Guid localityId;
-                if (!existedCity.HasValue)
-                {
-                    var locality = new Locality
-                    {
-                        Id = Guid.NewGuid(),
-                        Locality1 = city,
-                        Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
-                        Country = "Россия",
-                        CityPhoneCode = innerPhoneCode
-                    };
-                    BaseModel.AddToLocalities(locality);
-
-                    localityId = locality.Id;
-                }
-                else
-                    localityId = existedCity.Value;
-
-                //street
-                string streetName = existedStreet.HasValue ? BaseModel.Locations.First(t => t.Id == existedStreet.Value).Street : street;
-
-
-                //house
-                string houseNumber = existedHouse.HasValue
-                    ? BaseModel.Locations.First(t => t.Id == existedHouse.Value).Edifice
-                    : house;
-
-
-
-                var location = new Location
-                {
-                    Id = Guid.NewGuid(),
-                    DivisionId = divisionId,
-                    LocalityId = localityId,
-                    TerritoryId = territoryId,
-                    Street = streetName,
-                    Edifice = houseNumber,
-                    Building = pavilion
-                };
-
-                BaseModel.AddToLocations(location);
-
-                BaseModel.SaveChanges();
             }
             catch (Exception ex)
             {
+                _baseModel = new CompanyBaseModel();
                 LogHelper.WriteLog("Ошибка. CreateNewLocation.", ex);
             }
         }
@@ -1866,7 +1941,7 @@ namespace KSS.Helpers
             {
                 return
                     BaseModel.Locations.Where(t => t.LocalityId == locality).
-                    Where(t=>!string.IsNullOrEmpty(t.Street))
+                    Where(t => !string.IsNullOrEmpty(t.Street))
                         .DistinctBy(t => t.Street).
                         OrderBy(t => t.Street)
                         .Select(t => new KeyValuePair<Guid, string>(t.Id, t.Street))

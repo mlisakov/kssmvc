@@ -14,6 +14,7 @@ namespace KSS.Helpers
         {
             try
             {
+                fileName = fileName.Replace("\\", ".");
                 if (!Directory.Exists(Path))
                     Directory.CreateDirectory(Path);
 
@@ -37,7 +38,19 @@ namespace KSS.Helpers
             WriteLog(fileName, string.Format("{0}{2}:    {1}{0}", Environment.NewLine, russionErrorText, DateTime.Now));
             WriteLog(fileName,
                 "Ошибка:" + Environment.NewLine + ex.Message + Environment.NewLine + "StackTrace:" +
-                Environment.NewLine + ex.StackTrace);
+                Environment.NewLine + ex.StackTrace);            
+            WriteLogAdvanced(fileName, 0, ex.InnerException);
+        }
+
+        private static void WriteLogAdvanced(string fileName, int level, Exception ex)
+        {
+            if (ex != null)
+            {
+                WriteLog(fileName,
+                    "Внутренняя ошибка #" + level + Environment.NewLine + ex.Message + Environment.NewLine +
+                    "StackTrace:" + Environment.NewLine + ex.StackTrace);
+                WriteLogAdvanced(fileName, level + 1, ex.InnerException);
+            }
         }
 
         public static void WriteLog(string russianText, Exception ex)
@@ -47,7 +60,7 @@ namespace KSS.Helpers
 
         public static void WriteLog(string text)
         {
-            WriteLog(BaseFileName + DateTime.Today.ToString("yy-MM-dd") + BaseExtension, text);
+            WriteLog(BaseFileName + DateTime.Today.ToString("dd.mm.yyyy") + BaseExtension, text);
         }
     }
 }

@@ -20,7 +20,7 @@
             <div class="author" data-user-id="@employee.Employee.EMail"> </div>    
         </div>
         <div class="personIMGLayout">
-            <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
+            <img class="personIMG" src="data:image/png;base64,@employee.GetImage()" />
         </div>
         <div class="innerPersonLayout" style="margin-right: 140px">
             <h5 class="personName">
@@ -28,11 +28,11 @@
             </h5>
             <a class="personCardAddToFavoriteLinkInline personCardAddToFavoriteLink " data-url='@Url.Action("ChangeFavoriteStatusInline", "Employee", new { id = employee.Employee.Id })'>
                 @if (employee.IsFavorite)
-{
-    <img src="~/Images/selectedStar.png" title="Удалить из избранного" />
-}
-else
-{
+                {
+                    <img src="~/Images/selectedStar.png" title="Удалить из избранного" />
+                }
+                else
+                {
                     <img src="~/Images/star.png" title="Добавить в избранное" />
                 }
             </a>
@@ -41,7 +41,7 @@ else
             <p class="personDepartment" data-url="@Url.Action("SearchView", "Home", new { id = employee.DepartmentState.Id })"> @employee.DepartmentState.Department</p>
             <p class="personJob">@employee.PositionState.Title</p>
             <div class="phonesLine">
-                @for (int i = 0, j=0; i < employee.EmployeePlaces.Count; i++)
+                @for (int i = 0, j = 0; i < employee.EmployeePlaces.Count; i++)
                 {
                     if (string.IsNullOrEmpty(employee.EmployeePlaces[i].PhoneNumber) || employee.EmployeePlaces[i].PhoneNumber == "_")
                     {
@@ -50,12 +50,14 @@ else
 
                     if (j == 0)
                     {
-                        <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+@*                        <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>*@
+                        <p class="personCityPhone">@employee.ParseNumber(i);</p>
                         j++;
                     }
                     else
                     {
-                        <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+@*                        <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>*@
+                        <p class="personMobilePhone">@employee.ParseNumber(i);</p>
                         j++;
                     }
                 }

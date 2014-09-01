@@ -167,7 +167,7 @@
 
 
                     <div class="personIMGLayout">
-                        <img class="personIMG" src="data:image;base64,@employee.GetImage()" />
+                        <img class="personIMG" src="data:image/png;base64,@employee.GetImage()" />
                     </div>
                     <div class="innerPersonLayout">
                         <h5 class="personName">                            
@@ -198,12 +198,14 @@
 
                                 if (j == 0)
                                 {
-                                    <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+@*                                    <p class="personCityPhone">@employee.EmployeePlaces[i].PhoneNumber;</p>*@
+                                    <p class="personCityPhone">@employee.ParseNumber(i);</p>
                                     j++;
                                 }
                                 else
                                 {
-                                    <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>
+@*                                    <p class="personMobilePhone">@employee.EmployeePlaces[i].PhoneNumber;</p>*@
+                                    <p class="personMobilePhone">@employee.ParseNumber(i);</p>
                                     j++;
                                 }
                             }
@@ -355,7 +357,12 @@
 
             var currentPageItem = $(e.target);
             var url = currentPageItem.data('url');
-            $('.progress').show();
+            
+
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
 
             loadSearchPageResult(url);
         });
@@ -450,6 +457,11 @@
                     resultDiv.empty();
                     resultDiv.append(data);
                 }
+
+                resultDiv = $('.centralPartWithProgressBar');
+                if (resultDiv != null)
+                    resultDiv.remove();
+
             initLyncStatuses();
         });
     };

@@ -247,6 +247,7 @@
     <Content Include="Fonts\PTS75F_W.TTF" />
     <Content Include="Fonts\PTS76F_W.TTF" />
     <Content Include="Fonts\ARIAL.TTF" />
+    <Content Include="HtmlPage1.html" />
     <Content Include="Images\dafaultpic.jpg" />
     <Content Include="Images\logoMRSK.png" />
     <Content Include="Images\LyncStatuses\away.png" />

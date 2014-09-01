@@ -32,7 +32,7 @@
     <div style="margin-top: 10px">
         <div style="float:left">
 
-            <img class="personIMG" src="data:image;base64, @Model.GetImage()" />
+            <img class="personIMG" src="data:image/png;base64, @Model.GetImage()" />
 
             @if (ViewBag.IsAdmin)
         {
@@ -392,7 +392,8 @@
             }
             <div>
                 <p id="phoneType_@i" class="personCardJobTitle">@Model.EmployeePlaces[i].PhoneType.Category:</p>
-                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.EmployeePlaces[i].PhoneNumber</p>
+@*                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.EmployeePlaces[i].PhoneNumber</p>*@
+                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.ParseNumber(i)</p>
                 @if (ViewBag.IsAdmin)
                 {
                     <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.EmployeePlaces[i].Id">редактировать</p>
@@ -548,7 +549,14 @@
 
             idItem = idItem.substr(14);//"editPhoneLink_".length == 14
 
-            $('#personCardChangePhoneTextBox').val($('#phoneNumber_' + idItem).text());
+
+            var text = $('#phoneNumber_' + idItem).text();            
+            if (text != "") {
+                text = text.replace('(', '');
+                text = text.replace(')', '');
+                text = text.replace('-', '');
+            }
+            $('#personCardChangePhoneTextBox').val(text);
 
             var dialog = $('.personCardChangePhoneDialog').first();
 
