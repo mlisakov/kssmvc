@@ -299,6 +299,8 @@
           <Property Name="Territory" Type="nvarchar" MaxLength="200" />
           <Property Name="ValidationDate" Type="smalldatetime" Nullable="false" />
           <Property Name="ExpirationDate" Type="smalldatetime" />
+          <Property Name="ParentId" Type="uniqueidentifier" />
+          <Property Name="PhonePrefix" Type="int" />
         </EntityType>
         <Association Name="FK_DepartmentSpecificState_DepartmentSpecificState">
           <End Role="DepartmentSpecificState" Type="Self.DepartmentSpecificState" Multiplicity="0..1" />
@@ -1404,6 +1406,8 @@
           <Property Name="ExpirationDate" Type="DateTime" Precision="0" />
           <NavigationProperty Name="Division" Relationship="KSS.Server.Entities.FK_TerritoryState_Division" FromRole="TerritoryState" ToRole="Division" />
           <NavigationProperty Name="Territory1" Relationship="KSS.Server.Entities.FK_TerritoryState_Territory" FromRole="TerritoryState" ToRole="Territory" />
+          <Property Name="ParentId" Type="Guid" />
+          <Property Name="PhonePrefix" Type="Int32" />
         </EntityType>
         <Association Name="FK_DepartmentState_Department">
           <End Type="KSS.Server.Entities.Department" Role="Department" Multiplicity="1" />
@@ -2127,6 +2131,8 @@
           <EntitySetMapping Name="TerritoryStates">
             <EntityTypeMapping TypeName="KSS.Server.Entities.TerritoryState">
               <MappingFragment StoreEntitySet="TerritoryState">
+                <ScalarProperty Name="PhonePrefix" ColumnName="PhonePrefix" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
                 <ScalarProperty Name="ExpirationDate" ColumnName="ExpirationDate" />
                 <ScalarProperty Name="ValidationDate" ColumnName="ValidationDate" />
                 <ScalarProperty Name="Territory" ColumnName="Territory" />

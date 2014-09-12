@@ -56,9 +56,9 @@ namespace KSS.Controllers
             return sb.ToString();
         }
 
-        public ActionResult SaveLocation(Guid employee, Guid city, Guid edifice, string pavillion, string office)
+        public ActionResult SaveLocation(Guid employee, Guid city, Guid edifice, Guid? pavillion, string office, Guid? territory)
         {
-            DBHelper.UpdateEmployeePlaces(employee, city, edifice, pavillion, office);
+            DBHelper.UpdateEmployeePlaces(employee, city, edifice, pavillion, office, territory);
 
             return Index(employee);
         }
@@ -71,6 +71,8 @@ namespace KSS.Controllers
 
         public ActionResult SavePhone(Guid employee, Guid? place, Guid? phoneType, string phone)
         {
+            phone = DBHelper.ParseNumber(phone);
+
             DBHelper.UpdateEmployeePhone(employee, place, phoneType, phone);
 
             return Index(employee);
@@ -96,14 +98,20 @@ namespace KSS.Controllers
 
 
         public ActionResult CreateNewLocation(Guid employee, string newDivisionName, Guid? parentDivisionGuid,
-            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,
+            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,Guid? parentTerritory,
             string city, Guid? existedCity, string innerPhoneCode, string outerPhoneCode, string street,
             Guid? existedStreet, string house, Guid? existedHouse, string pavilion)
         {
+            if (existedTerritory.HasValue && parentTerritory.HasValue)
+            {
+                if (existedTerritory.Value == parentTerritory.Value)
+                    parentTerritory = null;
+            }
+
             DBHelper.CreateNewLocation(newDivisionName, parentDivisionGuid,
-           existedDivision,  newRegion,  existedRegion,  newTerritory,  existedTerritory,
-             city,  existedCity,  innerPhoneCode,  outerPhoneCode,  street,
-           existedStreet,  house,  existedHouse,  pavilion);
+                existedDivision, newRegion, existedRegion, newTerritory, existedTerritory, parentTerritory,
+                city, existedCity, innerPhoneCode, outerPhoneCode, street,
+                existedStreet, house, existedHouse, pavilion);
 
             return Index(employee);
         }
@@ -203,14 +211,14 @@ namespace KSS.Controllers
         {
             var sb = new StringBuilder();
             sb.Append("<option value=\"\" selected>не выбран</option>");
-            foreach (var item in DBHelper.GetPavillions(locality, edifice))
+            foreach (var item in DBHelper.GetPavillions2(locality, edifice))
             {
-                if (string.IsNullOrEmpty(item))
+                if (string.IsNullOrEmpty(item.Value))
                     continue;
                 sb.Append("<option value=\"");
-                sb.Append(item);
+                sb.Append(item.Key);
                 sb.Append("\">");
-                sb.Append(item);
+                sb.Append(item.Value);
                 sb.Append("</option>");
             }
             return sb.ToString();

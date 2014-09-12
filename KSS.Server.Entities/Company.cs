@@ -7517,6 +7517,54 @@ namespace KSS.Server.Entities
         private Nullable<global::System.DateTime> _ExpirationDate;
         partial void OnExpirationDateChanging(Nullable<global::System.DateTime> value);
         partial void OnExpirationDateChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Guid> ParentId
+        {
+            get
+            {
+                return _ParentId;
+            }
+            set
+            {
+                OnParentIdChanging(value);
+                ReportPropertyChanging("ParentId");
+                _ParentId = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("ParentId");
+                OnParentIdChanged();
+            }
+        }
+        private Nullable<global::System.Guid> _ParentId;
+        partial void OnParentIdChanging(Nullable<global::System.Guid> value);
+        partial void OnParentIdChanged();
+    
+        /// <summary>
+        /// No Metadata Documentation available.
+        /// </summary>
+        [EdmScalarPropertyAttribute(EntityKeyProperty=false, IsNullable=true)]
+        [DataMemberAttribute()]
+        public Nullable<global::System.Int32> PhonePrefix
+        {
+            get
+            {
+                return _PhonePrefix;
+            }
+            set
+            {
+                OnPhonePrefixChanging(value);
+                ReportPropertyChanging("PhonePrefix");
+                _PhonePrefix = StructuralObject.SetValidValue(value);
+                ReportPropertyChanged("PhonePrefix");
+                OnPhonePrefixChanged();
+            }
+        }
+        private Nullable<global::System.Int32> _PhonePrefix;
+        partial void OnPhonePrefixChanging(Nullable<global::System.Int32> value);
+        partial void OnPhonePrefixChanged();
 
         #endregion
 

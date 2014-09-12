@@ -157,12 +157,25 @@ namespace KSS.Models
 
         public string ParseNumber(int index)
         {
-            var phoneCode = Location != null ? Location.Locality.CityPhoneCode : string.Empty;
-
             if (index >= 0 && index < EmployeePlaces.Count)
             {
+                var phoneCode = string.Empty;
+
+                if (Location != null)
+                {
+                    phoneCode = Location.Locality.CityPhoneCode;
+
+                    var phoneType = EmployeePlaces[index].PhoneType.Type.Trim().ToUpper();
+                    if (phoneType == "МИНИАТС")
+                    {
+                        phoneCode = Location.TerritoryId.HasValue
+                            ? DBHelper.GetInnerPhoneCode(Location.TerritoryId.Value)
+                            : string.Empty;
+                    }
+                }
+
                 if (string.IsNullOrEmpty(phoneCode))
-                    return ParsePhone(EmployeePlaces[index].PhoneNumber, EmployeePlaces[index].PhoneType.Category);
+                    return ParsePhone(EmployeePlaces[index].PhoneNumber, EmployeePlaces[index].PhoneType.Type);
                 return ParsePhone(EmployeePlaces[index].PhoneNumber, EmployeePlaces[index].PhoneType.Type, phoneCode);
             }
             return string.Empty;
@@ -172,7 +185,9 @@ namespace KSS.Models
         {
             string userPhoneNumber = string.Empty;
             string parsedPhoneNumber = ParsePhone(getString, phoneType);
-            if (phoneType.Trim().ToUpper() == "ГАТС")
+
+            phoneType = phoneType.Trim().ToUpper();
+            if (phoneType == "ГАТС" || phoneType == "МИНИАТС")
                 userPhoneNumber += "(" + phoneCode + ")" + parsedPhoneNumber;
             else
                 userPhoneNumber = parsedPhoneNumber;

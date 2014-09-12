@@ -153,6 +153,8 @@ namespace KSS.Controllers
         {
             var guid = new Guid(Session["CurrentUser"].ToString());
 
+            phoneNumber = DBHelper.ParseNumber(phoneNumber);
+
             var employees = DBHelper.SearchAdvanced(divisionId, placeId, isMemberOfHeadquarter, phoneNumber,
                 departmentId,
                 dateStart, dateEnd, job, employeeName, PageSize, guid, startIndex);
@@ -194,24 +196,11 @@ namespace KSS.Controllers
                          "&employeeName=" + employeeName +
                          "&startIndex=" + startIndex;
 
-//            Session["BackLink"] = Url.Action("SearchEmployeesAdvanced", "Home",
-//                new
-//                {
-//                    divisionId = divisionId,
-//                    placeId = placeId,
-//                    isMemberOfHeadquarter = isMemberOfHeadquarter,
-//                    phoneNumber = phoneNumber,
-//                    departmentId = departmentId,
-//                    dateStart = dateStart,
-//                    dateEnd = dateEnd,
-//                    job = job,
-//                    employeeName = employeeName,
-//                    startIndex = startIndex,
-//                });
-
             Session["BackLink"] = action;
             return view;
         }
+
+
 
         public async Task<ActionResult> GetBirthdays()
         {

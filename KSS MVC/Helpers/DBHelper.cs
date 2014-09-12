@@ -406,13 +406,8 @@ namespace KSS.Helpers
         {
             try
             {
-                IQueryable<EmployeePlace> eP = (from employee in BaseModel.Employees
-                                                join ep in BaseModel.EmployeePlaces on employee.Id equals ep.EmployeeId into employeePlase
-                                                from empPlace in employeePlase.DefaultIfEmpty()
-                                                where employee.Id == employeeGuid
-                                                select empPlace
-                    );
-                return eP.Where(i => i != null).ToList();
+                var eP = BaseModel.EmployeePlaces.Where(t => t.EmployeeId == employeeGuid).ToList();
+                return eP;
             }
             catch (Exception ex)
             {
@@ -985,14 +980,21 @@ namespace KSS.Helpers
             if (placeId.HasValue)
             {
                 //c местом и номером телефона
-                query = (from employee in query
-                         join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
-                             employeePlace.EmployeeId into ep
-                         from empPlace in ep.DefaultIfEmpty()
-                         where !ep.Any() ||
-                             empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value &&
-                             empPlace.PhoneNumber.Contains(phoneNumber)
-                         select employee);
+                if (string.IsNullOrEmpty(phoneNumber))
+                    query = (from employee in query
+                        join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
+                            employeePlace.EmployeeId into ep
+                        from empPlace in ep.DefaultIfEmpty()
+                        where empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value
+                        select employee);
+                else
+                    query = (from employee in query
+                        join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
+                            employeePlace.EmployeeId into ep
+                        from empPlace in ep.DefaultIfEmpty()
+                        where empPlace.Location != null && empPlace.Location.Locality.Id == placeId.Value &&
+                              empPlace.PhoneNumber.Contains(phoneNumber)
+                        select employee);
             }
             else
             {
@@ -1001,7 +1003,8 @@ namespace KSS.Helpers
                          join employeePlace in BaseModel.EmployeePlaces on employee.Id equals
                              employeePlace.EmployeeId into ep
                          from empPlace in ep.DefaultIfEmpty()
-                         where empPlace.PhoneNumber.Contains(phoneNumber) || !ep.Any()
+                         where empPlace.PhoneNumber.Contains(phoneNumber)
+//                         where empPlace.PhoneNumber.Contains(phoneNumber) || !ep.Any()
                          select employee);
             }
 
@@ -1281,6 +1284,140 @@ namespace KSS.Helpers
 
         }
 
+        public static void UpdateEmployeePlaces(Guid employee, Guid city, Guid edifice, Guid? pavillion, string office,
+            Guid? territoryGuid)
+        {
+            try
+            {
+                lock (_lockObject)
+                {
+                    LogHelper.WriteLog("UpdateEmployeePlaces. " +
+                                       string.Format("{0},{1},{2},{3},{4}", employee, city, edifice, pavillion, office));
+
+                    //Получаем список плейсов
+                    var places = GetEmployeePlaces(employee);
+                    
+                    //ищем локейшен эдифайса или павиллиона
+                    Location location = null;
+                    //если есть корпус, то берем локейшен по корпусу
+                    if (pavillion.HasValue)
+                        location = BaseModel.Locations.First(t => t.Id.Equals(pavillion.Value));
+                    else
+                    {
+                        //если нет корпуса, то берем локейшен по зданию
+                        var innerLocation = BaseModel.Locations.First(t => t.Id.Equals(edifice));
+                        //при это у найденного локейшена не должно быть корпуса
+                        if (string.IsNullOrEmpty(innerLocation.Building))
+                            location = innerLocation;
+                        else
+                        {
+                            //если у локейшена для здания все-таки есть корпус, то ищем такой же локейшен, но без копуса
+                            location =
+                                BaseModel.Locations.FirstOrDefault(t => t.DivisionId == innerLocation.DivisionId &&
+                                                                        t.LocalityId == innerLocation.LocalityId &&
+                                                                        t.TerritoryId == innerLocation.TerritoryId &&
+                                                                        t.Street == innerLocation.Street &&
+                                                                        t.Edifice == innerLocation.Edifice &&
+                                                                        string.IsNullOrEmpty(t.Building));
+                            //если такого локейшена нет, то создаем
+                            if (location == null)
+                            {
+
+                                LogHelper.WriteLog("UpdateEmployeePlaces. create location");
+                                var newLocation = new Location
+                                {
+                                    Id = Guid.NewGuid(),
+                                    DivisionId = innerLocation.DivisionId,
+                                    LocalityId = innerLocation.LocalityId,
+                                    TerritoryId = innerLocation.TerritoryId,
+                                    Street = innerLocation.Street,
+                                    Edifice = innerLocation.Edifice,
+                                    Building = null,
+                                    PhoneZoneId = null
+                                };
+
+                                BaseModel.AddToLocations(newLocation);
+                                location = newLocation;
+                            }
+                        }
+                    }
+
+//                    //если локейшен эдифайса имеет ДРУГОЙ корпус, то создаем новый локейшен.
+//                    //т.е. будет два локейшена со всеми одинаковыми полями, кроме поля Building
+//                    //результирующий локейшен будем использовать далее. Назовем его локейшен Икс.
+//                    Location locationX = null;
+//                    if (location.Building == pavillion.ToString())
+//                    {
+//                        LogHelper.WriteLog("UpdateEmployeePlaces. Локейшен дома имеет такой же корпус");
+//                        locationX = location;
+//                    }
+//                    else
+//                    {
+//                        LogHelper.WriteLog("UpdateEmployeePlaces. Локейшен дома имеет ДРУГОЙ корпус:" );
+//                        LogHelper.WriteLog("UpdateEmployeePlaces. location.Building = " + location.Building +
+//                                           "; pavillion = " + pavillion);
+//
+//                        LogHelper.WriteLog("UpdateEmployeePlaces. create location");
+//                        var newLocation = new Location
+//                        {
+//                            Id = Guid.NewGuid(),
+//                            DivisionId = location.DivisionId,
+//                            LocalityId = location.LocalityId,
+//                            TerritoryId = location.TerritoryId,
+//                            Street = location.Street,
+//                            Edifice = location.Edifice,
+//                            Building = pavillion.ToString(),
+//                            PhoneZoneId = null
+//                        };
+//
+//                        BaseModel.AddToLocations(newLocation);
+//
+//                        locationX = newLocation;
+//                    }
+
+                    var locationX = location;
+
+                    //если список плейсов пуст, то создаем новое. В качестве локейшена - локейшен Икс
+                    //проставляем офис, номер телефона = "_"
+                    if (!places.Any())
+                    {
+                        //create empty place
+                        LogHelper.WriteLog("UpdateEmployeePlaces. create empty place");
+                        var newPlace = new EmployeePlace
+                        {
+                            Id = Guid.NewGuid(),
+                            EmployeeId = employee,
+                            LocationId = locationX.Id,
+                            PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                            PhoneNumber = "_",
+                            Office = office
+                        };
+
+                        BaseModel.AddToEmployeePlaces(newPlace);
+                    }
+                    else
+                    {
+                        //если список не пуст, то устанавливаем всем плейсам локейшен икс
+                        //проставляем всем офис
+
+                        LogHelper.WriteLog("UpdateEmployeePlaces. update  places");
+                        foreach (EmployeePlace place in places)
+                        {
+                            place.Office = office;
+                            place.LocationId = locationX.Id;
+                        }
+                    }
+                }
+
+                BaseModel.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateEmployeePlaces.", ex);
+            }
+        }
+
+
         /// <summary>
         /// Изменение местоположения сотрудника
         /// </summary>
@@ -1289,7 +1426,8 @@ namespace KSS.Helpers
         /// <param name="edifice">Здание</param>
         /// <param name="pavillion">номер корпуса</param>
         /// <param name="office">Номер офиса</param>
-        public static void UpdateEmployeePlaces(Guid employee, Guid city, Guid edifice, string pavillion, string office)
+        /// <param name="territoryGuid"></param>
+        public static void UpdateEmployeePlaces2(Guid employee, Guid city, Guid edifice, string pavillion, string office, Guid? territoryGuid)
         {
             try
             {
@@ -1316,6 +1454,7 @@ namespace KSS.Helpers
                         placeWithLocation.Location.Edifice = location.Edifice;
                         placeWithLocation.Location.LocalityId = city;
                         placeWithLocation.Location.Building = pavillion;
+                        placeWithLocation.Location.TerritoryId = territoryGuid;
 
                         foreach (EmployeePlace place in places)
                         {
@@ -1806,6 +1945,7 @@ namespace KSS.Helpers
         /// <param name="newRegion"></param>
         /// <param name="existedRegion"></param>
         /// <param name="existedTerritory"></param>
+        /// <param name="parentTerritory"></param>
         /// <param name="city"></param>
         /// <param name="existedCity"></param>
         /// <param name="innerPhoneCode"></param>
@@ -1817,7 +1957,7 @@ namespace KSS.Helpers
         /// <param name="pavilion"></param>
         /// <param name="newTerritory"></param>
         public static void CreateNewLocation(string newDivisionName, Guid? parentDivisionGuid,
-            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,
+            Guid? existedDivision, string newRegion, string existedRegion, string newTerritory, Guid? existedTerritory,  Guid? parentTerritory,
             string city, Guid? existedCity, string innerPhoneCode, string outerPhoneCode, string street,
             Guid? existedStreet, string house, Guid? existedHouse, string pavilion)
         {
@@ -1877,8 +2017,14 @@ namespace KSS.Helpers
                             Id = territory.Id,
                             DivisionId = divisionId,
                             Territory = newTerritory,
-                            ValidationDate = DateTime.Now
+                            ValidationDate = DateTime.Now,
                         };
+                        if (parentTerritory.HasValue)
+                            territoryState.ParentId = parentTerritory;
+
+                        int phonePrefix;
+                        if (!string.IsNullOrEmpty(innerPhoneCode) && Int32.TryParse(innerPhoneCode, out phonePrefix))
+                            territoryState.PhonePrefix = phonePrefix;
 
                         BaseModel.AddToTerritoryStates(territoryState);
 
@@ -1897,7 +2043,7 @@ namespace KSS.Helpers
                             Locality1 = city,
                             Region = string.IsNullOrEmpty(existedRegion) ? newRegion : existedRegion,
                             Country = "Россия",
-                            CityPhoneCode = innerPhoneCode
+                            CityPhoneCode = outerPhoneCode
                         };
                         BaseModel.AddToLocalities(locality);
 
@@ -2024,9 +2170,99 @@ namespace KSS.Helpers
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLog("Ошибка. GetHouses.", ex);
+                LogHelper.WriteLog("Ошибка. GetPavillions.", ex);
             }
             return new List<string>();
+        }
+
+        public static List<KeyValuePair<Guid,string>> GetPavillions2(Guid? locality, Guid edifice)
+        {
+            try
+            {
+                IQueryable<Location> query = BaseModel.Locations;
+
+                if (locality.HasValue)
+                    query = query.Where(t => t.LocalityId == locality.Value);
+
+                var location = BaseModel.Locations.First(t => t.Id == edifice);
+                query = query.Where(t => t.Street == location.Street && t.Edifice == location.Edifice);
+
+                var list =
+                    query.Where(t => !string.IsNullOrEmpty(t.Building)).DistinctBy(t=>t.Building).OrderBy(t=>t.Building).ToList();
+                return list.Select(t => new KeyValuePair<Guid, string>(t.Id, t.Building)).ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetPavillions2.", ex);
+            }
+            return new List<KeyValuePair<Guid, string>>();
+        }
+
+        private static List<string> GetInnerPhoneCodeByTerritoryId(Guid territoryId)
+        {
+            try
+            {
+                var result = new List<string>();
+                var state = BaseModel.TerritoryStates.FirstOrDefault(t => t.Id == territoryId);
+                if (state != null)
+                {
+                    if (state.PhonePrefix.HasValue)
+                        result.Add(state.PhonePrefix.ToString());
+
+                    if (state.ParentId.HasValue)
+                    {
+                        var code = GetInnerPhoneCodeByTerritoryId(state.ParentId.Value);
+                        if (code.Any())
+                            result.AddRange(code);
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetInnerPhoneCodeByTerritoryId. Последний искомый гуид территории: " + territoryId, ex);                
+            }
+            return new List<string>();
+        }
+
+        public static string GetInnerPhoneCode(Guid territoryId)
+        {
+            try
+            {
+                var items = GetInnerPhoneCodeByTerritoryId(territoryId);
+
+                if (items.Any())
+                {
+                    var result = "";
+                    for (int i = items.Count - 1; i > -1; i--)
+                    {
+                        result += items[i];
+                        if (i != 0)
+                            result += "-";
+                    }
+                    return result;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetInnerPhoneCode.", ex);
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Метод парсит строку и удаляет все символы кроме цифр
+        /// </summary>
+        /// <param name="number">Входная строка</param>
+        /// <returns>Строка из символов</returns>
+        public static string ParseNumber(string number)
+        {
+            if (string.IsNullOrEmpty(number))
+                return "";
+
+            var result = number.Where(Char.IsDigit);
+            string f = result.Aggregate("", (s, c) => s + c);
+            return f;
         }
     }
 }
