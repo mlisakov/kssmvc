@@ -1296,86 +1296,108 @@ namespace KSS.Helpers
 
                     //Получаем список плейсов
                     var places = GetEmployeePlaces(employee);
-                    
-                    //ищем локейшен эдифайса или павиллиона
+
+                    //ищем локейшен здания или корпуса
+
                     Location location = null;
-                    //если есть корпус, то берем локейшен по корпусу
                     if (pavillion.HasValue)
+                        //по корпусу
                         location = BaseModel.Locations.First(t => t.Id.Equals(pavillion.Value));
                     else
+                        //по зданию
+                        location = BaseModel.Locations.First(t => t.Id.Equals(edifice));
+
+
+                    Location resultLocation = null;
+                    if (pavillion.HasValue)
                     {
-                        //если нет корпуса, то берем локейшен по зданию
-                        var innerLocation = BaseModel.Locations.First(t => t.Id.Equals(edifice));
-                        //при это у найденного локейшена не должно быть корпуса
-                        if (string.IsNullOrEmpty(innerLocation.Building))
-                            location = innerLocation;
-                        else
-                        {
-                            //если у локейшена для здания все-таки есть корпус, то ищем такой же локейшен, но без копуса
-                            location =
-                                BaseModel.Locations.FirstOrDefault(t => t.DivisionId == innerLocation.DivisionId &&
-                                                                        t.LocalityId == innerLocation.LocalityId &&
-                                                                        t.TerritoryId == innerLocation.TerritoryId &&
-                                                                        t.Street == innerLocation.Street &&
-                                                                        t.Edifice == innerLocation.Edifice &&
-                                                                        string.IsNullOrEmpty(t.Building));
-                            //если такого локейшена нет, то создаем
-                            if (location == null)
-                            {
-
-                                LogHelper.WriteLog("UpdateEmployeePlaces. create location");
-                                var newLocation = new Location
-                                {
-                                    Id = Guid.NewGuid(),
-                                    DivisionId = innerLocation.DivisionId,
-                                    LocalityId = innerLocation.LocalityId,
-                                    TerritoryId = innerLocation.TerritoryId,
-                                    Street = innerLocation.Street,
-                                    Edifice = innerLocation.Edifice,
-                                    Building = null,
-                                    PhoneZoneId = null
-                                };
-
-                                BaseModel.AddToLocations(newLocation);
-                                location = newLocation;
-                            }
-                        }
+                        //ищем локейшен на основе значений
+                        resultLocation =
+                            BaseModel.Locations.FirstOrDefault(t => t.DivisionId == location.DivisionId &&
+                                                                    t.TerritoryId == territoryGuid &&
+                                                                    t.Street == location.Street &&
+                                                                    t.Edifice == location.Edifice &&
+                                                                    t.Building == location.Building);
+                    }
+                    else
+                    {
+                        //ищем локейшен на основе значений
+                        resultLocation =
+                            BaseModel.Locations.FirstOrDefault(t => t.DivisionId == location.DivisionId &&
+                                                                    t.TerritoryId == territoryGuid &&
+                                                                    t.Street == location.Street &&
+                                                                    t.Edifice == location.Edifice &&
+                                                                    string.IsNullOrEmpty(t.Building));
                     }
 
-//                    //если локейшен эдифайса имеет ДРУГОЙ корпус, то создаем новый локейшен.
-//                    //т.е. будет два локейшена со всеми одинаковыми полями, кроме поля Building
-//                    //результирующий локейшен будем использовать далее. Назовем его локейшен Икс.
-//                    Location locationX = null;
-//                    if (location.Building == pavillion.ToString())
-//                    {
-//                        LogHelper.WriteLog("UpdateEmployeePlaces. Локейшен дома имеет такой же корпус");
-//                        locationX = location;
-//                    }
-//                    else
-//                    {
-//                        LogHelper.WriteLog("UpdateEmployeePlaces. Локейшен дома имеет ДРУГОЙ корпус:" );
-//                        LogHelper.WriteLog("UpdateEmployeePlaces. location.Building = " + location.Building +
-//                                           "; pavillion = " + pavillion);
-//
-//                        LogHelper.WriteLog("UpdateEmployeePlaces. create location");
-//                        var newLocation = new Location
-//                        {
-//                            Id = Guid.NewGuid(),
-//                            DivisionId = location.DivisionId,
-//                            LocalityId = location.LocalityId,
-//                            TerritoryId = location.TerritoryId,
-//                            Street = location.Street,
-//                            Edifice = location.Edifice,
-//                            Building = pavillion.ToString(),
-//                            PhoneZoneId = null
-//                        };
-//
-//                        BaseModel.AddToLocations(newLocation);
-//
-//                        locationX = newLocation;
-//                    }
 
-                    var locationX = location;
+
+                    //если такого локейшена нет, то создаем
+                    if (resultLocation == null)
+                    {
+
+                        LogHelper.WriteLog("UpdateEmployeePlaces. create location");
+                        var newLocation = new Location
+                        {
+                            Id = Guid.NewGuid(),
+                            DivisionId = location.DivisionId,
+                            LocalityId = location.LocalityId,
+                            TerritoryId = territoryGuid,
+                            Street = location.Street,
+                            Edifice = location.Edifice,
+                            Building = null,
+                            PhoneZoneId = null
+                        };
+
+                        BaseModel.AddToLocations(newLocation);
+                        location = newLocation;
+                    }
+                    else
+                        location = resultLocation;
+
+
+                    ////                    если есть корпус, то берем локейшен по корпусу
+                    //                    if (pavillion.HasValue)
+                    //                        location = BaseModel.Locations.First(t => t.Id.Equals(pavillion.Value));
+                    //                    else
+                    //                    {
+                    //                        //если нет корпуса, то берем локейшен по зданию
+                    //                        var innerLocation = BaseModel.Locations.First(t => t.Id.Equals(edifice));
+                    //                        //при этом у найденного локейшена не должно быть корпуса
+                    //                        if (string.IsNullOrEmpty(innerLocation.Building))
+                    //                            location = innerLocation;
+                    //                        else
+                    //                        {
+                    //                            //если у локейшена для здания все-таки есть корпус, то ищем такой же локейшен, но без копуса
+                    //                            location =
+                    //                                BaseModel.Locations.FirstOrDefault(t => t.DivisionId == innerLocation.DivisionId &&
+                    //                                                                        t.LocalityId == innerLocation.LocalityId &&
+                    //                                                                        t.TerritoryId == innerLocation.TerritoryId &&
+                    //                                                                        t.Street == innerLocation.Street &&
+                    //                                                                        t.Edifice == innerLocation.Edifice &&
+                    //                                                                        string.IsNullOrEmpty(t.Building));
+                    //                            //если такого локейшена нет, то создаем
+                    //                            if (location == null)
+                    //                            {
+                    //
+                    //                                LogHelper.WriteLog("UpdateEmployeePlaces. create location");
+                    //                                var newLocation = new Location
+                    //                                {
+                    //                                    Id = Guid.NewGuid(),
+                    //                                    DivisionId = innerLocation.DivisionId,
+                    //                                    LocalityId = innerLocation.LocalityId,
+                    //                                    TerritoryId = innerLocation.TerritoryId,
+                    //                                    Street = innerLocation.Street,
+                    //                                    Edifice = innerLocation.Edifice,
+                    //                                    Building = null,
+                    //                                    PhoneZoneId = null
+                    //                                };
+                    //
+                    //                                BaseModel.AddToLocations(newLocation);
+                    //                                location = newLocation;
+                    //                            }
+                    //                        }
+                    //                    }
 
                     //если список плейсов пуст, то создаем новое. В качестве локейшена - локейшен Икс
                     //проставляем офис, номер телефона = "_"
@@ -1387,7 +1409,7 @@ namespace KSS.Helpers
                         {
                             Id = Guid.NewGuid(),
                             EmployeeId = employee,
-                            LocationId = locationX.Id,
+                            LocationId = location.Id,
                             PhoneTypeId = BaseModel.PhoneTypes.First().Id,
                             PhoneNumber = "_",
                             Office = office
@@ -1404,7 +1426,7 @@ namespace KSS.Helpers
                         foreach (EmployeePlace place in places)
                         {
                             place.Office = office;
-                            place.LocationId = locationX.Id;
+                            place.LocationId = location.Id;
                         }
                     }
                 }

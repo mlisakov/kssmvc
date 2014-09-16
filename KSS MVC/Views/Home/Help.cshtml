@@ -1,74 +1,36 @@
 ﻿@{
     Layout = "";
 }
-<html>
 
-<head>
+<object id="theobj" classid="clsid:0389FBBA-6E36-4F5D-9B9D-C702E3807B7F" style="width:0;height:0;"></object>
+<script>
 
-</head>
+//    $.(function(){
+//
+//        $('a#call_to_number').click(theobj.StartVoiceCall(3324));
+//
+//    });
 
-<body>
-
-    <object id="theobj" classid="clsid:0389FBBA-6E36-4F5D-9B9D-C702E3807B7F"></object>
-
-    <script>
-
-        $.(function(){
-
-            $('a#call_to_number').click(theobj.StartVoiceCall(3707));
-
-        });
-
-    </script>
-
-    <a onclick="javascript:theobj.StartVoiceCall(3707);">3706</a>
+</script>
 
 
 
-</body>
+<style>
+    .helpText:hover {
+        cursor: pointer;
+    }
+</style>
 
-</html>
-@**@
-@*<object id="theobj" classid="clsid:0389FBBA-6E36-4F5D-9B9D-C702E3807B7F" style="width:0;height:0;"></object>*@
-@*<script>*@
-@**@
-@*//    $.(function(){*@
-@*//*@
-@*//        $('a#call_to_number').click(theobj.StartVoiceCall(3324));*@
-@*//*@
-@*//    });*@
-@**@
-@*</script>*@
-@**@
-@**@
-@**@
-@*<style>*@
-@*    .helpText:hover {*@
-@*        cursor: pointer;*@
-@*    }*@
-@*</style>*@
-@**@
-@*<h2 class="departmentHeader">Поддержка</h2>*@
-@**@
-@*<p class="helpInnerHeader firstHelpInnerHeader">Телефон</p>*@
-@**@
-@*$1$<a onclick="javascript:theobj.StartVoiceCall(3707);">3706</a>#1#*@
-@*<p class="helpText" onclick="javascript:theobj.StartVoiceCall(3324);">33-24; (Для филиала "Кальэнерго" 5-77)</p>*@
-@**@
-@*<p class="helpInnerHeader">e-mail</p>*@
-@*<a class="paginationNavigationLink helpLink" href="mailto:sd@mrsk-yuga.ru">sd@mrsk-yuga.ru</a>*@
-@**@
-@*<p class="helpInnerHeader">заявка в ServiceDesk</p>*@
-@*<a class="paginationNavigationLink helpLink" href="http://sd.mrsk-yuga.local:8080">http://sd.mrsk-yuga.local:8080</a>*@
-@**@
-@**@
-@*<script>*@
-@**@
-@*    $.(function(){*@
-@*        $('a#call_to_number').click(theobj.StartVoiceCall(3707));*@
-@*    });*@
-@**@
-@*</script>*@
-@**@
-@*    *@
-@**@
+<h2 class="departmentHeader">Поддержка</h2>
+
+<p class="helpInnerHeader firstHelpInnerHeader">Телефон</p>
+<p class="helpText" >33-24; (Для филиала "Кальэнерго" 5-77)</p>
+
+<p class="helpInnerHeader">e-mail</p>
+<a class="paginationNavigationLink helpLink" href="mailto:sd@mrsk-yuga.ru">sd@mrsk-yuga.ru</a>
+
+<p class="helpInnerHeader">заявка в ServiceDesk</p>
+<a class="paginationNavigationLink helpLink" href="http://sd.mrsk-yuga.local:8080">http://sd.mrsk-yuga.local:8080</a>
+
+    
+

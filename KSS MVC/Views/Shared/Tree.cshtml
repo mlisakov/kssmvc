@@ -162,12 +162,15 @@
         });
 
         function loadDivisionStates(listItem, url) {
-            $.get(url, function (data) {
+            $.get(url, function(data) {
                 //                listItem.parent().after(data);
-
                 listItem.after(data);
-                listItem.find('.treeProgress').remove();
+                //listItem.find('.treeProgress').remove();
                 listItem.next().addClass('innerUL-background');
+            }).done(function() {
+                listItem.find('.treeProgress').remove();
+            }).fail(function() {
+                listItem.find('.treeProgress').remove();
             });
         }
 

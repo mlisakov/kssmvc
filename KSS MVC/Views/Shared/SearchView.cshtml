@@ -106,7 +106,8 @@
 
             <select id="IsMemberOfHeadQuarterComboBox" class="field">
                 <option class="comboBoxItem" value="true">Да</option>
-                <option class="comboBoxItem" selected value="false">Нет</option>
+                <option class="comboBoxItem" value="false">Нет</option>
+                <option class="comboBoxItem" selected value="">Не выбрано</option>
             </select>
 
             <input id="PhoneNumberAdditionalSearch" type="text" class="field rightItem"/>            
@@ -320,8 +321,6 @@
     
     
 
-    
-
 </div>
 
 
@@ -379,7 +378,7 @@
             loadSearchPage(url);
         });
 
-        $('#searchText').keydown(function(e) {
+        $('#searchText, #PhoneNumberAdditionalSearch').keydown(function (e) {
             if (e.which == 13) {
                 $('#searchBtn').click();
             }
@@ -405,6 +404,7 @@
                 //реализация расширенного поиска
                 url = '@Url.Action("SearchEmployeesAdvanced", "Home")';
 
+
                 dataParam = {
                     divisionId: divisionId,
                     placeId: placeId,
@@ -414,12 +414,16 @@
                     dateStart: startDate,
                     dateEnd: endDate,
                     job: job,
-                    employeeName: escape(value),
+                    employeeName: value,
                     startIndex: 0
                 };
             }
 
             $('.searchProgress').show();
+            //hack - remove text from header
+            $('.departmentHeader').contents().filter(function() {
+                 return this.nodeType === 3;
+            }).remove();
 
             loadSearchPageResult(url, dataParam);
         });
