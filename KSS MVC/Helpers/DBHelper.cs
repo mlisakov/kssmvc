@@ -2286,5 +2286,101 @@ namespace KSS.Helpers
             string f = result.Aggregate("", (s, c) => s + c);
             return f;
         }
+
+
+        #region SpecificStaff
+
+        public static Dictionary<Guid, string> GetDepartmentSpecificStates(Guid divisionId)
+        {
+            try
+            {
+                var items =
+                    BaseModel.DepartmentSpecificStates.Where(t => t.DivisionId == divisionId)
+                        .ToDictionary(t => t.Id, t => t.Name);
+
+                return items;
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetDepartmentSpecificStates.", ex);
+            }
+            return new Dictionary<Guid, string>();
+        }
+
+
+        public static void CreateNewDepartmentSpecificStaff(Guid division, Guid? parent, string name)
+        {
+            try
+            {
+                var item = new DepartmentSpecificState
+                {
+                    Id = Guid.NewGuid(),
+                    DivisionId = division,
+                    ParentId = parent,
+                    Name = name,
+                    ValidationDate = DateTime.Now,
+                    ExpirationDate = null
+                };
+
+                BaseModel.AddToDepartmentSpecificStates(item);
+                BaseModel.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. CreateNewDepartmentSpecificStaff.", ex);
+            }
+        }
+
+        public static void UpdateDepartmentSpecificStaff(Guid specificStateId, string name)
+        {
+            try
+            {
+                var item = BaseModel.DepartmentSpecificStates.FirstOrDefault(t => t.Id == specificStateId);
+                if (item != null)
+                {
+                    item.Name = name;
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateDepartmentSpecificStaff.", ex);
+            }
+        }
+
+        public static void RemoveDepartmentSpecificStaff(Guid specificStateId)
+        {
+            try
+            {
+                var item = BaseModel.DepartmentSpecificStates.FirstOrDefault(t => t.Id == specificStateId);
+                if (item != null)
+                {
+                    BaseModel.DeleteObject(item);
+                    BaseModel.SaveChanges();
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. RemoveDepartmentSpecificStaff.", ex);
+            }
+        }
+
+        public static List<DepartmentSpecificState> GetSpecificStates(Guid division, Guid? parent)
+        {
+            try
+            {
+                var query = BaseModel.DepartmentSpecificStates.Where(t => t.DivisionId == division);
+                if (parent.HasValue)
+                    query = query.Where(t => t.ParentId == parent.Value);
+
+                return query.ToList();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. GetSpecificStates.", ex);
+            }
+            return new List<DepartmentSpecificState>();
+        }
+        #endregion
     }
 }

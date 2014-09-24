@@ -1,18 +1,53 @@
 ﻿<link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
 <link href="~/Content/jquery-ui/jquery-ui.min.css" rel="stylesheet" />
 
+@using KSS.Helpers
 @using KSS.Models
 @using KSS.Server.Entities
+@model SpecificChangableModel
 @{
     Layout = "";
 }
 
 
 <div class="searchLayout">
-    
-    <div id="searchResult" class="centralResultPanel">
+    @if (ViewBag.IsAdmin)
+    {
+        <div id="searchResult" class="centralResultPanel">
+            <p id="addTreeItem" class="personCardEdit " style="margin-top: 40px; display: block; width: 160px">создать новую группу…</p>
+            <p id="editTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">редактировать…</p>
+            <p id="removeTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">удалить…</p>
+        </div>
         
-    </div>
+        <div class="createTreeItemDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
+            <select id="existedDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">                
+                @foreach (var reg in DBHelper.GetLastDivisionStates())
+                {
+                    <option value="@reg.Id">@reg.Division</option>
+                }
+            </select>
+
+            <p class="personCardChangePlaceDialogSimpleLabel">родительская группа</p>
+            <select id="existedTreeItemsComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>
+@*                @foreach (var reg in DBHelper.GetDivisionStates())*@
+@*                {*@
+@*                    <option value="@reg.Id">@reg.Division</option>*@
+@*                }*@
+            </select>
+            
+            <p class="personCardChangePlaceDialogSimpleLabel">наименование</p>
+            <input id="newTreeItemTextBox" type="text" class="personCardStreet personCardChangePlaceDialogText" tabindex="4" />
+
+            
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelCreateTreeItem" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input id="createTreeItem" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7" />
+            </div>
+
+        </div>
+    }
     
 </div>
 
@@ -21,5 +56,96 @@
 
     $(document).ready(function() {
 
+        //скрытие всех диалогов
+        function hideAllDialogs() {
+            $(".personCardDialog").hide();
+        }
+
+        $('#addTreeItem').on('click', function(e) {
+            hideAllDialogs();
+
+            var dialog = $(".createTreeItemDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        $('#cancelCreateTreeItem').on('click', function() {
+            hideAllDialogs();
+        });
+
+        //division changed
+        $('#existedDivisionComboBox').change(function() {
+
+            //очищаем зависимые комбобоксы
+            $('#existedTreeItemsComboBox option').remove();
+            
+            if ($('#existedDivisionComboBox option:selected').val() != '') {
+                loadTreeItemsByDivisionId();
+            } else {
+                $('#existedDivisionComboBox').append('<option value="" selected>не выбран</option>');
+            }
+        });
+
+        //грузим DepartmentSpecificState     
+        function loadTreeItemsByDivisionId() {
+            var url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
+            var data = { division: $('#existedDivisionComboBox option:selected').val() };
+            $.ajax({
+                    url: url,
+                    data: data,
+                    cache: false,
+                })
+                .done(function(result) {
+                    $('#existedTreeItemsComboBox').append(result);
+                });
+        }
+
+        $('#createTreeItem').on('click', function() {
+            var existedDivision = $('#existedDivisionComboBox option:selected').val();
+
+            var existedGroup = $('#existedTreeItemsComboBox option:selected').val();
+
+            var newItemName = $('#newTreeItemTextBox').val();
+
+            if (existedDivision == "") {
+                alert('Необходимо выбрать филиал');
+                return;
+            } else {
+                if (newItemName == "") {
+                    alert('Необходимо указать наименование новой группы');
+                    return;
+                }
+            }
+
+            var url = '@Url.Action("CreateNewDepartmentSpecificStaff", "Home")';
+            var data = {
+                division: existedDivision,
+                specificState: existedGroup,
+                name: newItemName,
+            };
+
+            var parent = $('#centralPart');
+            var progressBar = $('<div class="centralPartWithProgressBar"/>');
+            if (parent != null) {
+                parent.append(progressBar);
+            }
+            $.get(url, data, function () {
+
+                if (parent != null) {
+//                    parent.empty();
+                    progressBar.remove();
+                }
+                hideAllDialogs();
+
+
+                var treeUrl = '@Url.Action("SpecificTree","Tree")';
+                loadTree(treeUrl);
+            });
+        });
     });
 </script>

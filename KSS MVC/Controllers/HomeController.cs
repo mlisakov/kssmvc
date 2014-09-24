@@ -10,6 +10,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.qrcode;
 using KSS.Helpers;
 using KSS.Models;
 
@@ -200,8 +201,6 @@ namespace KSS.Controllers
             return view;
         }
 
-
-
         public async Task<ActionResult> GetBirthdays()
         {
             List<EmployeeModel> people =
@@ -221,49 +220,6 @@ namespace KSS.Controllers
         {
             return Json(new SelectList(DBHelper.GetPositionStatesByDepartment(departmentId), "Id", "Title"),
                 JsonRequestBehavior.AllowGet);
-        }
-
-        public ActionResult SpecificCard(Guid id)
-        {
-            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);            
-
-            var specificModel = new SpecificStaffModel(id);
-
-            var view = View("SpecificCard", specificModel);
-            view.ViewBag.IsAdmin = isAdmin;
-            view.ViewBag.BackLink = Session["BackLink"];
-            return view;
-        }
-
-
-        public ActionResult SavePersonForSpecificCard(Guid id,Guid employeeId)
-        {
-            DBHelper.SavePersonForSpecificCard(id, employeeId);
-
-            return SpecificCard(id);
-        }
-
-
-        public ActionResult SaveLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
-        {
-            DBHelper.UpdateLocationForSpecificCard(specificStaffId, city, street, edifice, office);
-
-            return SpecificCard(specificStaffId);
-        }
-
-
-        public ActionResult DeleteSpecificPhone(Guid specificStaffId, Guid specificStaffPlaceId)
-        {
-            DBHelper.DeleteSpecificPhone(specificStaffPlaceId);
-
-            return SpecificCard(specificStaffId);
-        }
-
-        public ActionResult SaveSpecificPhone(Guid specificStaffId, Guid? specificStaffPlaceId, Guid? phoneType, string phone)
-        {
-            DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
-
-            return SpecificCard(specificStaffId);
         }
 
         public ActionResult Export()
@@ -429,7 +385,6 @@ namespace KSS.Controllers
             return View("Help");
 
         }
-
 
         public ActionResult Print()
         {
@@ -603,16 +558,81 @@ namespace KSS.Controllers
         }
 
 
-        public ActionResult SpecificChangableView()
+
+        #region SpecificStaff
+
+        public ActionResult SpecificCard(Guid id)
         {
-//            var model = new SpecificSearchViewModel(Session, id);
-//            model.StartIndex = startIndex;
+            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);
 
-//            Session["BackLink"] = Url.Action("SpecificSearchView", "Home", new { id = id, startIndex = startIndex });
+            var specificModel = new SpecificStaffModel(id);
 
-            ViewResult view = View("SpecificChangableView");
-//            view.ViewBag.StartIndex = startIndex;
+            var view = View("SpecificCard", specificModel);
+            view.ViewBag.IsAdmin = isAdmin;
+            view.ViewBag.BackLink = Session["BackLink"];
             return view;
         }
+
+        public ActionResult SavePersonForSpecificCard(Guid id, Guid employeeId)
+        {
+            DBHelper.SavePersonForSpecificCard(id, employeeId);
+
+            return SpecificCard(id);
+        }
+
+        public ActionResult SaveLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
+        {
+            DBHelper.UpdateLocationForSpecificCard(specificStaffId, city, street, edifice, office);
+
+            return SpecificCard(specificStaffId);
+        }
+
+        public ActionResult DeleteSpecificPhone(Guid specificStaffId, Guid specificStaffPlaceId)
+        {
+            DBHelper.DeleteSpecificPhone(specificStaffPlaceId);
+
+            return SpecificCard(specificStaffId);
+        }
+
+        public ActionResult SaveSpecificPhone(Guid specificStaffId, Guid? specificStaffPlaceId, Guid? phoneType, string phone)
+        {
+            DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
+
+            return SpecificCard(specificStaffId);
+        }
+
+        public ActionResult SpecificChangableView()
+        {
+            var model = new SpecificChangableModel(Session);
+            ViewResult view = View("SpecificChangableView", model);
+
+            bool isAdmin = Convert.ToBoolean(Session["IsAdministrator"]);
+            view.ViewBag.IsAdmin = isAdmin;
+
+            return view;
+        }
+
+        public string GetDepartmentSpecificStaff(Guid division)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<option value=\"\" selected>не выбран</option>");
+            foreach (var item in DBHelper.GetDepartmentSpecificStates(division))
+            {
+                sb.Append("<option value=\"");
+                sb.Append(item.Key);
+                sb.Append("\">");
+                sb.Append(item.Value);
+                sb.Append("</option>");
+            }
+            return sb.ToString();
+        }
+
+        public void CreateNewDepartmentSpecificStaff(Guid division, Guid? parent, string name)
+        {
+            DBHelper.CreateNewDepartmentSpecificStaff(division, parent, name);
+        }
+
+        #endregion
+
     }
 }

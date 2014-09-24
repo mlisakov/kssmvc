@@ -152,6 +152,7 @@
     <Compile Include="Helpers\IdComparer.cs" />
     <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
+    <Compile Include="Models\SpecificChangableModel.cs" />
     <Compile Include="Models\SpecificStaffModel.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\HomeViewModel.cs" />
