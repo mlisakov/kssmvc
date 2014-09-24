@@ -361,7 +361,7 @@ namespace KSS.Helpers
                                         from m in employeeStaff.DefaultIfEmpty()
                                         join posState in BaseModel.PositionStates on m.PositionId equals posState.Id into positionState
                                         from ps in positionState.DefaultIfEmpty()
-                                        where employee.Id == employeeGuid
+                                        where employee.Id == employeeGuid && m.ExpirationDate == null && ps.ExpirationDate == null
                                         select ps
                     ).FirstOrDefault();
                 if (pState != null)

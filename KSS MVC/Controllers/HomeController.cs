@@ -540,59 +540,6 @@ namespace KSS.Controllers
                 }
             }
 
-
-//            var dataTable = new DataTable("teste");
-//            dataTable.Columns.Add("ФИО", typeof(string));
-//            dataTable.Columns.Add("Подразделение", typeof(string));
-//            dataTable.Columns.Add("Должность", typeof(string));
-//            dataTable.Columns.Add("Рабочий телефон", typeof(string));
-//            dataTable.Columns.Add("Специальный телефон", typeof(string));
-//            dataTable.Columns.Add("Почта", typeof(string));
-
-//            foreach (var employee in employees)
-//            {
-//                string phone =
-//                    employee.EmployeePlaces.Where(
-//                        place => !string.IsNullOrEmpty(place.PhoneNumber) && place.PhoneNumber != "_")
-//                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
-//
-//                string specificPhone =
-//                    employee.SpecificStaffPlaces.Where(
-//                        t => !string.IsNullOrEmpty(t.PhoneNumber) && t.PhoneNumber != "_")
-//                        .Aggregate("", (current, place) => current + (place.PhoneNumber + ";    "));
-//
-//                dataTable.Rows.Add(employee.Employee.Name,
-//                    employee.DepartmentState.Department,
-//                    employee.PositionState.Title,
-//                    phone, specificPhone, employee.Employee.EMail);
-//            }
-
-//            if (employees.Count == 0)
-//            {
-//                string empt = "-";
-//                dataTable.Rows.Add(empt, empt, empt, empt, empt, empt);
-//            }
-
-//            var grid = new GridView();
-//            grid.DataSource = dataTable;
-//            grid.DataBind();
-
-
-//            Response.ClearContent();
-//            Response.Buffer = true;
-//            Response.AddHeader("content-disposition", "attachment; filename=Report_KCC.pdf");
-//            Response.ContentType = "application/pdf";
-
-//            Response.Charset = "";
-//            StringWriter sw = new StringWriter();
-//            HtmlTextWriter htw = new HtmlTextWriter(sw);
-
-//            grid.RenderControl(htw);
-
-//            Response.Output.Write(sw.ToString());
-//            Response.Flush();
-//            Response.End();
-
             Response.Clear();
             Response.ContentType = "application/pdf";
             Response.AddHeader("content-disposition", "attachment;filename=\"Report.pdf\"");
@@ -653,6 +600,19 @@ namespace KSS.Controllers
             pdfDoc.Add(table);
             pdfDoc.Close();
             return str;
+        }
+
+
+        public ActionResult SpecificChangableView()
+        {
+//            var model = new SpecificSearchViewModel(Session, id);
+//            model.StartIndex = startIndex;
+
+//            Session["BackLink"] = Url.Action("SpecificSearchView", "Home", new { id = id, startIndex = startIndex });
+
+            ViewResult view = View("SpecificChangableView");
+//            view.ViewBag.StartIndex = startIndex;
+            return view;
         }
     }
 }

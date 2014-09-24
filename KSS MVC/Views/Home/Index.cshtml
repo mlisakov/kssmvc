@@ -153,8 +153,9 @@
 
 
         //клик по пункту дерева
-        $('#divTree').on('click', function (e) {            
-            var target = $(e.target);
+        $('#divTree').on('click', function (e) {
+            
+            var target = $(e.target);            
             var isSpan = $(e.target).is('span');
 
             if (isSpan) {
@@ -238,6 +239,7 @@
                 if (page == 3) {
                     //load specific tree
                     loadTree(url);
+                    loadSpecificChangablePage();
                 } else {
                     showMainTree();
                     loadSearchPage(url);
@@ -245,6 +247,11 @@
                 
             }
         }
+    }
+
+    function loadSpecificChangablePage() {
+        var url = '@Url.Action("SpecificChangableView")';
+        loadSearchPage(url);
     }
 
     //сброс выделения в дереве
@@ -286,7 +293,6 @@
                 }
             });
     }
-
 
     //загрузка центральной части для главной страницы
     function loadSearchPage(url) {

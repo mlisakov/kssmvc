@@ -323,6 +323,7 @@
     <Content Include="Views\Shared\SpecificTree.cshtml" />
     <Content Include="Views\Shared\SpecificSearchView.cshtml" />
     <Content Include="Views\Shared\SpecificCard.cshtml" />
+    <Content Include="Views\Shared\SpecificChangableView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
