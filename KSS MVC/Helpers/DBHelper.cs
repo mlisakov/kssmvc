@@ -18,7 +18,7 @@ namespace KSS.Helpers
         private static object _lockObject = new object();
 
         private static CompanyBaseModel _baseModel;
-        private static CompanyBaseModel BaseModel
+        public static CompanyBaseModel BaseModel
         {
             get { return _baseModel ?? (_baseModel = new CompanyBaseModel()); }
         }

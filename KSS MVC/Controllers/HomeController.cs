@@ -632,6 +632,12 @@ namespace KSS.Controllers
             DBHelper.CreateNewDepartmentSpecificStaff(division, parent, name);
         }
 
+        public void UpdateDepartmentSpecificStaff(Guid item, string name)
+        {
+            DBHelper.UpdateDepartmentSpecificStaff(item, name);
+//            DBHelper.CreateNewDepartmentSpecificStaff(division, parent, name);
+        }
+
         #endregion
 
     }
