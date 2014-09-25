@@ -70,6 +70,28 @@
             </div>
 
         </div>
+        
+        <div class="removeTreeItemDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
+            <select id="removeDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>                
+                @foreach (var reg in DBHelper.GetLastDivisionStates())
+                {
+                    <option value="@reg.Id">@reg.Division</option>
+                }
+            </select>
+
+            <p class="personCardChangePlaceDialogSimpleLabel">группа</p>
+            <select id="removeTreeItemsComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>
+            </select>
+            
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelRemoveTreeItem" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input id="deleteTreeItem" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="удалить" tabindex="7" />
+            </div>
+
+        </div>
     }
     
 </div>
@@ -97,7 +119,7 @@
             dialog.show();
         });
 
-        $('#cancelCreateTreeItem, #cancelUpdateTreeItem').on('click', function () {
+        $('#cancelCreateTreeItem, #cancelUpdateTreeItem, #cancelRemoveTreeItem').on('click', function () {
             hideAllDialogs();
         });
 
@@ -250,6 +272,73 @@
                 loadTree(treeUrl);
 
                 $('#updateTreeItemTextBox').val('');
+            });
+        });
+
+
+        $('#removeTreeItem').on('click', function (e) {
+            hideAllDialogs();
+
+            var dialog = $(".removeTreeItemDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        //remove division changed
+        $('#removeDivisionComboBox').change(function () {
+
+            //очищаем зависимые комбобоксы
+            $('#removeTreeItemsComboBox option').remove();
+
+            if ($('#removeDivisionComboBox option:selected').val() != '') {
+                loadTreeItemsByDivisionId($('#removeDivisionComboBox option:selected').val(), $('#removeTreeItemsComboBox'));
+            } else {
+                $('#removeDivisionComboBox').append('<option value="" selected>не выбран</option>');
+            }
+        });
+
+        $('#deleteTreeItem').on('click', function () {
+            var existedDivision = $('#removeDivisionComboBox option:selected').val();
+
+            var existedGroup = $('#removeTreeItemsComboBox option:selected').val();
+
+            if (existedDivision == "") {
+                alert('Необходимо выбрать филиал');
+                return;
+            } else {
+
+                if (existedGroup == "") {
+                    alert('Необходимо выбрать группу');
+                    return;
+                }
+            }
+
+            var url = '@Url.Action("RemoveDepartmentSpecificStaff", "Home")';
+            var data = {
+                item: existedGroup
+            };
+
+            var parent = $('#centralPart');
+            var progressBar = $('<div class="centralPartWithProgressBar"/>');
+            if (parent != null) {
+                parent.append(progressBar);
+            }
+            $.get(url, data, function () {
+
+                if (parent != null) {
+                    progressBar.remove();
+                }
+                hideAllDialogs();
+
+
+                var treeUrl = '@Url.Action("SpecificTree","Tree")';
+                $('#divTree').find('.specificInnerUL:first').remove();
+                loadTree(treeUrl);
             });
         });
     });
