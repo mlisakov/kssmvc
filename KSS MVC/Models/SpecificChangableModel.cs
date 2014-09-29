@@ -53,6 +53,13 @@ namespace KSS.Models
 //            }
             
         }
+
+        private List<DivisionState> _lastDivisions;
+        public List<DivisionState> GetLastDivisionStates()
+        {
+            return _lastDivisions ?? (_lastDivisions = DBHelper.GetLastDivisionStates());
+        }
+
 //
 //        public string GetImage()
 //        {

@@ -15,15 +15,21 @@
     {
         <div id="searchResult" class="centralResultPanel">
             <p id="addTreeItem" class="personCardEdit " style="margin-top: 40px; display: block; width: 160px">создать новую группу…</p>
-            <p id="editTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">редактировать…</p>
-            <p id="removeTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">удалить…</p>
+            <p id="editTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">редактировать группу…</p>
+            <p id="removeTreeItem" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">удалить группу…</p>
+            
+            <div style="height: 1px; background: darkgray"></div>
+            
+            <div>
+                <p id="addSpecificStaff" class="personCardEdit " style="margin-top: 20px; display: block; width: 160px">создать новую позицию…</p>
+            </div>
         </div>
         
         <div class="createTreeItemDialog personCardDialog">
             <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
             <select id="existedDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
                 <option value="" selected>не выбран</option>                
-                @foreach (var reg in DBHelper.GetLastDivisionStates())
+                @foreach (var reg in Model.GetLastDivisionStates())
                 {
                     <option value="@reg.Id">@reg.Division</option>
                 }
@@ -49,7 +55,7 @@
             <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
             <select id="updatingDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
                 <option value="" selected>не выбран</option>                
-                @foreach (var reg in DBHelper.GetLastDivisionStates())
+                @foreach (var reg in Model.GetLastDivisionStates())
                 {
                     <option value="@reg.Id">@reg.Division</option>
                 }
@@ -75,7 +81,7 @@
             <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
             <select id="removeDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
                 <option value="" selected>не выбран</option>                
-                @foreach (var reg in DBHelper.GetLastDivisionStates())
+                @foreach (var reg in Model.GetLastDivisionStates())
                 {
                     <option value="@reg.Id">@reg.Division</option>
                 }
@@ -92,6 +98,45 @@
             </div>
 
         </div>
+        
+        <div class="createSpecificStaffDialog personCardDialog">
+            <p class="personCardChangePlaceDialogSimpleLabel">филиал</p>
+            <select id="createSpecificStaffDivisionComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>                
+                @foreach (var reg in Model.GetLastDivisionStates())
+                {
+                    <option value="@reg.Id">@reg.Division</option>
+                }
+            </select>
+
+            <p class="personCardChangePlaceDialogSimpleLabel">подразделение</p>
+            <select id="createSpecificStaffDepartmentComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>
+            </select>
+            
+
+            <p class="personCardChangePlaceDialogSimpleLabel">группа</p>
+            <select id="createSpecificStaffTreeItemComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>
+            </select>
+            
+            <p class="personCardChangePlaceDialogSimpleLabel">контактное лицо</p>
+            <select id="createSpecificStaffEmployeeComboBox" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="" selected>не выбран</option>
+            </select>
+
+            <p class="personCardChangePlaceDialogSimpleLabel">наименование позиции</p>
+            <input id="newSpecificStaffTextBox" type="text" maxlength="200" class="personCardStreet personCardChangePlaceDialogText" tabindex="4" />
+            
+            <p class="personCardChangePlaceDialogSimpleLabel">рейтинг</p>
+            <input id="newSpecificStaffRankingTextBox" type="text" maxlength="20" class="personCardStreet personCardChangePlaceDialogText" tabindex="4" />
+            
+
+            <div class="personCardChangePlaceDialogButtonsContainer">
+                <p id="cancelRemoveTreeItem" class="personCardEdit personCardCancelEditPlaceButton">отменить</p>
+                <input id="createSpecificStaff" type="button" class="departmentSearchButton personCardSavePlaceDialogButton" value="сохранить" tabindex="7" />
+            </div>
+        </div>
     }
     
 </div>
@@ -106,6 +151,15 @@
             $(".personCardDialog").hide();
         }
 
+        $('#cancelCreateTreeItem, #cancelUpdateTreeItem, #cancelRemoveTreeItem').on('click', function () {
+            hideAllDialogs();
+        });
+
+
+
+
+
+        //------Создание пункта дерева-----
         $('#addTreeItem').on('click', function(e) {
             hideAllDialogs();
 
@@ -119,10 +173,6 @@
             dialog.show();
         });
 
-        $('#cancelCreateTreeItem, #cancelUpdateTreeItem, #cancelRemoveTreeItem').on('click', function () {
-            hideAllDialogs();
-        });
-
         //division changed
         $('#existedDivisionComboBox').change(function() {
 
@@ -130,16 +180,17 @@
             $('#existedTreeItemsComboBox option').remove();
             
             if ($('#existedDivisionComboBox option:selected').val() != '') {
-                loadTreeItemsByDivisionId($('#existedDivisionComboBox option:selected').val(), $('#existedTreeItemsComboBox'));
+                var url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
+                var data = { division: $('#existedDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#existedTreeItemsComboBox'));
             } else {
                 $('#existedDivisionComboBox').append('<option value="" selected>не выбран</option>');
             }
         });
 
         //грузим DepartmentSpecificState     
-        function loadTreeItemsByDivisionId(division, control) {
-            var url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
-            var data = { division: division};
+        function loadComboBoxItems(url, data, control) {
             $.ajax({
                     url: url,
                     data: data,
@@ -198,6 +249,11 @@
             });
         });
 
+
+
+
+
+        //------редактирование пункта дерева-----
         $('#editTreeItem').on('click', function (e) {
             hideAllDialogs();
 
@@ -218,7 +274,11 @@
             $('#updatingTreeItemsComboBox option').remove();
 
             if ($('#updatingDivisionComboBox option:selected').val() != '') {
-                loadTreeItemsByDivisionId($('#updatingDivisionComboBox option:selected').val(), $('#updatingTreeItemsComboBox'));
+
+                var url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
+                var data = { division: $('#updatingDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#updatingTreeItemsComboBox'));
             } else {
                 $('#updatingDivisionComboBox').append('<option value="" selected>не выбран</option>');
             }
@@ -276,6 +336,11 @@
         });
 
 
+
+
+
+
+        //------удаление пункта дерева-----
         $('#removeTreeItem').on('click', function (e) {
             hideAllDialogs();
 
@@ -295,8 +360,11 @@
             //очищаем зависимые комбобоксы
             $('#removeTreeItemsComboBox option').remove();
 
-            if ($('#removeDivisionComboBox option:selected').val() != '') {
-                loadTreeItemsByDivisionId($('#removeDivisionComboBox option:selected').val(), $('#removeTreeItemsComboBox'));
+            if ($('#removeDivisionComboBox option:selected').val() != '') {                
+                var url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
+                var data = { division: $('#removeDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#removeTreeItemsComboBox'));
             } else {
                 $('#removeDivisionComboBox').append('<option value="" selected>не выбран</option>');
             }
@@ -339,6 +407,125 @@
                 var treeUrl = '@Url.Action("SpecificTree","Tree")';
                 $('#divTree').find('.specificInnerUL:first').remove();
                 loadTree(treeUrl);
+            });
+        });
+
+
+
+
+
+        //------создание SpecificStaff-----
+        
+        //открытие диалога добавления специфика
+        $('#addSpecificStaff').on('click', function (e) {
+            hideAllDialogs();
+
+            var dialog = $(".createSpecificStaffDialog").first();
+
+            var oldPosition = $(this).position();
+            dialog.css({
+                top: (oldPosition.top)
+            });
+
+            dialog.show();
+        });
+
+        //изменился диапозон
+        $('#createSpecificStaffDivisionComboBox').change(function () {
+
+            //очищаем зависимые комбобоксы
+            $('#createSpecificStaffDepartmentComboBox option').remove();
+            $('#createSpecificStaffTreeItemComboBox option').remove();
+            $('#createSpecificStaffEmployeeComboBox option').remove();
+
+            if ($('#createSpecificStaffDivisionComboBox option:selected').val() != '') {
+                //грузим департаменты
+                var url = '@Url.Action("GetDepartmentsToComboBox", "Home")';
+                var data = { division: $('#createSpecificStaffDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#createSpecificStaffDepartmentComboBox'));
+
+                //грузим DepartmentSpecificStaff
+                url = '@Url.Action("GetDepartmentSpecificStaff", "Home")';
+                data = { division: $('#createSpecificStaffDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#createSpecificStaffTreeItemComboBox'));
+
+                //грузим юзеров
+                url = '@Url.Action("GetEmployeeToComboBox", "Home")';
+                data = { division: $('#createSpecificStaffDivisionComboBox option:selected').val() };
+
+                loadComboBoxItems(url, data, $('#createSpecificStaffEmployeeComboBox'));
+
+            } else {
+                $('#createSpecificStaffDepartmentComboBox').append('<option value="" selected>не выбран</option>');
+                $('#createSpecificStaffTreeItemComboBox').append('<option value="" selected>не выбран</option>');
+                $('#createSpecificStaffEmployeeComboBox').append('<option value="" selected>не выбран</option>');
+            }
+        });
+
+        //создаем спефицика
+        $('#createSpecificStaff').on('click', function () {
+            var existedDivision = $('#createSpecificStaffDivisionComboBox option:selected').val();
+            var existedDepartment = $('#createSpecificStaffDepartmentComboBox option:selected').val();
+            var existedPerson = $('#createSpecificStaffEmployeeComboBox option:selected').val();
+            var existedGroup = $('#createSpecificStaffTreeItemComboBox option:selected').val();
+            var positionName = $('#newSpecificStaffTextBox').val();
+            positionName = positionName.trim();
+
+            var rankingValue = $('#newSpecificStaffRankingTextBox').val();
+            rankingValue = rankingValue.trim();
+
+
+            if (existedDivision == "") {
+                alert('Необходимо выбрать филиал');
+                return;
+            } else {
+                if (existedDepartment == "") {
+                    alert('Необходимо выбрать департамент');
+                    return;
+                } else {
+
+                    if (existedGroup == "") {
+                        alert('Необходимо выбрать группу');
+                        return;
+                    } else {
+                        if (positionName == "") {
+                            alert('Необходимо указать наименование позиции');
+                            return;
+                        } else {
+                            if (rankingValue == "") {
+                                alert('Необходимо указать значение рейтинга');
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+
+            var url = '@Url.Action("CreateNewSpecificStaff", "Home")';
+            var data = {
+                department: existedDepartment,
+                employee: existedPerson,
+                departmentSpecificStaff: existedGroup,
+                position: positionName,
+                ranking: rankingValue
+            };
+
+            var parent = $('#centralPart');
+            var progressBar = $('<div class="centralPartWithProgressBar"/>');
+            if (parent != null) {
+                parent.append(progressBar);
+            }
+            $.get(url, data, function () {
+
+                if (parent != null) {
+                    progressBar.remove();
+                }
+                hideAllDialogs();
+
+                $('#newSpecificStaffTextBox').val('');
+                $('#newSpecificStaffRankingTextBox').val('');
             });
         });
     });

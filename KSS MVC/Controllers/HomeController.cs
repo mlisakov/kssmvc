@@ -570,6 +570,10 @@ namespace KSS.Controllers
             var view = View("SpecificCard", specificModel);
             view.ViewBag.IsAdmin = isAdmin;
             view.ViewBag.BackLink = Session["BackLink"];
+
+
+//            Session["BackLink"] = Url.Action("SpecificCard", "Home", new { id = id });
+
             return view;
         }
 
@@ -578,6 +582,18 @@ namespace KSS.Controllers
             DBHelper.SavePersonForSpecificCard(id, employeeId);
 
             return SpecificCard(id);
+        }
+
+        public ActionResult RemovePersonFromSpecificCard(Guid id)
+        {
+            DBHelper.RemovePersonFromSpecificCard(id);
+
+            return SpecificCard(id);
+        }
+
+        public void DeleteSpecificStaff(Guid id)
+        {
+            DBHelper.DeleteSpecificStaff(id);            
         }
 
         public ActionResult SaveLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
@@ -596,7 +612,10 @@ namespace KSS.Controllers
 
         public ActionResult SaveSpecificPhone(Guid specificStaffId, Guid? specificStaffPlaceId, Guid? phoneType, string phone)
         {
-            DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
+            phone = DBHelper.ParseNumber(phone);
+
+            if (!string.IsNullOrEmpty(phone))
+                DBHelper.UpdateSpecificPhone(specificStaffId, specificStaffPlaceId, phoneType, phone);
 
             return SpecificCard(specificStaffId);
         }
@@ -640,6 +659,54 @@ namespace KSS.Controllers
         public void RemoveDepartmentSpecificStaff(Guid item)
         {
             DBHelper.RemoveDepartmentSpecificStaff(item);
+        }
+
+        public string GetDepartmentsToComboBox(Guid division)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<option value=\"\" selected>не выбран</option>");
+            foreach (var item in DBHelper.GetDepartmentStatesByDivision(division))
+            {
+                sb.Append("<option value=\"");
+                sb.Append(item.Id);
+                sb.Append("\">");
+
+                string name;
+
+                if (item.ParentId.HasValue)
+                {
+                    var parent = item.Department2.DepartmentStates.First(t => t.Id == item.ParentId);
+                    name = parent.Department + " -> " + item.Department;
+                }
+                else
+                    name = item.Department;
+
+
+                sb.Append(name);
+                sb.Append("</option>");
+            }
+            return sb.ToString();
+        }
+
+        public string GetEmployeeToComboBox(Guid division)
+        {
+            var sb = new StringBuilder();
+            sb.Append("<option value=\"\" selected>не выбран</option>");
+            foreach (var item in DBHelper.GetPersonsInDivision(division))
+            {
+                sb.Append("<option value=\"");
+                sb.Append(item.Id);
+                sb.Append("\">");
+                sb.Append(item.Name);
+                sb.Append("</option>");
+            }
+            return sb.ToString();
+        }
+
+        public void CreateNewSpecificStaff(Guid department, Guid? employee,
+            Guid departmentSpecificStaff, string position, string ranking)
+        {
+            DBHelper.CreateNewSpecificStaff(department, employee, departmentSpecificStaff, position, ranking);
         }
 
         #endregion

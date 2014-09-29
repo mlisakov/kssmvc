@@ -114,5 +114,44 @@ namespace KSS.Models
             return result.Select(t => new KeyValuePair<Guid, string>(t.Id, t.Name)).ToList();
         }
 
+
+        public string ParseNumber(int index)
+        {
+            if (index >= 0 && index < SpecificStaffPlaces.Count)
+            {
+                var phoneCode = string.Empty;
+
+                if (SpecificStaffLocation != null)
+                {
+                    phoneCode = SpecificStaffLocation.Locality.CityPhoneCode;
+
+                    var phoneType = SpecificStaffPlaces[index].PhoneType.Type.Trim().ToUpper();
+                    if (phoneType == "МИНИАТС")
+                    {
+                        phoneCode = SpecificStaffLocation.TerritoryId.HasValue
+                            ? DBHelper.GetInnerPhoneCode(SpecificStaffLocation.TerritoryId.Value)
+                            : string.Empty;
+                    }
+                }
+
+                if (string.IsNullOrEmpty(phoneCode))
+                    return EmployeeModel.ParsePhone(SpecificStaffPlaces[index].PhoneNumber, SpecificStaffPlaces[index].PhoneType.Type);
+                return ParsePhone(SpecificStaffPlaces[index].PhoneNumber, SpecificStaffPlaces[index].PhoneType.Type, phoneCode);
+            }
+            return string.Empty;
+        }
+
+        public static string ParsePhone(string getString, string phoneType, string phoneCode)
+        {
+            string userPhoneNumber = string.Empty;
+            string parsedPhoneNumber = EmployeeModel.ParsePhone(getString, phoneType);
+
+            phoneType = phoneType.Trim().ToUpper();
+            if (phoneType == "ГАТС" || phoneType == "МИНИАТС")
+                userPhoneNumber += "(" + phoneCode + ")" + parsedPhoneNumber;
+            else
+                userPhoneNumber = parsedPhoneNumber;
+            return userPhoneNumber;
+        }
     }
 }

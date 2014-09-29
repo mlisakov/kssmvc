@@ -50,6 +50,8 @@ namespace KSS.Helpers
         {
             try
             {
+
+
                 return
                     BaseModel.DepartmentStates.Where(i => i.DivisionId == id && i.ExpirationDate == null)
                         .OrderBy(t => t.Department);
@@ -1798,6 +1800,27 @@ namespace KSS.Helpers
             }
         }
 
+        public static void RemovePersonFromSpecificCard(Guid id)
+        {
+            try
+            {
+                lock (_lockObject)
+                {
+                    var specific = BaseModel.SpecificStaffs.FirstOrDefault(t => t.Id == id);
+                    if (specific != null)
+                    {
+                        specific.EmployeeId = (Guid?) null;
+
+                        BaseModel.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. RemovePersonFromSpecificCard.", ex);
+            }
+        }
+
         public static void UpdateLocationForSpecificCard(Guid specificStaffId, Guid city, string street, string edifice, string office)
         {
             try
@@ -2365,21 +2388,54 @@ namespace KSS.Helpers
             }
         }
 
-        public static List<DepartmentSpecificState> GetSpecificStates(Guid division, Guid? parent)
+
+        public static void CreateNewSpecificStaff(Guid department, Guid? employee,
+            Guid departmentSpecificStaff, string position, string ranking)
         {
             try
             {
-                var query = BaseModel.DepartmentSpecificStates.Where(t => t.DivisionId == division);
-                if (parent.HasValue)
-                    query = query.Where(t => t.ParentId == parent.Value);
+                var item = new SpecificStaff
+                {
+                    Id = Guid.NewGuid(),
+                    DepartmentId = department,
+                    EmployeeId = employee,
+                    Position = position,
+                    Ranking = ranking,
+                    DepartmentSpecificId = departmentSpecificStaff
+                };
 
-                return query.ToList();
+                BaseModel.AddToSpecificStaffs(item);
+                BaseModel.SaveChanges();
             }
             catch (Exception ex)
             {
-                LogHelper.WriteLog("Ошибка. GetSpecificStates.", ex);
+                LogHelper.WriteLog("Ошибка. CreateNewSpecificStaff.", ex);
+            }            
+        }
+
+        public static void DeleteSpecificStaff(Guid id)
+        {
+            try
+            {
+                lock (_lockObject)
+                {
+                    var item = BaseModel.SpecificStaffs.First(t => t.Id == id);
+
+                    var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == id).ToList();
+
+                    foreach (var place in places)
+                    {
+                        BaseModel.DeleteObject(place);
+                    }
+
+                    BaseModel.DeleteObject(item);
+                    BaseModel.SaveChanges();
+                }
             }
-            return new List<DepartmentSpecificState>();
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. DeleteSpecificStaff.", ex);
+            }     
         }
         #endregion
     }

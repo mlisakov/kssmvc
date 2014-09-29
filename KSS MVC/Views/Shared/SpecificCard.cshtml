@@ -11,8 +11,15 @@
 <div class="personCardLayout">
     <p class="paginationArrow" style="">←</p>
     <a class="paginationNavigationLink backLink" style="" data-url="@ViewBag.BackLink">Назад</a>
+    
+
 
     <div style="margin-top: 10px">
+        @if (ViewBag.IsAdmin)
+        {
+            <p id="removeSpecificStaff" class="personCardJob personCardEdit specificPersonCardJobLabel" style="display: block; margin-bottom: 10px">удалить позицию</p>
+        }
+        
         <div style="float:left">            
             <img class="personIMG" src="data:image/png;base64, @Model.GetImage()" />            
         </div>
@@ -52,6 +59,12 @@
                 </p>
 
                 <p class="personCardJob specificPersonCardJobLabel" >@Model.EmployeePositionState.Title</p>
+
+                if (ViewBag.IsAdmin)
+                {
+                    <p id="removeContactPersonLink" class="personCardJob personCardEdit specificPersonCardJobLabel">удалить контактное лицо</p>
+                }
+                
             }
             else
             {
@@ -233,7 +246,8 @@
             }
             <div>
                 <p id="phoneType_@i" class="personCardJobTitle">@Model.SpecificStaffPlaces[i].PhoneType.Category:</p>
-                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.SpecificStaffPlaces[i].PhoneNumber</p>
+@*                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.SpecificStaffPlaces[i].PhoneNumber</p>*@
+                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.ParseNumber(i)</p>
                 @if (ViewBag.IsAdmin)
                 {
                     <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.SpecificStaffPlaces[i].Id">редактировать</p>
@@ -308,8 +322,7 @@
             loadSearchPage(url);
         });
 
-        $('.backLink').on('click', function(e)
-        {
+        $('.backLink').on('click', function (e) {
             var currentPageItem = $(this);
             var url = currentPageItem.data('url');
 
@@ -330,7 +343,7 @@
 
                 var searchView = '@Url.Action("SearchView","Home", new {id=Guid.Empty})';
                 loadSearchPage(searchView);
-                                loadSearchPageResult(url);
+                loadSearchPageResult(url);
                 return;
             }
 
@@ -346,7 +359,7 @@
         });
 
 
-        $('#editContactPersonLink').on('click', function(e) {
+        $('#editContactPersonLink').on('click', function (e) {
             hideAllDialogs();
 
             var dialog = $('.specificCardChangePersonDialog').first();
@@ -384,10 +397,10 @@
 
             var idItem = clickedItem.attr('id');
 
-            idItem = idItem.substr(14);//"editPhoneLink_".length == 14            
+            idItem = idItem.substr(14);//"editPhoneLink_".length == 14
 
             $('#personCardChangePhoneTextBox').val($('#phoneNumber_' + idItem).text());
-            
+
             var dialog = $('.personCardChangePhoneDialog').first();
 
             $('#updateSpecificPhoneButton').attr("data-placeId", placeId);
@@ -397,11 +410,11 @@
             dialog.css({
                 top: (oldPosition.top)
             });
-            
+
             dialog.show();
         });
 
-        $('#personCardAddPhoneLink').on('click', function(e) {
+        $('#personCardAddPhoneLink').on('click', function (e) {
             hideAllDialogs();
 
             var dialog = $(".personCardAddPhoneDialog").first();
@@ -430,21 +443,21 @@
         });
 
         //Загрузка городов
-        function loadCities(url, countryValue, regionValue) {            
-            $.get(url, { country: countryValue, region: regionValue }, function (data) {                
+        function loadCities(url, countryValue, regionValue) {
+            $.get(url, { country: countryValue, region: regionValue }, function (data) {
                 var parent = $('#personCardCityComboBoxControl');
-                if (parent != null) {                    
+                if (parent != null) {
                     parent.append(data);
-                }                
+                }
             });
         };
 
 
-        $('#savePersonButton').on('click', function() {
+        $('#savePersonButton').on('click', function () {
             var url = '@Url.Action("SavePersonForSpecificCard","Home")';
 
             var personId = $('#personListForSpecific option:selected').val();
-            var specificId = $('.specificCardChangePersonDialog :first').data('specificid');            
+            var specificId = $('.specificCardChangePersonDialog :first').data('specificid');
 
             savePersonForSpecific(url, specificId, personId);
         });
@@ -464,11 +477,48 @@
             });
         }
 
+        //удаление контактного лица
+        $('#removeContactPersonLink').on('click', function () {
+            var url = '@Url.Action("RemovePersonFromSpecificCard","Home")';
+            var specificId = $('.specificCardChangePersonDialog :first').data('specificid');
+
+
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.get(url, { id: specificId }, function(data) {
+                if (parent != null) {
+                    parent.empty();
+                    parent.append(data);
+                }
+            });
+        });
+
+        //удаление specificStaff
+        $('#removeSpecificStaff').on('click', function() {
+            var deleting = confirm("Удалить эту позицию?");
+
+            if (deleting) {
+
+                var url = '@Url.Action("DeleteSpecificStaff", "Home")';
+                var specificId = $('.specificCardChangePersonDialog :first').data('specificid');
+
+                $.post(url, { id: specificId }, function () {                    
+                    var parent = $('#centralPart');
+                    if (parent != null) {
+                        parent.empty();
+                    }
+                });
+            }
+        });
+
 
         $('#savePlaceButton').on('click', function () {
-            
+
             var url = '@Url.Action("SaveLocationForSpecificCard", "Home")';
-            
+
             var specificStaffId = $('.specificCardChangePersonDialog :first').data('specificid');
             var city = $('#personCardCityComboBoxControl option:selected').val();
             if (city == undefined)
@@ -511,7 +561,7 @@
         $('#addSpecificPhoneButton').on('click', function () {
             var url = '@Url.Action("SaveSpecificPhone", "Home")';
 
-            var specificId = $('.specificCardChangePersonDialog :first').data('specificid');            
+            var specificId = $('.specificCardChangePersonDialog :first').data('specificid');
             var phoneType = $('#phoneTypeComboBox option:selected').val();
             var phone = $('#addPhoneTextBoxPhone').val();
 

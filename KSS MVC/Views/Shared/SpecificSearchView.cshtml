@@ -85,12 +85,12 @@
                                 }
                                 if (j == 0)
                                 {
-                                    <p class="personCityPhone">@specificStaff.SpecificStaffPlaces[i].PhoneNumber;</p>
+                                    <p class="personCityPhone">@specificStaff.ParseNumber(i);</p>
                                     j++;
                                 }
                                 else
                                 {
-                                    <p class="personMobilePhone">@specificStaff.SpecificStaffPlaces[i].PhoneNumber;</p>
+                                    <p class="personMobilePhone">@specificStaff.ParseNumber(i);</p>
                                     j++;
                                 }
                             }

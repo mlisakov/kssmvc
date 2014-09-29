@@ -218,14 +218,18 @@
         }
     }
 
+    function ChangeSelectedPage2(page) {
+        InnerChangeSelectedPage(page, false);
+    }
+
     //смена выделенного пункта меню
-    function ChangeSelectedPage(page) {
+    function InnerChangeSelectedPage(page, loadCentral) {
 
         var clickedItem = $('#mainMenuItem' + page);
         if (!clickedItem.hasClass('selectedPage')) {
             $('.selectedPage').removeClass('selectedPage');
             clickedItem.addClass('selectedPage');
-            
+
             $('#centralPart').empty();
 
             if (page == 0) {
@@ -239,16 +243,24 @@
                 ClearTreeSelection();
 
                 if (page == 3) {
-                    //load specific tree
+                    //load specific tree       
+
                     loadTree(url);
-                    loadSpecificChangablePage();
+                    if (loadCentral)
+                        loadSpecificChangablePage();
                 } else {
                     showMainTree();
                     loadSearchPage(url);
                 }
-                
+
             }
         }
+    }
+
+
+    //смена выделенного пункта меню
+    function ChangeSelectedPage(page) {
+        InnerChangeSelectedPage(page, true);
     }
 
     function loadSpecificChangablePage() {
