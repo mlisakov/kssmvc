@@ -2318,7 +2318,7 @@ namespace KSS.Helpers
             try
             {
                 var items =
-                    BaseModel.DepartmentSpecificStates.Where(t => t.DivisionId == divisionId)
+                    BaseModel.DepartmentSpecificStates.Where(t => t.DivisionId == divisionId && t.ExpirationDate == null)
                         .ToDictionary(t => t.Id, t => t.Name);
 
                 return items;
@@ -2436,6 +2436,117 @@ namespace KSS.Helpers
             {
                 LogHelper.WriteLog("Ошибка. DeleteSpecificStaff.", ex);
             }     
+        }
+
+
+        public static void UpdateSpecificStaffPlace(Guid specificStaffId, Guid city, Guid edifice, Guid? pavillion, string office, Guid? territoryGuid)
+        {
+            try
+            {
+                lock (_lockObject)
+                {
+                    LogHelper.WriteLog("UpdateSpecificStaffPlace. " +
+                                       string.Format("{0},{1},{2},{3},{4}", specificStaffId, city, edifice, pavillion, office));
+
+                    //Получаем список плейсов
+                    var places = BaseModel.SpecificStaffPlaces.Where(t => t.SpecificStaffId == specificStaffId).ToList();
+
+                    //ищем локейшен здания или корпуса
+                    
+                    Location location = null;
+                    if (pavillion.HasValue)
+                        //по корпусу
+                        location = BaseModel.Locations.First(t => t.Id.Equals(pavillion.Value));
+                    else
+                        //по зданию
+                        location = BaseModel.Locations.First(t => t.Id.Equals(edifice));
+
+
+                    Location resultLocation = null;
+                    if (pavillion.HasValue)
+                    {
+                        //ищем локейшен на основе значений
+                        resultLocation =
+                            BaseModel.Locations.FirstOrDefault(t => t.DivisionId == location.DivisionId &&
+                                                                    t.TerritoryId == territoryGuid &&
+                                                                    t.Street == location.Street &&
+                                                                    t.Edifice == location.Edifice &&
+                                                                    t.Building == location.Building);
+                    }
+                    else
+                    {
+                        //ищем локейшен на основе значений
+                        resultLocation =
+                            BaseModel.Locations.FirstOrDefault(t => t.DivisionId == location.DivisionId &&
+                                                                    t.TerritoryId == territoryGuid &&
+                                                                    t.Street == location.Street &&
+                                                                    t.Edifice == location.Edifice &&
+                                                                    string.IsNullOrEmpty(t.Building));
+                    }
+
+
+
+                    //если такого локейшена нет, то создаем
+                    if (resultLocation == null)
+                    {
+
+                        LogHelper.WriteLog("UpdateSpecificStaffPlace. Create location");
+                        var newLocation = new Location
+                        {
+                            Id = Guid.NewGuid(),
+                            DivisionId = location.DivisionId,
+                            LocalityId = location.LocalityId,
+                            TerritoryId = territoryGuid,
+                            Street = location.Street,
+                            Edifice = location.Edifice,
+                            Building = null,
+                            PhoneZoneId = null
+                        };
+
+                        BaseModel.AddToLocations(newLocation);
+                        location = newLocation;
+                    }
+                    else
+                        location = resultLocation;
+
+
+                    //если список плейсов пуст, то создаем новое. В качестве локейшена - локейшен Икс
+                    //проставляем офис, номер телефона = "_"
+                    if (!places.Any())
+                    {
+                        //create empty place
+                        LogHelper.WriteLog("UpdateSpecificStaffPlace. Create empty place");
+                        var newPlace = new SpecificStaffPlace
+                        {
+                            Id = Guid.NewGuid(),
+                            SpecificStaffId = specificStaffId,
+                            LocationId = location.Id,
+                            PhoneTypeId = BaseModel.PhoneTypes.First().Id,
+                            PhoneNumber = "_",
+                            Office = office
+                        };
+                        BaseModel.AddToSpecificStaffPlaces(newPlace);
+                    }
+                    else
+                    {
+                        //если список не пуст, то устанавливаем всем плейсам локейшен икс
+                        //проставляем всем офис
+
+                        LogHelper.WriteLog("UpdateSpecificStaffPlace. update  places");
+                        foreach (SpecificStaffPlace place in places)
+                        {
+                            place.Office = office;
+                            place.LocationId = location.Id;
+                        }
+                    }
+                }
+
+                BaseModel.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.WriteLog("Ошибка. UpdateSpecificStaffPlace.", ex);
+            }
         }
         #endregion
     }

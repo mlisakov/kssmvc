@@ -418,7 +418,6 @@
             }
             <div>
                 <p id="phoneType_@i" class="personCardJobTitle">@Model.EmployeePlaces[i].PhoneType.Category:</p>
-@*                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.EmployeePlaces[i].PhoneNumber</p>*@
                 <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.ParseNumber(i)</p>
                 @if (ViewBag.IsAdmin)
                 {
@@ -575,14 +574,6 @@
 
             idItem = idItem.substr(14);//"editPhoneLink_".length == 14
 
-            
-//            var text = $('#phoneNumber_' + idItem).text();            
-//            if (text != "") {
-//                text = text.replace('(', '');
-//                text = text.replace(')', '');
-//                text = text.replace('-', '');
-//            }
-
             var text = clickedItem.data('phone');
             $('#personCardChangePhoneTextBox').val(text);
 
@@ -632,7 +623,7 @@
             }
         }
 
-        //сохранение места
+        //сохранение фото
         function savePhoto(url, user, image) {
             var parent = $('#centralPart');
             if (parent != null) {

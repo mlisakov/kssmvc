@@ -12,8 +12,14 @@ namespace KSS.Models
 {
     public class SpecificStaffModel
     {
+        /// <summary>
+        /// Собственно специфик
+        /// </summary>
         public SpecificStaff SpecificStaff { get; set; }
 
+        /// <summary>
+        /// Полный адрес
+        /// </summary>
         public string Address { get; private set; }
 
 
@@ -22,27 +28,50 @@ namespace KSS.Models
         /// </summary>
         public List<SpecificStaffPlace> SpecificStaffPlaces { get; set; }
 
+        /// <summary>
+        /// Локейшен
+        /// </summary>
         public Location SpecificStaffLocation { get; private set; }
+
+        /// <summary>
+        /// Место с локейшеном
+        /// </summary>
         public SpecificStaffPlace SpecificStaffPlaceWithLocation { get; private set; }
 
-
+        /// <summary>
+        /// контактное лицо
+        /// </summary>
         public Employee RelatedEmployee
         {
             get { return SpecificStaff.Employee; }
         }
 
+        /// <summary>
+        /// инфа о должности контактного лица
+        /// </summary>
         public PositionState EmployeePositionState { get; private set; }
         /// <summary>
         /// Инфа о департаменте
         /// </summary>
         public DepartmentState EmployeeDepartmentState { get; set; }
 
-        
+        public Guid? DivisionId { get; private set; }
 
         public SpecificStaffModel(Guid id)
         {
             SpecificStaff = DBHelper.GetSpecificStaff(id);
             BindPlaceString();
+
+
+            if (SpecificStaff.Department.DepartmentStates.Any())
+            {
+                var department =
+                    SpecificStaff.Department.DepartmentStates.FirstOrDefault(t => t.Id == SpecificStaff.DepartmentId);
+                if (department != null)
+                {
+                    DivisionId = department.DivisionId;
+                }
+            }
 
             SpecificStaffPlaces = SpecificStaff.SpecificStaffPlaces.ToList();
 

@@ -709,6 +709,13 @@ namespace KSS.Controllers
             DBHelper.CreateNewSpecificStaff(department, employee, departmentSpecificStaff, position, ranking);
         }
 
+        public ActionResult SaveSpecificLocation(Guid specificStaffId, Guid city, Guid edifice, Guid? pavillion, string office, Guid? territory)
+        {
+            DBHelper.UpdateSpecificStaffPlace(specificStaffId, city, edifice, pavillion, office, territory);
+
+            return SpecificCard(specificStaffId);
+        }
+
         #endregion
 
     }

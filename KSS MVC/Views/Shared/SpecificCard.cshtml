@@ -164,28 +164,48 @@
     {
         <div class="personCardChangePlaceDialog personCardDialog">
             <p class="personCardChangePlaceDialogSimpleLabel">страна</p>
-            <select class="personCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1">
+            <select class="specificCardCountryComboBox personCardChangePlaceDialogSelect" tabindex="1">
                 <option selected="selected">Россия</option>
             </select>
-        
-            <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
-            <select id="personCardRegionComboBoxControl" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
-                @if (Model.SpecificStaffLocation != null)
+            
+            <p class="personCardChangePlaceDialogSimpleLabel">Территория</p>
+            <select id="specificCardTerritoryComboBoxControl" class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                <option value="">не выбран</option>
+                @if (Model.DivisionId.HasValue)
                 {
-                    foreach (var reg in DBHelper.GetRegions(Model.SpecificStaffLocation.DivisionId))
-                     {
-                         if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Region, reg))
-                         {
-                             <option value="@reg" selected="selected">@reg</option>
-                             continue;
-                         }
-                         <option value="@reg">@reg</option>
-                     }
+                    foreach (var reg in DBHelper.GetTerritories(Model.DivisionId.Value))
+                    {
+                        if (Model.SpecificStaffLocation != null && Model.SpecificStaffLocation.TerritoryId.HasValue && Model.SpecificStaffLocation.TerritoryId.Value == reg.Id)
+                        {
+                            <option value="@reg.Id" selected="selected">@reg.Territory</option>
+                            continue;
+                        }
+                        <option value="@reg.Id">@reg.Territory</option>
+                    }
                 }
             </select>
         
+            <p class="personCardChangePlaceDialogSimpleLabel">регион</p>
+            <select id="specificCardRegionComboBoxControl" class="personCardRegionComboBox personCardChangePlaceDialogSelect" tabindex="2">
+                <option value="">не выбран</option>
+                @if (Model.DivisionId.HasValue)
+                {
+                    foreach (var reg in DBHelper.GetRegions(Model.DivisionId.Value, Model.SpecificStaffLocation == null ? null : Model.SpecificStaffLocation.TerritoryId))
+                    {
+                        if (Model.SpecificStaffLocation != null && string.Equals(Model.SpecificStaffLocation.Locality.Region, reg))
+                        {
+                            <option value="@reg" selected="selected">@reg</option>
+                            continue;
+                        }
+                        <option value="@reg">@reg</option>
+                    }
+                }
+
+            </select>
+        
             <p class="personCardChangePlaceDialogSimpleLabel">населенный пункт</p>
-            <select id="personCardCityComboBoxControl" class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3">
+            <select id="specificCardCityComboBoxControl" class="personCardCityComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                <option value="">не выбран</option>
                 @if (Model.SpecificStaffLocation != null)
                 {
                     foreach (var reg in DBHelper.GetLocalities(Model.SpecificStaffLocation.Locality.Country, Model.SpecificStaffLocation.Locality.Region))
@@ -201,28 +221,70 @@
             </select>
         
             <p class="personCardChangePlaceDialogSimpleLabel">улица</p>
-            @if (Model.SpecificStaffLocation != null)
-            {
-                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" value="@Model.SpecificStaffLocation.Street" />
-            }
-            else
-            {
-                <input type="text" class="personCardStreet personCardChangePlaceDialogText"  tabindex="4" />
-            }
+            <select id="specificCardStreetComboBoxControl" class="personCardStreetComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                <option value="">не выбран</option>
+                @if (Model.SpecificStaffLocation != null)
+                {
+                    foreach (var reg in DBHelper.GetStreets(Model.SpecificStaffLocation.Locality.Id))
+                    {
+                        if (Model.SpecificStaffLocation != null && Model.SpecificStaffLocation.Street == reg.Value)
+                        {
+                            <option value="@reg.Key" selected="selected">@reg.Value</option>
+                            continue;
+                        }
+                        <option value="@reg.Key">@reg.Value</option>
+                    }
+                }
+            </select>
+
+            
+            <p class="personCardChangePlaceDialogSimpleLabel">дом</p>
+            <select id="specificCardHouseComboBoxChange" class="personCardStreetComboBox personCardChangePlaceDialogSelect" tabindex="3">
+                <option value="">не выбран</option>
+                @if (Model.SpecificStaffLocation != null)
+                {
+                    foreach (var reg in DBHelper.GetHouses(Model.SpecificStaffLocation.Locality.Id, Model.SpecificStaffLocation.Id))
+                    {
+                        if (Model.SpecificStaffLocation != null && Model.SpecificStaffLocation.Edifice == reg.Value)
+                        {
+                            <option value="@reg.Key" selected="selected">@reg.Value</option>
+                            continue;
+                        }
+                        <option value="@reg.Key">@reg.Value</option>
+                    }
+                }
+            </select>
+
+
            
-            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">дом</p>
+            <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер корпуса</p>
             <p class="personCardChangePlaceDialogSimpleLabel personCardChangePlaceDialogHalfLabel">номер офиса</p>
         
             
+            <select id="specificCardPavilionComboBoxChange" class="personCardStreetComboBox personCardChangePlaceDialogSelect personCardChangePlaceDialogHalfText" tabindex="3">
+                <option value="">не выбран</option>
+                @if (Model.SpecificStaffLocation != null)
+                {
+                    foreach (var reg in DBHelper.GetPavillions2(Model.SpecificStaffLocation.Locality.Id, Model.SpecificStaffLocation.Id))
+                    {
+                        if (Model.SpecificStaffLocation != null && Model.SpecificStaffLocation.Building == reg.Value)
+                        {
+                            <option value="@reg.Key" selected="selected">@reg.Value</option>
+                            continue;
+                        }
+                        <option value="@reg.Key">@reg.Value</option>
+                    }
+                }
+            </select>
+
+
             @if (Model.SpecificStaffLocation != null)
             {
-                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5" value="@Model.SpecificStaffLocation.Edifice"/>
-                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6" value="@Model.SpecificStaffPlaceWithLocation.Office"/>
+                <input id="specificCardOfficeChange" type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6" value="@Model.SpecificStaffPlaceWithLocation.Office" />
             }
             else
             {
-                <input type="text" class="personCardHouse personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="5"/>
-                <input type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6"/>
+                <input id="specificCardOfficeChange" type="text" class="personCardOfficeNumber personCardChangePlaceDialogText personCardChangePlaceDialogHalfText" tabindex="6" />
             }
 
         
@@ -249,8 +311,8 @@
 @*                <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.SpecificStaffPlaces[i].PhoneNumber</p>*@
                 <p id="phoneNumber_@i" class="personcardJobEdit ">@Model.ParseNumber(i)</p>
                 @if (ViewBag.IsAdmin)
-                {
-                    <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.SpecificStaffPlaces[i].Id">редактировать</p>
+{
+                    <p id="editPhoneLink_@i" class="personCardEdit personCardEditPhoneLink" data-placeid="@Model.SpecificStaffPlaces[i].Id" data-phone="@Model.SpecificStaffPlaces[i].PhoneNumber">редактировать</p>
                     <p id="deletePhoneLink_@i" class="personCardEdit personCardDeletePhoneLink" data-url="@Url.Action("DeleteSpecificPhone", "Home", new { specificStaffId = Model.SpecificStaff.Id, specificStaffPlaceId = Model.SpecificStaffPlaces[i].Id })">удалить</p>
                 }
                 else
@@ -399,7 +461,8 @@
 
             idItem = idItem.substr(14);//"editPhoneLink_".length == 14
 
-            $('#personCardChangePhoneTextBox').val($('#phoneNumber_' + idItem).text());
+            var text = clickedItem.data('phone');
+            $('#personCardChangePhoneTextBox').val(text);
 
             var dialog = $('.personCardChangePhoneDialog').first();
 
@@ -431,28 +494,6 @@
             $(".personCardDialog").hide();
         }
 
-
-        //region changed
-        $('#personCardRegionComboBoxControl').change(function () {
-
-            $('#personCardCityComboBoxControl option').remove();
-
-            var url = '@Url.Action("GetCities", "Employee")';
-
-            loadCities(url, $('.personCardCountryComboBox option:selected').text(), $('#personCardRegionComboBoxControl option:selected').text());
-        });
-
-        //Загрузка городов
-        function loadCities(url, countryValue, regionValue) {
-            $.get(url, { country: countryValue, region: regionValue }, function (data) {
-                var parent = $('#personCardCityComboBoxControl');
-                if (parent != null) {
-                    parent.append(data);
-                }
-            });
-        };
-
-
         $('#savePersonButton').on('click', function () {
             var url = '@Url.Action("SavePersonForSpecificCard","Home")';
 
@@ -462,7 +503,7 @@
             savePersonForSpecific(url, specificId, personId);
         });
 
-        //сохранение места
+        //сохранение контактного лица
         function savePersonForSpecific(url, specificId, personId) {
             var parent = $('#centralPart');
             if (parent != null) {
@@ -514,40 +555,6 @@
             }
         });
 
-
-        $('#savePlaceButton').on('click', function () {
-
-            var url = '@Url.Action("SaveLocationForSpecificCard", "Home")';
-
-            var specificStaffId = $('.specificCardChangePersonDialog :first').data('specificid');
-            var city = $('#personCardCityComboBoxControl option:selected').val();
-            if (city == undefined)
-                return;
-            var street = $('.personCardStreet').val();
-            var edifice = $('.personCardHouse').val();
-            var office = $('.personCardOfficeNumber').val();
-
-            savePlace(url, specificStaffId, city, street, edifice, office);
-        });
-
-
-
-        //сохранение места
-        function savePlace(url, specificStaffId, city, street, edifice, office) {
-            var parent = $('#centralPart');
-            if (parent != null) {
-                parent.append('<div class="centralPartWithProgressBar"/>');
-            }
-
-            $.get(url, { specificStaffId: specificStaffId, city: city, street: street, edifice: edifice, office: office }, function (data) {
-                if (parent != null) {
-                    parent.empty();
-                    parent.append(data);
-                }
-            });
-        }
-
-
         $('#updateSpecificPhoneButton').on('click', function () {
             var url = '@Url.Action("SaveSpecificPhone", "Home")';
 
@@ -568,6 +575,7 @@
             savePhone(url, specificId, null, phoneType, phone);
         });
 
+        //сохранение телефона
         function savePhone(url, specificStaffId, specificStaffPlaceId, phoneType, phone) {
             var parent = $('#centralPart');
             if (parent != null) {
@@ -575,6 +583,169 @@
             }
 
             $.get(url, { specificStaffId: specificStaffId, specificStaffPlaceId: specificStaffPlaceId, phoneType: phoneType, phone: phone }, function (data) {
+                if (parent != null) {
+                    parent.empty();
+                    parent.append(data);
+                }
+            });
+        }
+
+
+
+
+        //изменение местоположения
+
+
+        //загрузка словаря
+        function loadDictionary(url, data, parent) {
+            $.ajax({
+                url: url,
+                data: data,
+                cache: false,
+            })
+                .done(function (result) {
+                    if (parent != null) {
+                        parent.append(result);
+                    }
+                });
+        }
+
+
+
+        //изменилась территория
+        $('#specificCardTerritoryComboBoxControl').change(function () {
+
+            //очищаем все поля
+            $('#specificCardRegionComboBoxControl option').remove();
+            $('#specificCardCityComboBoxControl option').remove();
+            $('#specificCardStreetComboBoxControl option').remove();
+            $('#specificCardHouseComboBoxChange option').remove();
+            $('#specificCardPavilionComboBoxChange option').remove();
+
+            //грузим регионы
+            var url = '@Url.Action("GetRegions", "Employee")';
+            var data = { division: "@Model.DivisionId.Value", territory: $('#specificCardTerritoryComboBoxControl option:selected').val() };
+            $.ajax({
+                url: url,
+                data: data,
+                cache: false,
+            })
+                .done(function (result) {
+                    $('#specificCardRegionComboBoxControl').append(result);
+                });
+        });
+
+
+        //изменился регион
+        $('#specificCardRegionComboBoxControl').change(function () {
+
+            //очищаем все поля
+            $('#specificCardCityComboBoxControl option').remove();
+            $('#specificCardStreetComboBoxControl option').remove();
+            $('#specificCardHouseComboBoxChange option').remove();
+            $('#specificCardPavilionComboBoxChange option').remove();
+
+            if ($('#specificCardRegionComboBoxControl option:selected').val() != '') {
+                //загружаем города
+                var url = '@Url.Action("GetCitiesForCreate", "Employee")';
+                var data = { region: $('#specificCardRegionComboBoxControl option:selected').val() };
+                loadDictionary(url, data, $('#specificCardCityComboBoxControl'));
+            }
+        });
+
+
+        //изменился город
+        $('#specificCardCityComboBoxControl').change(function () {
+            //очищаем все поля                
+            $('#specificCardStreetComboBoxControl option').remove();
+            $('#specificCardHouseComboBoxChange option').remove();
+            $('#specificCardPavilionComboBoxChange option').remove();
+
+            if ($('#specificCardCityComboBoxControl option:selected').val() != '') {
+                //загружаем улицы
+                var url = '@Url.Action("GetStreets", "Employee")';
+                var data = { locality: $('#specificCardCityComboBoxControl option:selected').val() };
+                loadDictionary(url, data, $('#specificCardStreetComboBoxControl'));
+            }
+        });
+
+
+
+        //изменилась улица
+        $('#specificCardStreetComboBoxControl').change(function () {
+            //очищаем все поля                            
+            $('#specificCardHouseComboBoxChange option').remove();
+            $('#specificCardPavilionComboBoxChange option').remove();
+
+            if ($('#specificCardStreetComboBoxControl option:selected').val() != '') {
+                //загружаем дома
+                var url = '@Url.Action("GetHouses", "Employee")';
+                var data = { locality: $('#specificCardCityComboBoxControl option:selected').val(), street: $('#specificCardStreetComboBoxControl option:selected').val() };
+                loadDictionary(url, data, $('#specificCardHouseComboBoxChange'));
+            }
+        });
+
+
+        //измениося дом
+        $('#specificCardHouseComboBoxChange').change(function () {
+            //очищаем все поля                            
+            $('#specificCardPavilionComboBoxChange option').remove();
+
+            if ($('#specificCardHouseComboBoxChange option:selected').val() != '') {
+                //загружаем корпуса
+                var url = '@Url.Action("GetPavillions", "Employee")';
+                var data = { locality: $('#specificCardCityComboBoxControl option:selected').val(), edifice: $('#specificCardHouseComboBoxChange option:selected').val() };
+                loadDictionary(url, data, $('#specificCardPavilionComboBoxChange'));
+            }
+        });
+
+
+        $('#savePlaceButton').on('click', function () {
+
+            var url = '@Url.Action("SaveSpecificLocation", "Home")';
+
+
+            var specificStaff = '@Model.SpecificStaff.Id';
+            var region = $('#specificCardRegionComboBoxControl option:selected').val();
+            var territory = $('#specificCardTerritoryComboBoxControl option:selected').val();
+            var city = $('#specificCardCityComboBoxControl option:selected').val();
+            var street = $('#specificCardStreetComboBoxControl option:selected').val();
+            var edifice = $('#specificCardHouseComboBoxChange option:selected').val();
+            var pavillion = $('#specificCardPavilionComboBoxChange option:selected').val();
+            var office = $('#specificCardOfficeChange').val();
+
+            if (region == '') {
+                alert("Необходимо указать регион.");
+                return;
+            } else {
+                if (city == '') {
+                    alert("Необходимо указать населенный пункт");
+                    return;
+                } else {
+                    if (street == '') {
+                        alert("Необходимо указать улицу");
+                        return;
+                    } else {
+                        if (edifice == '') {
+                            alert("Необходимо указать номер дома");
+                            return;
+                        }
+                    }
+                }
+            }
+
+            savePlace(url, specificStaff, city, street, edifice, office, pavillion, territory);
+        });
+
+        //сохранение места
+        function savePlace(url, specificStaff, city, street, edifice, office, pavillion, territory) {
+
+            var parent = $('#centralPart');
+            if (parent != null) {
+                parent.append('<div class="centralPartWithProgressBar"/>');
+            }
+
+            $.get(url, { specificStaffId: specificStaff, city: city, edifice: edifice, pavillion: pavillion, office: office, territory: territory }, function (data) {
                 if (parent != null) {
                     parent.empty();
                     parent.append(data);
